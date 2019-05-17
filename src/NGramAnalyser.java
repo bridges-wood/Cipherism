@@ -13,7 +13,7 @@ public class NGramAnalyser {
 	 *            Boolean whether or not the text contains spaces already.
 	 * @return TreeMap of all ngrams and fraction of text they represent.
 	 */
-	TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
+	public static TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
 		// Breakdown by words or not (this is not neccessary as the code works on
 		// unspaced inputs equally well)
@@ -56,8 +56,8 @@ public class NGramAnalyser {
 		for (float f : ngrams.values()) {
 			total += f;
 		} // Collect total number of ngrams in text.
-		for (float f : ngrams.values()) {
-			f = f / total;
+		for (String key : ngrams.keySet()) {
+			ngrams.put(key, ngrams.get(key) / total);
 		}
 		// Test is to be on past cipher challenge answers to analyse how the author of
 		// the puzzles writes.

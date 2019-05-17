@@ -1,4 +1,6 @@
 Cipher Analysis:
+Create method to determine if text is monoalphabetic or not.
+Detect english in output.
 
 Deciphering:
 Affine cipher
@@ -9,5 +11,4 @@ Scytale
 Transposition
 Playfair
 
-Detect english
 Respace

@@ -12,7 +12,7 @@ public class IOC {
 	 * 
 	 * @return Index of coincidence.
 	 */
-	float IndexOfCoincidence(Map<String, Float> letters, float length) {
+	public static float IndexOfCoincidence(Map<String, Float> letters, float length) {
 		float IOC = 0f;
 		for (float f : letters.values()) {
 			IOC += f * ((f * (length - 1)) / (length - 1));
