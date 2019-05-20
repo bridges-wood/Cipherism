@@ -16,6 +16,7 @@ public class Tester {
 		}
 		
 		System.out.println(IOC.IndexOfCoincidence(NGramAnalyser.NgramAnalysis(1, text, true), text.replaceAll("[^a-zA-Z ]", "").length()));
+		System.out.println(Caesar.CaesarShiftDecrypt("y", 7));
 	}
 		
 }
