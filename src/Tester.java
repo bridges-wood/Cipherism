@@ -14,14 +14,17 @@ public class Tester {
 		//for(Map.Entry<String, Float> entry : NGramAnalyser.NgramAnalysis(2, text, true).entrySet()) {
 		//	System.out.println(entry.getKey() + ":" + entry.getValue());
 		//}
-		Mapping[] mappings = ProbableSubstitutions.probableSubstitutionGenerator(NGramAnalyser.NgramAnalysis(1, text, true));
-		for(Mapping m : mappings) {
-			System.out.println(m.fromChar + " : " + m.toChar);
-		}
+		//Mapping[] mappings = ProbableSubstitutions.probableSubstitutionGenerator(NGramAnalyser.NgramAnalysis(1, text, true));
+		//for(Mapping m : mappings) {
+		//	System.out.println(m.fromChar + " : " + m.toChar);
+		//}
 		System.out.println(IOC.IndexOfCoincidence(NGramAnalyser.NgramAnalysis(1, text, true), text.replaceAll("[^a-zA-Z ]", "").length()));
 		//System.out.println(Caesar.CaesarShiftDecrypt("y", 7));
 		
-		for(String word : PredictWords.predictedWords("nostril", true)) {
+		//for(String word : PredictWords.predictedWords("nostril", true)) {
+		//	System.out.println(word);
+		//}
+		for(String word : MultiLemmaAnalysis.possibleLemmata("two years you")) {
 			System.out.println(word);
 		}
 	}
