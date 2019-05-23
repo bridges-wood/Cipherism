@@ -1,6 +1,11 @@
 
 public class Caesar {
 
+	/**
+	 * @param text The enciphered text to be decoded.
+	 * @param shift The shift that has been applied to the text.
+	 * @return A string that has undergone the Caesar shift.
+	 */
 	public static String CaesarShiftDecrypt(String text, int shift) {
 		while(shift > 26) {
 			shift -= 26;

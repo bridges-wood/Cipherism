@@ -11,12 +11,19 @@ public class Tester {
 				+ "				\"IT IS MY FERVENT HOPE THAT YOU AGREE WITH MY ANALYSIS AND THAT TOGETHER WE CAN MOVE TO ESTABLISH THE NEW OFFICE. I HAVE SEVERAL NAMES THAT I WOULD HUMBLY SUGGEST AS STRONG CANDIDATES FOR THE NEW ROLE. ALL ARE GOOD MEN, WITH MILITARY BACKGROUNDS AND A REPUTATION FOR HONOUR THAT NO-ONE COULD QUESTION. I WILL BE HAPPY TO DISCUSS THIS FURTHER AT YOUR PLEASURE.\\r\\n\" + \r\n"
 				+ "				\"YOUR FAITHFUL SERVANT,\\r\\n\" + \r\n" + 
 				"				\"CHARLES GREY";
-		for(Map.Entry<String, Float> entry : NGramAnalyser.NgramAnalysis(2, text, true).entrySet()) {
-			System.out.println(entry.getKey() + ":" + entry.getValue());
+		//for(Map.Entry<String, Float> entry : NGramAnalyser.NgramAnalysis(2, text, true).entrySet()) {
+		//	System.out.println(entry.getKey() + ":" + entry.getValue());
+		//}
+		Mapping[] mappings = ProbableSubstitutions.probableSubstitutionGenerator(NGramAnalyser.NgramAnalysis(1, text, true));
+		for(Mapping m : mappings) {
+			System.out.println(m.fromChar + " : " + m.toChar);
 		}
-		
 		System.out.println(IOC.IndexOfCoincidence(NGramAnalyser.NgramAnalysis(1, text, true), text.replaceAll("[^a-zA-Z ]", "").length()));
-		System.out.println(Caesar.CaesarShiftDecrypt("y", 7));
+		//System.out.println(Caesar.CaesarShiftDecrypt("y", 7));
+		
+		for(String word : PredictWords.predictedWords("nostril", true)) {
+			System.out.println(word);
+		}
 	}
 		
 }
