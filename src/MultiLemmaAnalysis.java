@@ -1,27 +1,29 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MultiLemmaAnalysis {
-	//TODO predict using word suggestions, what strings exist in the text.
 	/**
-	 * Generate possible lemata that the fractions of the string in the text could correspond to.
+	 * Generate possible lemata that the fractions of the string in the text could
+	 * correspond to.
 	 * 
-	 * @param text A section of encoded ciphertext from which possible lemata are to be generated.
+	 * @param text A section of encoded ciphertext from which possible lemata are to
+	 *             be generated. This can only be 2 to 5 words in length.
 	 * @return
 	 */
-	public static String[] possibleLemmata (String text) {
-		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+	public static String[] possibleLemmata(String text) {
+		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+"); // Removes all non-letter
+																						// characters and splits by
+																						// whitespace.
 		int numWords = words.length;
-		if(numWords < 2 || numWords > 5) {
+		if (numWords < 2 || numWords > 5) { // Since we only have files with word combinations of up to size five...
 			return null;
 		}
-		List<String> possibleLemata = new ArrayList<String>();
+		List<String> possibleLemata = new ArrayList<String>(); // Creates a dynamic list as we do not know how many
+																// possible lemata will be drawn.
 		String[] lines = null;
-		int[][] encodedGroup = new int[numWords][];
-		for(int i = 0; i < numWords; i++) {
-			encodedGroup[i] = PredictWords.encodeWord(words[i]);
-		}
-		switch(numWords) {
+		int[][] encodedGroup = PredictWords.encodePhrase(words); // Encode the text in character index form.
+		switch (numWords) { // Locates the file corresponding to the length of the input.
 		case 2:
 			lines = Utilities.readFile("2grams.txt");
 			break;
@@ -35,19 +37,14 @@ public class MultiLemmaAnalysis {
 			lines = Utilities.readFile("5grams.txt");
 			break;
 		}
-		for(int i = 0; i < lines.length; i++) {
-			String[] lemataGroup = lines[i].replaceAll("-|'|'.'", "").toLowerCase().split(",");
-			for(String word : lemataGroup) {
-				System.out.println(word);
-			}
-			int[][] encodedLGroup = new int[numWords][];
-			for(int j = 0; j < numWords; j++) {
-				encodedLGroup[j] = PredictWords.encodeWord(lemataGroup[j]);
-			}
-			if(encodedLGroup.equals(encodedGroup)) {
+		for (int i = 0; i < lines.length; i++) { // Iterates through the file, encoding each line in character index
+													// form.
+			int[][] encodedLGroup = PredictWords.encodePhrase(lines[i].toLowerCase().split(","));
+			if (Arrays.deepEquals(encodedLGroup, encodedGroup)) { // If the two encodings are the same, a match is
+																	// returned.
 				possibleLemata.add(lines[i].replaceAll(",", " "));
 			}
 		}
-		return possibleLemata.toArray(new String[0]);
+		return possibleLemata.toArray(new String[0]); // Outputs in a fixed size array form for easy iteration.
 	}
 }

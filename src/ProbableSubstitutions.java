@@ -22,8 +22,7 @@ public class ProbableSubstitutions {
 		TreeMap<String, Float> freqs = letterFrequencies; // This temporarily handles all the frequencies to allow for
 															// data removal without harming the input to the function.
 		while (!freqs.isEmpty()) {// Tests to see if all the data has been assigned to a mapping.
-			float maxEntry = maxValue(freqs); // Finds the most highest probability.
-			String target = getKey(freqs, maxEntry); // Finds the character corresponding to that probability.
+			String target = maxKey(freqs); // Finds the character corresponding to the highest probability.
 			mappings[pointer] = new Mapping(false, target.charAt(0), frequencyOrder[pointer]); // Creates a new mapping,
 																								// in probability order
 																								// with the particular
@@ -45,31 +44,14 @@ public class ProbableSubstitutions {
 	}
 
 	/**
-	 * Gives the String corresponding to a certain float in a <String, Float> Map.
+	 * Returns the string corresponding to the maximum float value in a <String, Integer> Map
 	 * 
-	 * @param map   The map in which the value exists.
-	 * @param value The value to be searched for in the map.
-	 * @return Either null if the value cannot be found, or the corresponding key if
-	 *         it can.
+	 * @param map The input <String, Integer> Map.
+	 * @return The key corresponding to the maximum float value in the map.
 	 */
-	public static String getKey(Map<String, Float> map, Float value) {
-		for (Entry<String, Float> entry : map.entrySet()) { // Iterates through all K, V pairs in the map.
-			if (entry.getValue().equals(value)) { // If the value is the targeted value...
-				return entry.getKey();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the maximum float value in a <String, Float> Map
-	 * 
-	 * @param map The input <String, Float> Map.
-	 * @return The maximum float value in the map.
-	 */
-	public static Float maxValue(Map<String, Float> map) {
+	public static String maxKey(Map<String, Float> map) {
 		return map.entrySet().stream().max((Entry<String, Float> entry1, Entry<String, Float> entry2) -> entry1
-				.getValue().compareTo(entry2.getValue())).get().getValue(); // Looks through all the K, V pairs in the
+				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
 																			// the max of the two and the next value in
 																			// the map is compared to the current
