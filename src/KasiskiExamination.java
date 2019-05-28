@@ -2,30 +2,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class KasiskiExamination {
+	
+	public static int mostlikelyKeyLength(String text, int[] likelyKeys) {
+		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+		int length = text.length();
+		for(int keyLength : likelyKeys) {
+			StringBuilder nthCharacters = new StringBuilder();
+			for(int i = 0; i < length; i += keyLength) {
+				//TODO get every nth character, do frequency analysis followed by index of conincidence to determine the best fit key.
+			}
+		}
+		 
+		return -1;
+	}
 
 	/**
-	 * Gives an array of possible key lengths for a polyalphabetically encypted
-	 * text.
+	 * Gives numbers representing the 5 most likely key lengths for a
+	 * polyalphabetically encypted text. If the key length is larger than it, it is
+	 * likely to be a multiple.
 	 * 
 	 * @param repeated A map of the repeated sequences of a given length in the
 	 *                 text.
 	 * @param text     The polyalphabetically encrypted text.
 	 * @return
 	 */
-	public static int[] kasiskiExam(Map<String, Integer> repeated, String text) {
-		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
-		List<Integer> possibleKeyLengths = new ArrayList<Integer>();
+	public static int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
+		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase(); //Normalise text to only lower case letters for ease of work.
+		Map<Integer, Integer> primeFactors = new TreeMap<Integer, Integer>();
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {
-			String currentMax = maxKey(repeated);
-			patterns.add(currentMax);
-			repeated.remove(currentMax);
+			String current = (String) repeated.keySet().toArray()[0];
+			patterns.add(current);
+			repeated.remove(current);
 		}
 		int length = patterns.get(0).length();
 		for (String pattern : patterns) {
-			System.out.println(pattern);
 			List<Integer> startIndices = new ArrayList<Integer>();
 			for (int i = 0; i < text.length() - (length - 1); i++) {
 				String section = "";
@@ -37,33 +51,28 @@ public class KasiskiExamination {
 				}
 			}
 			Integer[] indices = startIndices.toArray(new Integer[0]);
-			List<Integer> differences = new ArrayList<Integer>();
 			for (int s = 1; s < indices.length; s++) {
-				System.out.println("Difference: " + (indices[s] - indices[s - 1]));
-				if (!isPrime((indices[s] + (length - 1)) - indices[s - 1])) {
-					differences.add((indices[s] + (length - 1)) - indices[s - 1]);
-				}
-			}
-			int[] arr = differences.stream().mapToInt(a -> a).toArray();
-			if (arr.length > 0) {
-				possibleKeyLengths.add(findGCD(arr, differences.size()));
+				primeFactors(primeFactors, indices[s] - indices[s - 1]);
 			}
 		}
-		int[] poss = possibleKeyLengths.stream().mapToInt(a -> a).toArray(); // TODO Clean up the above code.
-		System.out.println("Most likely key length: " + findGCD(poss, poss.length)); // Need to find a way to calculate
-																						// gcd without a single number
-																						// 'imposing it's will'.
-		return null;
+		int[] output = new int[5];
+		for(int i = 0; i < 5; i++) {
+			int key = maxKeyInt(primeFactors);
+			output[i] = key;
+			primeFactors.remove(key);
+		}
+		return output;
 	}
 
 	/**
-	 * Returns the maximum string value in a <String, Integer> Map
+	 * Returns the key corresponding to the maximum value in a <Integer, Integer>
+	 * Map
 	 * 
-	 * @param map The input <String, Integer> Map.
+	 * @param map The input <Integer, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	public static String maxKey(Map<String, Integer> map) {
-		return map.entrySet().stream().max((Entry<String, Integer> entry1, Entry<String, Integer> entry2) -> entry1
+	public static Integer maxKeyInt(Map<Integer, Integer> map) {
+		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
 																			// the max of the two and the next value in
@@ -72,26 +81,35 @@ public class KasiskiExamination {
 																			// found, the corresponding key is returned.
 	}
 
-	public static int gcd(int a, int b) {
-		if (a == 0)
-			return b;
-		return gcd(b % a, a);
-	}
-
-	public static int findGCD(int arr[], int n) {
-		int result = arr[0];
-		for (int i = 1; i < n; i++)
-			result = gcd(arr[i], result);
-
-		return result;
-	}
-
-	public static boolean isPrime(int a) {
-		for (int i = 2; i < Math.sqrt(a); i++) {
-			if (a % i == 0) {
-				return false;
+	/**
+	 * Create a map with all primefactors in the differences between repeated
+	 * strings and their relative occurences.
+	 * 
+	 * @param foundFactors A map corresponding to the primefactors of the
+	 *                     differences between repeated strings and their relative
+	 *                     number of occurences.
+	 * @param n            The number to be prime factorised.
+	 * @return The map updated with n's prime factors.
+	 */
+	public static Map<Integer, Integer> primeFactors(Map<Integer, Integer> foundFactors, int n) {
+		for (int i = 2; i < n; i++) {
+			while (n % i == 0) { // If i is a factor of n:
+				if (!foundFactors.containsKey(i)) { // If this factor hasn't been found before:
+					foundFactors.put(i, 1); // Initialise it...
+				} else {
+					foundFactors.put(i, foundFactors.get(i) + 1); // Or update it.
+				}
+				n = n / i; // Update n to avoid repeat factorings.
 			}
 		}
-		return true;
+		if (n > 2) { // If the remainder is greater than 2:
+			if (!foundFactors.containsKey(n)) { // Same as above.
+				foundFactors.put(n, 1);
+			} else {
+				foundFactors.put(n, foundFactors.get(n) + 1);
+			}
+		}
+
+		return foundFactors;
 	}
 }
