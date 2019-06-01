@@ -41,8 +41,9 @@ public class Tester {
 		//	System.out.println(entry.getKey() + ":" + entry.getValue());
 		//}
 		int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
-		System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
-		System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
+		//System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
+		//System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
+		System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 	}
 
 }

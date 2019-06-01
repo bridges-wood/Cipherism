@@ -11,67 +11,144 @@ public class KasiskiExamination {
 	public static char[] frequencyOrder = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
 	public static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 
-	public static String keyGuesser(int keyLength, String text) {
+	/**
+	 * Provides the most likely string which is the key to a vigenere cipher.
+	 * 
+	 * @param keyLength The predicted length of the key.
+	 * @param text      The encrypted text.
+	 * @return The most likely key for the given text and key length.
+	 */
+	public static String keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
+		String[][] possibleLetters = new String[keyLength][];
 		for (int b = 0; b < keyLength; b++) { // b is the balance, to offset each composite string in the text.
 			StringBuilder composite = new StringBuilder(); // StringBuilder for each composite to increase speed.
 			for (int i = 0; i < textLength - b; i += keyLength) {
 				composite.append(text.charAt(i + b));
 			}
 			String finalString = composite.toString();
-			int[] FMSarray = new int[26];
-			// Examine highest values in array of FMSs and create a data structure
-			// containing possible letters and their positions in the key.
-			// Guess what the key is.
+			int[] FMSarray = new int[26]; // Create array for each letter to test how like english it decrypts its
+											// respective section to.
+			int maxValue = 0; // The most like english value in the array.
+			for (int i = 0; i < 26; i++) {
+				int valueToInsert = computeFMS(NGramAnalyser
+						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i])))); // Compute
+																												// the
+																												// FMS
+																												// of
+																												// the
+																												// selected
+																												// nth
+																												// characters
+																												// of
+																												// the
+																												// text.
+				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
+					maxValue = valueToInsert;
+				FMSarray[i] = valueToInsert;
+			}
+			List<String> possibleCharacters = new ArrayList<String>();
+			for (int i = 0; i < 26; i++) {
+				if (FMSarray[i] == maxValue) // If the character is the most likely to create english, it is likely to
+												// be in the key so add it to the array.
+					possibleCharacters.add(Character.toString(alphabet[i]));
+			}
+			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
 		}
-		return text;
+		String[] possibleKeys = combinations(possibleLetters, new String[possibleLetters.length], 0); // TODO fix
+																										// Unknown
+																										// behaviour on
+																										// this line
+																										// with
+																										// inability to
+																										// cast between
+																										// string list
+																										// in
+																										// combinations
+																										// fucntionand
+																										// string array
+																										// to output.
+		float[] IOCs = new float[possibleKeys.length];
+		int maxIndex = 0;
+		for (int i = 0; i < possibleKeys.length; i++) {
+			float toInsert = IOC
+					.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i])));
+			IOCs[i] = toInsert;
+			if (toInsert > IOCs[maxIndex])
+				maxIndex = i;
+		}
+		return possibleKeys[maxIndex];
 	}
 
+	/**
+	 * Gives the frequency match score for given text.
+	 * 
+	 * @param letterOccurences A map containing each letter and their integer
+	 *                         occurences in the text.
+	 * @return How many of the most and least likely six letters occur in the right
+	 *         regions of the analysed text.
+	 */
 	public static int computeFMS(Map<String, Integer> letterOccurences) {
 		int FMS = 0;
-		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' };
-		char[] mostLikely = new char[] { 'e', 't', 'a', 'o', 'i', 'n' };
-		if (letterOccurences.keySet().size() < 26) {
+		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' }; // The six least likely characters in English.
+		char[] mostLikely = new char[] { 'e', 't', 'a', 'o', 'i', 'n' }; // The six most likely characters in English.
+		if (letterOccurences.keySet().size() < 26) { // If some letters of the alphabet do not occur in the text...
 			List<Character> missingLetters = new ArrayList<Character>();
 			for (char c : alphabet) {
 				if (!letterOccurences.containsKey(Character.toString(c))) {
-					missingLetters.add(c);
+					missingLetters.add(c); // Adds to the list of characters that don't exist in the the text.
 				}
 			}
-			for (char l : leastLikely) {
+			for (char l : leastLikely) { // If characters that are in the least likely are also missing, they contribute
+											// to the FMS score.
 				if (missingLetters.contains(l)) {
 					FMS++;
 				}
 			}
 		}
-		if (FMS < 6) {
+		if (FMS < 6) { // If all the least likely characters don't exist in the text, don't bother
+						// computing the score of the least likely letters as that's just silly.
 			Map<String, Integer> copy = letterOccurences;
-			int missingLeastLikely = 6 - FMS;
+			int missingLeastLikely = 6 - FMS; // Avoids looking at more characters than you need to in the map.
 			List<Character> leastPopular = new ArrayList<Character>();
 			for (int i = 0; i < missingLeastLikely; i++) {
-				if (!copy.isEmpty()) {
-					String lowestKey = minKeyString(copy);
-					leastPopular.add(lowestKey.charAt(0));
-					copy.remove(lowestKey);
+				if (!copy.isEmpty()) { // Insures no errors trying to remove items from an empty map.
+					String lowestKey = minKeyString(copy); // Finds the least likely letter in the array. Note - Not
+															// perfect as under certain conditions, there may be
+															// multiple least likely letters with the same number of
+															// occurences, but this has been judged to be a sufficiently
+															// unlikely edge case that it does not need to be accounted
+															// for.
+					leastPopular.add(lowestKey.charAt(0)); // Converts the letter to a char for storage in the list of
+															// least popular letters.
+					copy.remove(lowestKey); // Stops repeated access of the same letter.
+				} else {
+					break; // Insures no more iterations than absolutely necessary.
 				}
 			}
-			for (char c : leastLikely) {
+			for (char c : leastLikely) { // If the least likely letters are the least likely in the text, increment the
+											// frequency match score.
 				if (leastPopular.contains(c)) {
 					FMS++;
 				}
 			}
 		}
 		Map<String, Integer> copy = letterOccurences;
-		List<Character> mostPopular = new ArrayList<Character>();
-		for (int i = 0; i < 5; i++) {
+		List<Character> mostPopular = new ArrayList<Character>(); // A similar operation to the above, we cannot account
+																	// for the missing letters in this so we always have
+																	// to check for the top six.
+		for (int i = 0; i < 6; i++) {
 			if (!copy.isEmpty()) {
-				String highestKey = maxKeyString(copy);
+				String highestKey = maxKeyString(copy); // Find the most likely letter. Note - it is possible for
+														// similar issues to above to occur when looking for the most
+														// likely letter.
 				mostPopular.add(highestKey.charAt(0));
 				copy.remove(highestKey);
 			} else {
 				break;
 			}
-			for (char c : mostLikely) {
+			for (char c : mostLikely) { // If likely letters in english are similarly likely in the text increment the
+										// FMS.
 				if (mostPopular.contains(c)) {
 					FMS++;
 				}
@@ -260,5 +337,36 @@ public class KasiskiExamination {
 			}
 		}
 		return maxIndex;
+	}
+
+	/**
+	 * Takes a 2D array of strings and outputs all the possible combinations of that
+	 * array.
+	 * 
+	 * @param input      The 2D (Likely truncated) String[] containing all the
+	 *                   possible letters at each point in the key.
+	 * @param currentKey The current combination of letters being produced by the
+	 *                   function.
+	 * @param counter    A variable to keep track how deep in the 2D array the
+	 *                   function is.
+	 * @return A String[] of possible keys.
+	 */
+	private static String[] combinations(String[][] input, String[] currentKey, int counter) {
+		ArrayList<String> output = new ArrayList<String>();
+		if (counter == input.length) { // If current is a word containing one string from each level of the array...
+			String possKey = "";
+			for (int i = 0; i < counter; i++) {
+				possKey += currentKey[i]; // Combine all the strings.
+			}
+			output.add(possKey); // Add to output.
+		} else {
+			for (int j = 0; j < input[counter].length; j++) { // For every string in each level...
+				currentKey[counter] = input[counter][j]; // Append the each string to a currentKey.
+				combinations(input, currentKey, counter + 1); // Start permutations for the slightly more complete
+																// key...
+			}
+			// Endfor - this ensures that all combinations are found.
+		}
+		return output.toArray(new String[0]);
 	}
 }

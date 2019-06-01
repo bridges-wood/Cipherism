@@ -66,7 +66,7 @@ public class NGramAnalyser {
 	 * Creates a map of letter frequencies in target text.
 	 * 
 	 * @param text String to be analysed.
-	 * @return TreeMap of all ngrams and fraction of text they represent.
+	 * @return TreeMap of all ngrams and their integer occurences in text.
 	 */
 	public static TreeMap<String, Integer> frequencyAnalysis(String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
