@@ -1,14 +1,12 @@
 Cipher Analysis:
 Create method to determine if text is monoalphabetic or not.
-Detect english in output.
+--Detect english in spaced and unspaced output.--
 Analyse probable words with longest first.
-Ability to analyse unspaced input with character index form
 Multi-lemma analysis
 
 Deciphering:
 Monoalphabetic
 Polyalphabetic
-Vigenere
 Scytale
 Transposition
 Playfair

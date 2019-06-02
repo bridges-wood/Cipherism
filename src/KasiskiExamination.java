@@ -10,9 +10,12 @@ public class KasiskiExamination {
 
 	public static char[] frequencyOrder = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
 	public static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
+	public static List<String> possKeys = new ArrayList<String>();
 
 	/**
-	 * Provides the most likely string which is the key to a vigenere cipher.
+	 * Provides the most likely string which is the key to a vigenere cipher. There
+	 * are issues when short sample texts with long keywords are analysed leading to
+	 * keys that are close but not perfect.
 	 * 
 	 * @param keyLength The predicted length of the key.
 	 * @param text      The encrypted text.
@@ -20,6 +23,9 @@ public class KasiskiExamination {
 	 */
 	public static String keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
+		if (keyLength == 0) {
+			return "";
+		}
 		String[][] possibleLetters = new String[keyLength][];
 		for (int b = 0; b < keyLength; b++) { // b is the balance, to offset each composite string in the text.
 			StringBuilder composite = new StringBuilder(); // StringBuilder for each composite to increase speed.
@@ -31,18 +37,29 @@ public class KasiskiExamination {
 											// respective section to.
 			int maxValue = 0; // The most like english value in the array.
 			for (int i = 0; i < 26; i++) {
-				int valueToInsert = computeFMS(NGramAnalyser
-						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i])))); // Compute
-																												// the
-																												// FMS
+				int valueToInsert = computeFMS(NGramAnalyser // Compute FMS of the composite.
+						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i])))); // TODO
+																												// Combine
+																												// this
+																												// function
+																												// with
+																												// some
+																												// sort
 																												// of
-																												// the
-																												// selected
-																												// nth
+																												// detect
+																												// english
+																												// method
+																												// to
+																												// make
+																												// a
+																												// composite
+																												// score
+																												// of
+																												// which
 																												// characters
-																												// of
+																												// are
 																												// the
-																												// text.
+																												// best.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
 				FMSarray[i] = valueToInsert;
@@ -55,29 +72,43 @@ public class KasiskiExamination {
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
 		}
-		String[] possibleKeys = combinations(possibleLetters, new String[possibleLetters.length], 0); // TODO fix
-																										// Unknown
-																										// behaviour on
-																										// this line
-																										// with
-																										// inability to
-																										// cast between
-																										// string list
-																										// in
-																										// combinations
-																										// fucntionand
-																										// string array
-																										// to output.
-		float[] IOCs = new float[possibleKeys.length];
-		int maxIndex = 0;
-		for (int i = 0; i < possibleKeys.length; i++) {
-			float toInsert = IOC
-					.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i])));
-			IOCs[i] = toInsert;
-			if (toInsert > IOCs[maxIndex])
-				maxIndex = i;
+		combinations(possibleLetters, new String[possibleLetters.length], 0); // Generates all possible combinations of
+																				// likely letters in the key.
+		String[] possibleKeys = new String[0];
+		if (!possKeys.isEmpty()) { // Avoids Null Exceptions and the like.
+			possibleKeys = possKeys.toArray(new String[0]);
+			float[] IOCs = new float[possibleKeys.length];
+			int maxIndex = 0;
+			for (int i = 0; i < possibleKeys.length; i++) {
+				System.out.println(Vigenere.decrypt(text, possibleKeys[i]));
+				float toInsert = IOC
+						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i]))); // TODO
+																														// Similar
+																														// to
+																														// above,
+																														// combine
+																														// this
+																														// with
+																														// a
+																														// detect
+																														// english
+																														// method
+																														// in
+																														// order
+																														// to
+																														// improve
+																														// the
+																														// accuracy
+																														// of
+																														// key
+																														// guessing.
+				IOCs[i] = toInsert;
+				if (toInsert > IOCs[maxIndex])
+					maxIndex = i;
+			}
+			return possibleKeys[maxIndex]; // Returns the most likely key.
 		}
-		return possibleKeys[maxIndex];
+		return null;
 	}
 
 	/**
@@ -187,9 +218,14 @@ public class KasiskiExamination {
 														// of coincidence that will be developed for different key
 														// lengths.
 		}
+		if (likelyKeys.length > 0) {
+			return likelyKeys[maxValueIndex(averageIOCs)]; // Returns the key length corresponding to the greatest
+															// average
+			// index of coincidence.
+		} else {
+			return 0;
+		}
 
-		return likelyKeys[maxValueIndex(averageIOCs)]; // Returns the key length corresponding to the greatest average
-														// index of coincidence.
 	}
 
 	/**
@@ -215,7 +251,10 @@ public class KasiskiExamination {
 			patterns.add(current);
 			repeated.remove(current);
 		}
-		int length = patterns.get(0).length();
+		int length = 1;
+		if (!patterns.isEmpty()) {
+			length = patterns.get(0).length();
+		}
 		for (String pattern : patterns) {
 			List<Integer> startIndices = new ArrayList<Integer>();
 			for (int i = 0; i < text.length() - (length - 1); i++) {
@@ -233,14 +272,15 @@ public class KasiskiExamination {
 			}
 		}
 		List<Integer> output = new ArrayList<Integer>();
-		float cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5);
-		System.out.println(cutoff);
+		float cutoff = Float.MAX_VALUE;
+		if (!factors.isEmpty()) {
+			cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5);
+		}
 		for (int i = 0; i < factors.keySet().size(); i++) {
 			int key = maxKeyInt(factors);
 			if (factors.get(key) < cutoff) {
 				continue;
 			}
-			System.out.println(key + ":" + factors.get(key));
 			output.add(key);
 			factors.remove(key);
 		}
@@ -351,14 +391,14 @@ public class KasiskiExamination {
 	 *                   function is.
 	 * @return A String[] of possible keys.
 	 */
-	private static String[] combinations(String[][] input, String[] currentKey, int counter) {
-		ArrayList<String> output = new ArrayList<String>();
+	public static void combinations(String[][] input, String[] currentKey, int counter) {
+
 		if (counter == input.length) { // If current is a word containing one string from each level of the array...
-			String possKey = "";
+			StringBuilder out = new StringBuilder();
 			for (int i = 0; i < counter; i++) {
-				possKey += currentKey[i]; // Combine all the strings.
+				out.append(currentKey[i]); // Combine all the strings.
 			}
-			output.add(possKey); // Add to output.
+			possKeys.add(out.toString()); // Add to the public list of possible passwords.
 		} else {
 			for (int j = 0; j < input[counter].length; j++) { // For every string in each level...
 				currentKey[counter] = input[counter][j]; // Append the each string to a currentKey.
@@ -367,6 +407,5 @@ public class KasiskiExamination {
 			}
 			// Endfor - this ensures that all combinations are found.
 		}
-		return output.toArray(new String[0]);
 	}
 }

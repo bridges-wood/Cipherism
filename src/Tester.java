@@ -10,40 +10,31 @@ public class Tester {
 				+ "				\"IN THESE QUARRELSOME TIMES IT MAY BE NECESSARY TO COMMISSION ACTIONS OR ENQUIRIES THAT SOME MIGHT REGARD AS BENEATH THE DIGNITY OF THE CROWN. THE SECRET SECRETARY CAN, BY CONCEALING THESE ACTIVITIES, PRESERVE THE REPUTATION OF YOUR GOVERNMENT AS A RELIABLE AND TRUSTWORTHY PARTICIPANT IN INTERNATIONAL AFFAIRS, WHILE ALSO PROVIDING YOU AND YOUR MINISTERS WITH THE WEAPONS TO DEFEAT OUR ENEMIES. IF WE SUCCEED AS I HOPE WE WILL, THEN WARS OF THE FUTURE MAY BE WON WITHOUT A SHOT BEING FIRED.\\r\\n\" + \r\n"
 				+ "				\"IT IS MY FERVENT HOPE THAT YOU AGREE WITH MY ANALYSIS AND THAT TOGETHER WE CAN MOVE TO ESTABLISH THE NEW OFFICE. I HAVE SEVERAL NAMES THAT I WOULD HUMBLY SUGGEST AS STRONG CANDIDATES FOR THE NEW ROLE. ALL ARE GOOD MEN, WITH MILITARY BACKGROUNDS AND A REPUTATION FOR HONOUR THAT NO-ONE COULD QUESTION. I WILL BE HAPPY TO DISCUSS THIS FURTHER AT YOUR PLEASURE.\\r\\n\" + \r\n"
 				+ "				\"YOUR FAITHFUL SERVANT,\\r\\n\" + \r\n" + "				\"CHARLES GREY";
-		String otherText = "TJSETNSKWCGMKHMITSKBJRHCHFWPTXMKCRPQMCYSQUVSSGRACYSKKVGFKONAPXVIVQSGSUIPQBYWCCVWHTUESTNFIEVYTLRPRFSCCBEIZVBORJUGHKEPWIBBCRWBZPMPBHIPUPBMQWIYNKLOVZUHEVRGEYBNSUCLXVIVQAHSYPYRBKKFIUWEQPGXNJCTJSDTTWKHGYRVWOJWEOVCYSUCNYPGQYFPLKGFGFRKTSJECZXELVXFVRETWLTOXVIVQRGTQGESQAVQAOSXXDXZERQSQPVTNXEXEAEDZARSTLBERSQIFISEQMYCRGWECZWXMZQFCQFDCCTHIIATCGCOJLKKFIUYUCOSCEZKIVOFXZRYNKUHCHUUJSRGVCDVCEIZVBMNMEPHDXPWLYKFEUOYTGEINVRYRSIWTPBVICAVWZVYITMPNEGLFTYWFHEQJWGFUZVPMFPAISBJCTLLVGNVCFWPXVIVQAHSODYXXBECROWSWEFBBDYGKBMQWIFMUMEUBAIDSRGUYSVVQQPWQWVQIIBPTNMPBFLUUWZVLGRLKMMMSKXXTIXDCNVOFXZRJBXFTDSMQPXQXIYPRFAPNL";
-		// for(Map.Entry<String, Float> entry : NGramAnalyser.NgramAnalysis(2, text,
-		// true).entrySet()) {
-		// System.out.println(entry.getKey() + ":" + entry.getValue());
-		// }
-		// Mapping[] mappings =
-		// ProbableSubstitutions.probableSubstitutionGenerator(NGramAnalyser.NgramAnalysis(1,
-		// text, true));
-		// for(Mapping m : mappings) {
-		// System.out.println(m.fromChar + " : " + m.toChar);
-		// }
-		// System.out.println(
-		// IOC.kappaText(NGramAnalyser.NgramAnalysis(1, text, true),
-		// text.replaceAll("[^a-zA-Z ]", "").length()));
-		// System.out.println(Caesar.CaesarShiftDecrypt("y", 7));
-
-		// for(String word : PredictWords.predictedWords("nostril", true)) {
-		// System.out.println(word);
-		// }
-		// for(String word : MultiLemmaAnalysis.possibleLemmata("wklv lv d whvw")) {
-		// System.out.println(word);
-		// }
-		// for (Map.Entry<String, Integer> entry :
-		// NGramAnalyser.frequencyAnalysis(text).entrySet()) {
-		// System.out.println(entry.getKey() + ":" + entry.getValue());
-		// }
-		// System.out.println(IOC.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(text)));
-		//for (Map.Entry<String, Integer> entry : NGramAnalyser.kasiskiBase(3, otherText).entrySet()) {
-		//	System.out.println(entry.getKey() + ":" + entry.getValue());
-		//}
+		String otherText = "a long and complex string";
+		for (String word : PredictWords.predictedWords("complexity", true)) { // Test single word prediction.
+			System.out.println(word);
+		}
+		for (String word : MultiLemmaAnalysis.possibleLemmata("I am sorry")) { // Test multi word prediction.
+			System.out.println(word);
+		}
+		System.out.println(IOC.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(text))); // Prints the index of
+																							// conincidence of given
+																							// text.
+		for (Map.Entry<String, Integer> entry : NGramAnalyser.kasiskiBase(3, otherText).entrySet()) { // Kasiski base
+																										// indentifies
+																										// repeating
+																										// strings and
+																										// their number
+																										// opf
+																										// occurences in
+																										// text.
+			System.out.println(entry.getKey() + ":" + entry.getValue());
+		}
 		int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
-		//System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
-		//System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
-		System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
+		System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
+		System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
+		System.out.println(KasiskiExamination
+				.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 	}
 
 }
