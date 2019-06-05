@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.List;
 
 public class DetectEnglish {
 
@@ -13,22 +15,37 @@ public class DetectEnglish {
 		}
 		if (spaced) {
 			// Iterate through and see what fraction of words are english.
-			ArrayList<String> words = (ArrayList<String>) Arrays.asList(text.toLowerCase()
-					.replaceAll("[!\\\"\\£\\$\\%\\^\\&\\*\\(\\)\\_\\'\\+\\=\\{\\}\\[\\]\\;\\:\\@\\#\\~\\|\\<\\,\\.\\>\\/]",
+			ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.toLowerCase()
+					.replaceAll(
+							"[!\\\"\\£\\$\\%\\^\\&\\*\\(\\)\\_\\'\\+\\=\\{\\}\\[\\]\\;\\:\\@\\#\\~\\|\\<\\,\\.\\>\\/]",
 							"")
-					.split(" "));
+					.split(" ")));
+			ArrayList<String> toRemove = new ArrayList<String>();
 			for (String word : words) {
 				char[] letters = word.toCharArray();
 				for (int i = 0; i < word.length(); i++) {
 					if (letters[i] == '-') {
-						words.remove(word);
-						String[] split = word.split("-");
-						for(String part : split) {
-							words.add(part);
-						}
+						toRemove.add(word);
 					}
 				}
 			}
+			for(String word : toRemove) {
+				System.out.println(word);
+				words.remove(word);
+				String[] split = word.split("-");
+				for (String part : split) {
+					words.add(part);
+				}
+			}
+			Hashtable<Long, String> dictionaryTable = Utilities.readHashTable("hashed_dictionary.htb");
+			float englishWords = 0f;
+			for(String word : words) {
+				long hashedWord = Utilities.hash64(word);
+				if(dictionaryTable.containsKey(hashedWord)) {
+					englishWords += 1;
+				}
+			}
+			return(englishWords / words.size());
 		} else {
 			// Iterate through letter by letter, testing if it's a word at each stage. If a
 			// word is found continue until all words of all lengths from that possible
