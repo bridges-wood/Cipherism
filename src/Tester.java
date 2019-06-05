@@ -14,13 +14,13 @@ public class Tester {
 		for (String word : PredictWords.predictedWords("complexity", true)) { // Test single word prediction.
 			System.out.println(word);
 		}
-		for (String word : MultiLemmaAnalysis.possibleLemmata("I am sorry")) { // Test multi word prediction.
+		for (String word : MultiLemmaAnalysis.possibleLemmata("this is a sentence")) { // Test multi word prediction.
 			System.out.println(word);
 		}
-		System.out.println(IOC.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(text))); // Prints the index of
+		//System.out.println(IOC.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(text))); // Prints the index of
 																							// conincidence of given
 																							// text.
-		for (Map.Entry<String, Integer> entry : NGramAnalyser.kasiskiBase(3, otherText).entrySet()) { // Kasiski base
+		//for (Map.Entry<String, Integer> entry : NGramAnalyser.kasiskiBase(3, otherText).entrySet()) { // Kasiski base
 																										// indentifies
 																										// repeating
 																										// strings and
@@ -28,13 +28,13 @@ public class Tester {
 																										// opf
 																										// occurences in
 																										// text.
-			System.out.println(entry.getKey() + ":" + entry.getValue());
-		}
-		int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
-		System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
-		System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
-		System.out.println(KasiskiExamination
-				.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
+			//System.out.println(entry.getKey() + ":" + entry.getValue());
+		//}
+		//int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
+		//System.out.println(KasiskiExamination.mostLikelyKeyLength(otherText, keys));
+		//System.out.println(Vigenere.decrypt("DIVDXCHX", "key"));
+		//System.out.println(KasiskiExamination
+		//		.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 	}
 
 }

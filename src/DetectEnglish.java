@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DetectEnglish {
 
@@ -11,6 +13,22 @@ public class DetectEnglish {
 		}
 		if (spaced) {
 			// Iterate through and see what fraction of words are english.
+			ArrayList<String> words = (ArrayList<String>) Arrays.asList(text.toLowerCase()
+					.replaceAll("[!\\\"\\£\\$\\%\\^\\&\\*\\(\\)\\_\\'\\+\\=\\{\\}\\[\\]\\;\\:\\@\\#\\~\\|\\<\\,\\.\\>\\/]",
+							"")
+					.split(" "));
+			for (String word : words) {
+				char[] letters = word.toCharArray();
+				for (int i = 0; i < word.length(); i++) {
+					if (letters[i] == '-') {
+						words.remove(word);
+						String[] split = word.split("-");
+						for(String part : split) {
+							words.add(part);
+						}
+					}
+				}
+			}
 		} else {
 			// Iterate through letter by letter, testing if it's a word at each stage. If a
 			// word is found continue until all words of all lengths from that possible
