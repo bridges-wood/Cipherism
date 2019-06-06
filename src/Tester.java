@@ -10,7 +10,7 @@ public class Tester {
 				+ "				\"IN THESE QUARRELSOME TIMES IT MAY BE NECESSARY TO COMMISSION ACTIONS OR ENQUIRIES THAT SOME MIGHT REGARD AS BENEATH THE DIGNITY OF THE CROWN. THE SECRET SECRETARY CAN, BY CONCEALING THESE ACTIVITIES, PRESERVE THE REPUTATION OF YOUR GOVERNMENT AS A RELIABLE AND TRUSTWORTHY PARTICIPANT IN INTERNATIONAL AFFAIRS, WHILE ALSO PROVIDING YOU AND YOUR MINISTERS WITH THE WEAPONS TO DEFEAT OUR ENEMIES. IF WE SUCCEED AS I HOPE WE WILL, THEN WARS OF THE FUTURE MAY BE WON WITHOUT A SHOT BEING FIRED.\\r\\n\" + \r\n"
 				+ "				\"IT IS MY FERVENT HOPE THAT YOU AGREE WITH MY ANALYSIS AND THAT TOGETHER WE CAN MOVE TO ESTABLISH THE NEW OFFICE. I HAVE SEVERAL NAMES THAT I WOULD HUMBLY SUGGEST AS STRONG CANDIDATES FOR THE NEW ROLE. ALL ARE GOOD MEN, WITH MILITARY BACKGROUNDS AND A REPUTATION FOR HONOUR THAT NO-ONE COULD QUESTION. I WILL BE HAPPY TO DISCUSS THIS FURTHER AT YOUR PLEASURE.\\r\\n\" + \r\n"
 				+ "				\"YOUR FAITHFUL SERVANT,\\r\\n\" + \r\n" + "				\"CHARLES GREY";
-		String otherText = "a long and complex string un-imaginable. Next word, don't. hafjgsdkhf gh sdjkfh sdfjosgh";
+		String otherText = "alongandcomplexstringun-imaginable.Nextword,don't.hafjgsdkhfghsdjkfhdfjosgh";
 		//for (String word : PredictWords.predictedWords("complexity", true)) { // Test single word prediction.
 		//	System.out.println(word);
 		//}
@@ -36,7 +36,7 @@ public class Tester {
 		//System.out.println(KasiskiExamination
 		//		.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 		System.out.println(DetectEnglish.detectEnglish(otherText));
-		//Utilities.generateHashTable("dictionary.txt", "hashed_dictionary.htb");
+		//Utilities.generateHashTable("mostProbable.txt", "mostProbable.htb");
 		//System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
 	}
 
