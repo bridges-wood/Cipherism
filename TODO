@@ -1,6 +1,5 @@
 Cipher Analysis:
 Create method to determine if text is monoalphabetic or not.
---Detect english in spaced and unspaced output.--
 Multi-lemma analysis
 
 Deciphering:
@@ -13,4 +12,4 @@ Playfair
 Respace
 
 MISC:
-Hash all text files to increase access times.
+Hash all text files to increase access times. (2/6)

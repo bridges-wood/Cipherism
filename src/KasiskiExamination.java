@@ -38,28 +38,8 @@ public class KasiskiExamination {
 			int maxValue = 0; // The most like english value in the array.
 			for (int i = 0; i < 26; i++) {
 				int valueToInsert = computeFMS(NGramAnalyser // Compute FMS of the composite.
-						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i])))); // TODO
-																												// Combine
-																												// this
-																												// function
-																												// with
-																												// some
-																												// sort
-																												// of
-																												// detect
-																												// english
-																												// method
-																												// to
-																												// make
-																												// a
-																												// composite
-																												// score
-																												// of
-																												// which
-																												// characters
-																												// are
-																												// the
-																												// best.
+						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i]))));
+				//TODO add in the detect english routine.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
 				FMSarray[i] = valueToInsert;
@@ -82,26 +62,7 @@ public class KasiskiExamination {
 			for (int i = 0; i < possibleKeys.length; i++) {
 				System.out.println(Vigenere.decrypt(text, possibleKeys[i]));
 				float toInsert = IOC
-						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i]))); // TODO
-																														// Similar
-																														// to
-																														// above,
-																														// combine
-																														// this
-																														// with
-																														// a
-																														// detect
-																														// english
-																														// method
-																														// in
-																														// order
-																														// to
-																														// improve
-																														// the
-																														// accuracy
-																														// of
-																														// key
-																														// guessing.
+						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i]))); // TODO add in detect english method.
 				IOCs[i] = toInsert;
 				if (toInsert > IOCs[maxIndex])
 					maxIndex = i;
