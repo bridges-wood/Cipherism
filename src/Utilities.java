@@ -48,7 +48,8 @@ public class Utilities {
 		byte[] data = text.getBytes();
 		int length = data.length;
 		long hash = FNV1_64_INIT;
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++) { // For each byte, the initial prime is raised to the power of a masked int
+											// version of the byte a the index before being multiplied by the main prime.
 			hash ^= (data[i] & 0xff);
 			hash *= FNV1_PRIME_64;
 		}

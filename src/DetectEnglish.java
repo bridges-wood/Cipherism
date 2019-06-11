@@ -11,7 +11,8 @@ public class DetectEnglish {
 	/**
 	 * Returns what fraction of the text can be called English.
 	 * 
-	 * @param text The text to be analysed.
+	 * @param text
+	 *            The text to be analysed.
 	 * @return Float representing the fraction of text that can be classified as
 	 *         English. Scores above 0.75 for unspaced text and 0.85 for spaced text
 	 *         are good indications of English.
@@ -29,110 +30,37 @@ public class DetectEnglish {
 		if (spaced) {
 			ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.replaceAll(
 					"[!\\\"\\£\\$\\%\\^\\&\\*\\(\\)\\_\\'\\+\\=\\{\\}\\[\\]\\;\\:\\@\\#\\~\\|\\<\\,\\.\\>\\/]", "")
-					.split(" ")));
+					.split(" "))); // Removal of all unwanted characters, leaving only hyphens and alphabetical
+									// characters and conversion to list..
 			ArrayList<String> toRemove = new ArrayList<String>();
 			for (String word : words) {
 				char[] letters = word.toCharArray();
 				for (int i = 0; i < word.length(); i++) {
 					if (letters[i] == '-') {
-						toRemove.add(word);
+						toRemove.add(word); // If a word contains a '-' it needs to cleaned up because the dictionary
+											// does not deal well with compounded words.
 					}
 				}
 			}
-			for (String word : toRemove) {
+			for (String word : toRemove) { // For all the hyphenated words...
 				words.remove(word);
 				String[] split = word.split("-");
-				for (String part : split) {
+				for (String part : split) { // Split them by the hyphen and add the separate parts back in.
 					words.add(part);
 				}
 			}
 			return isEnglish(words.toArray(new String[0]));
+
 		} else {
-			ArrayList<Character> letters = (ArrayList<Character>) text.replaceAll("[^a-zA-Z ]", "").chars()
-					.mapToObj(e -> (char) e).collect(Collectors.toList());
-			StringBuilder out = new StringBuilder();
-			boolean changes = false;
-			while (letters.size() > 0) {
-				ArrayList<String>[] words = findWords(letters);
-				ArrayList<String> foundWords = words[0];
-				ArrayList<String> probableWords = words[1];
-				ArrayList<GroupProbabilityPair> possibleGroups = new ArrayList<GroupProbabilityPair>();
-				String[] lines = Utilities.readFile("2grams.txt");
-				for (String word : probableWords) {
-					StringBuilder succeeding = new StringBuilder();
-					int length = word.length();
-					switch (length) { // More cases can be added if I find more refined patterns in word lengths.
-					case 1:
-						for (int i = 0; i < 2 && i + length < letters.size(); i++) {
-							succeeding.append(letters.get(length + i));
-						}
-						break;
-					default:
-						if (length < letters.size()) {
-							succeeding.append(letters.get(length));
-						}
-						break;
-					}
-					for (int i = 0; i < lines.length; i++) {
-						String line = lines[i];
-						if (line.startsWith(word + "," + succeeding.toString())) {
-							possibleGroups = rank(new GroupProbabilityPair(i, line.replaceAll(",", " ")),
-									possibleGroups);
-						}
-					}
-				}
-				int[] toRemove = firstMatch(possibleGroups, letters); // Check if this equals 0, then examine words in
-																		// foundWords.
-				if (toRemove[0] > 0) {
-					if (changes == false && out.length() > 0)
-						out.append(" ");
-					for (int i = 0; i < toRemove[0] && letters.size() > 0; i++) {
-						out.append(letters.get(0));
-						if (i == toRemove[1] - 1) {
-							out.append(" ");
-						}
-						letters.remove(0);
-					}
-					out.append(" ");
-					changes = true;
-				} else {
-					// Examine found words and select the most likely.
-					lines = Utilities.readFile("mostProbable.txt");
-					String wordToRemove = "";
-					boolean found = false;
-					for (String line : lines) {
-						for (String word : foundWords) {
-							if (line.equals(word)) {
-								wordToRemove = word;
-								found = true;
-								break;
-							}
-						}
-						if (found)
-							break;
-					}
-					if (wordToRemove == "") {
-						out.append(letters.get(0));
-						letters.remove(0);
-						changes = false;
-					} else {
-						for (int i = 0; i < wordToRemove.length(); i++) {
-							out.append(letters.get(0));
-							letters.remove(0);
-						}
-						out.append(" ");
-						changes = true;
-					}
-				}
-			}
-			return isEnglish(out.toString().split(" "));
+			return isEnglish(respace(text).split(" "));
 		}
 	}
 
 	/**
 	 * Returns the fraction of words that are English in a given array.
 	 * 
-	 * @param words An array of words to be analysed for English text.
+	 * @param words
+	 *            An array of words to be analysed for English text.
 	 * @return Float representing the fraction of words in the array that are
 	 *         English.
 	 */
@@ -150,8 +78,9 @@ public class DetectEnglish {
 	/**
 	 * Find the first match with the text using the most likely groups of words.
 	 * 
-	 * @param possibleGroups A list of all the possible groups of words that could
-	 *                       be in the text.
+	 * @param possibleGroups
+	 *            A list of all the possible groups of words that could be in the
+	 *            text.
 	 * @param letters
 	 * @return An integer array of length 2, [0] being the length of the first word
 	 *         to add and [1] being the position of the space.
@@ -178,9 +107,11 @@ public class DetectEnglish {
 	/**
 	 * Ranks all of the possible word pairs generated by the analysis of the text.
 	 * 
-	 * @param pair           The GroupProbabilityPair object to be inserted into the
-	 *                       list into probability order.
-	 * @param possibleGroups The list of currently sorted probability groups.
+	 * @param pair
+	 *            The GroupProbabilityPair object to be inserted into the list into
+	 *            probability order.
+	 * @param possibleGroups
+	 *            The list of currently sorted probability groups.
 	 * @return The updated list of possible word groups.
 	 */
 	public static ArrayList<GroupProbabilityPair> rank(GroupProbabilityPair pair,
@@ -201,7 +132,8 @@ public class DetectEnglish {
 	/**
 	 * Finds the English words present in the first characters of a string.
 	 * 
-	 * @param letters An ArrayList of all letters in a given text.
+	 * @param letters
+	 *            An ArrayList of all letters in a given text.
 	 * @return An array containing of size 2 with all words found at [0] and
 	 *         probable words stored at [1].
 	 */
@@ -248,5 +180,90 @@ public class DetectEnglish {
 		out[0] = foundWords;
 		out[1] = probableWords;
 		return out;
+	}
+
+	/**
+	 * @param text
+	 * @return String representing the best guess as to the actual words in the
+	 *         text.
+	 */
+	public static String respace(String text) {
+		ArrayList<Character> letters = (ArrayList<Character>) text.replaceAll("[^a-zA-Z ]", "").chars()
+				.mapToObj(e -> (char) e).collect(Collectors.toList());
+		StringBuilder out = new StringBuilder();
+		boolean changes = false;
+		while (letters.size() > 0) {
+			ArrayList<String>[] words = findWords(letters);
+			ArrayList<String> foundWords = words[0];
+			ArrayList<String> probableWords = words[1];
+			ArrayList<GroupProbabilityPair> possibleGroups = new ArrayList<GroupProbabilityPair>();
+			String[] lines = Utilities.readFile("2grams.txt");
+			for (String word : probableWords) {
+				StringBuilder succeeding = new StringBuilder();
+				int length = word.length();
+				switch (length) { // More cases can be added if I find more refined patterns in word lengths.
+				case 1:
+					for (int i = 0; i < 2 && i + length < letters.size(); i++) {
+						succeeding.append(letters.get(length + i));
+					}
+					break;
+				default:
+					if (length < letters.size()) {
+						succeeding.append(letters.get(length));
+					}
+					break;
+				}
+				for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					if (line.startsWith(word + "," + succeeding.toString())) {
+						possibleGroups = rank(new GroupProbabilityPair(i, line.replaceAll(",", " ")), possibleGroups);
+					}
+				}
+			}
+			int[] toRemove = firstMatch(possibleGroups, letters); // Check if this equals 0, then examine words in
+																	// foundWords.
+			if (toRemove[0] > 0) {
+				if (changes == false && out.length() > 0)
+					out.append(" ");
+				for (int i = 0; i < toRemove[0] && letters.size() > 0; i++) {
+					out.append(letters.get(0));
+					if (i == toRemove[1] - 1) {
+						out.append(" ");
+					}
+					letters.remove(0);
+				}
+				out.append(" ");
+				changes = true;
+			} else {
+				// Examine found words and select the most likely.
+				lines = Utilities.readFile("mostProbable.txt");
+				String wordToRemove = "";
+				boolean found = false;
+				for (String line : lines) {
+					for (String word : foundWords) {
+						if (line.equals(word)) {
+							wordToRemove = word;
+							found = true;
+							break;
+						}
+					}
+					if (found)
+						break;
+				}
+				if (wordToRemove == "") {
+					out.append(letters.get(0));
+					letters.remove(0);
+					changes = false;
+				} else {
+					for (int i = 0; i < wordToRemove.length(); i++) {
+						out.append(letters.get(0));
+						letters.remove(0);
+					}
+					out.append(" ");
+					changes = true;
+				}
+			}
+		}
+		return out.toString();
 	}
 }

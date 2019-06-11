@@ -11,6 +11,7 @@ public class Tester {
 				+ "				\"IT IS MY FERVENT HOPE THAT YOU AGREE WITH MY ANALYSIS AND THAT TOGETHER WE CAN MOVE TO ESTABLISH THE NEW OFFICE. I HAVE SEVERAL NAMES THAT I WOULD HUMBLY SUGGEST AS STRONG CANDIDATES FOR THE NEW ROLE. ALL ARE GOOD MEN, WITH MILITARY BACKGROUNDS AND A REPUTATION FOR HONOUR THAT NO-ONE COULD QUESTION. I WILL BE HAPPY TO DISCUSS THIS FURTHER AT YOUR PLEASURE.\\r\\n\" + \r\n"
 				+ "				\"YOUR FAITHFUL SERVANT,\\r\\n\" + \r\n" + "				\"CHARLES GREY";
 		String otherText = "KSRESSWYVOVWSZIAIKPNLKGCTRIKOWILTISSWKPITRVMUQLRHOHMOBWWOEGYNCILSOXFEGEPMDLNUBTMSOELDORCRQCMFKPJTRINUZMJSKRBSDEDF";
+		String otherOtherText ="King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
 		// single word prediction.
 		// System.out.println(word);
@@ -24,23 +25,16 @@ public class Tester {
 		// conincidence of given
 		// text.
 		// for (Map.Entry<String, Integer> entry : NGramAnalyser.kasiskiBase(3,
-		// otherText).entrySet()) { // Kasiski base
-		// indentifies
-		// repeating
-		// strings and
-		// their number
-		// opf
-		// occurences in
-		// text.
+		// otherText).entrySet()) {
 		// System.out.println(entry.getKey() + ":" + entry.getValue());
 		// }
-		int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
-		System.out.println(KasiskiExamination
-				.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
+		//int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
+		//System.out.println(KasiskiExamination
+		//		.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 		//System.out.println(DetectEnglish.detectEnglish(otherText));
-		// Utilities.generateHashTable("src/staticResources/dictionary.txt",
-		// "dictionary.htb");
+		 Utilities.generateHashTable("2grams.txt ", "2grams.htb");
 		// System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
+		//System.out.println(DetectEnglish.respace(otherOtherText));
 	}
 
 }
