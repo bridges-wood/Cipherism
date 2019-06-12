@@ -5,8 +5,9 @@ import java.util.stream.Collectors;
 
 public class DetectEnglish {
 
-	public static final Hashtable<Long, String> dictionaryTable = Utilities.readHashTable("dictionary.htb");
-	public static final Hashtable<Long, String> mostLikelyTable = Utilities.readHashTable("mostProbable.htb");
+	public static Hashtable<Long, String> dictionaryTable;
+	public static Hashtable<Long, String> mostLikelyTable;
+	public static Hashtable<Long, String> twoGramsTable;
 
 	/**
 	 * Returns what fraction of the text can be called English.
@@ -65,6 +66,9 @@ public class DetectEnglish {
 	 *         English.
 	 */
 	public static float isEnglish(String[] words) {
+		if (dictionaryTable.isEmpty()) {
+			dictionaryTable = Utilities.readHashTable("dictionary.htb");
+		}
 		float englishWords = 0f;
 		for (String word : words) {
 			long hashedWord = Utilities.hash64(word);
@@ -138,6 +142,12 @@ public class DetectEnglish {
 	 *         probable words stored at [1].
 	 */
 	public static ArrayList<String>[] findWords(ArrayList<Character> letters) {
+		if (dictionaryTable.isEmpty()) {
+			dictionaryTable = Utilities.readHashTable("dictionary.htb");
+		}
+		if (mostLikelyTable.isEmpty()) {
+			mostLikelyTable = Utilities.readHashTable("mostProbable.htb");
+		}
 		ArrayList<String> foundWords = new ArrayList<String>();
 		ArrayList<String> probableWords = new ArrayList<String>();
 		StringBuilder word = new StringBuilder();
@@ -170,7 +180,7 @@ public class DetectEnglish {
 		}
 		if (foundWords.size() > 0 && !probableWords.contains(foundWords.get(foundWords.size() - 1))) {
 			// This introduces the longest found word into probable words, even if it isn't
-			// particularly likely on its own. This is to try and mitigate over prediction
+			// particularly likely on its own. This is to try and mitigate over-prediction
 			// of short words.
 			probableWords.add(foundWords.get(foundWords.size() - 1));
 		}
@@ -183,11 +193,16 @@ public class DetectEnglish {
 	}
 
 	/**
+	 * Respaces an unspaced string based on an estimate of english.
+	 * 
 	 * @param text
 	 * @return String representing the best guess as to the actual words in the
 	 *         text.
 	 */
 	public static String respace(String text) {
+		if (twoGramsTable.isEmpty()) {
+			twoGramsTable = Utilities.readHashTable("2grams.htb");
+		}
 		ArrayList<Character> letters = (ArrayList<Character>) text.replaceAll("[^a-zA-Z ]", "").chars()
 				.mapToObj(e -> (char) e).collect(Collectors.toList());
 		StringBuilder out = new StringBuilder();
@@ -213,11 +228,21 @@ public class DetectEnglish {
 					}
 					break;
 				}
-				for (int i = 0; i < lines.length; i++) {
-					String line = lines[i];
-					if (line.startsWith(word + "," + succeeding.toString())) {
-						possibleGroups = rank(new GroupProbabilityPair(i, line.replaceAll(",", " ")), possibleGroups);
-					}
+				String toCheck = word + "," + succeeding.toString();
+				if (twoGramsTable.containsKey(toCheck)) {
+					possibleGroups = rank(new GroupProbabilityPair(i, toCheck.replaceAll(",", " ")), possibleGroups); // TODO
+																														// need
+																														// to
+																														// record
+																														// the
+																														// point
+																														// in
+																														// the
+																														// table
+																														// where
+																														// the
+																														// word
+																														// is.
 				}
 			}
 			int[] toRemove = firstMatch(possibleGroups, letters); // Check if this equals 0, then examine words in

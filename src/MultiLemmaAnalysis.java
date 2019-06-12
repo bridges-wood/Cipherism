@@ -4,10 +4,10 @@ import java.util.List;
 
 public class MultiLemmaAnalysis {
 	/**
-	 * Generate possible lemata that the fractions of the string in the text could
+	 * Generate possible lemmata that the fractions of the string in the text could
 	 * correspond to.
 	 * 
-	 * @param text A section of encoded ciphertext from which possible lemata are to
+	 * @param text A section of encoded ciphertext from which possible lemmata are to
 	 *             be generated. This can only be 2 to 5 words in length.
 	 * @return
 	 */

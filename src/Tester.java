@@ -32,7 +32,7 @@ public class Tester {
 		//System.out.println(KasiskiExamination
 		//		.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 		//System.out.println(DetectEnglish.detectEnglish(otherText));
-		 Utilities.generateHashTable("2grams.txt ", "2grams.htb");
+		 Utilities.generateHashTable("3grams.txt ", "3grams.htb");
 		// System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
 		//System.out.println(DetectEnglish.respace(otherOtherText));
 	}
