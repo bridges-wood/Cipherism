@@ -49,7 +49,8 @@ public class Utilities {
 		int length = data.length;
 		long hash = FNV1_64_INIT;
 		for (int i = 0; i < length; i++) { // For each byte, the initial prime is raised to the power of a masked int
-											// version of the byte a the index before being multiplied by the main prime.
+											// version of the byte a the index before being multiplied by the main
+											// prime.
 			hash ^= (data[i] & 0xff);
 			hash *= FNV1_PRIME_64;
 		}
@@ -58,7 +59,8 @@ public class Utilities {
 	}
 
 	/**
-	 * Creates a hashtable using fnv1 and each line of a given file.
+	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
+	 * String>.
 	 * 
 	 * @param filename
 	 *            The name of the file which lines are to be read from.
@@ -86,21 +88,52 @@ public class Utilities {
 	}
 
 	/**
+	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
+	 * GroupProbabilityPair>.
+	 * 
+	 * @param filename
+	 *            The name of the file which lines are to be read from.
+	 * @param outputFilename
+	 *            The name of the file to which the hashtable is saved.
+	 */
+	public static void generateObjectHashTable(String filename, String outputFilename) {
+		File fromFile = new File(filename);
+		File toFile = new File(outputFilename);
+		Hashtable<Long, GroupProbabilityPair> hashTable = new Hashtable<Long, GroupProbabilityPair>();
+		try {
+			Scanner sc = new Scanner(fromFile);
+			int counter = 1;
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				System.out.println(line);
+				hashTable.put(hash64(line), new GroupProbabilityPair(counter, line)); // Puts each line into the hashtable.
+				counter++;
+			}
+			sc.close();
+			FileOutputStream outputStream = new FileOutputStream(toFile);
+			ObjectOutputStream out = new ObjectOutputStream(outputStream);
+			out.writeObject(hashTable);
+			out.close(); // Writes the dictionary to the file.
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Returns the hashtable that was stored in a given file.
 	 * 
 	 * @param filename
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static Hashtable<Long, String> readHashTable(String filename) {
+	public static Hashtable<?, ?> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
 			FileInputStream fileIn = new FileInputStream(fromFile);
 			ObjectInputStream objectIn = new ObjectInputStream(fileIn);
 			Object obj = objectIn.readObject();
 			objectIn.close();
-			if (obj instanceof Hashtable<?, ?>) {
-				return (Hashtable<Long, String>) obj;
+			if (Hashtable.class.isInstance(obj)) {
+				return (Hashtable<?, ?>) obj;
 			} else {
 				return null;
 			}

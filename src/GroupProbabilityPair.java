@@ -1,5 +1,7 @@
+import java.io.Serializable;
 
-public class GroupProbabilityPair {
+public class GroupProbabilityPair implements Serializable {
+	private static final long serialVersionUID = 6414945161717165416L;
 	private int rank;
 	private String group;
 

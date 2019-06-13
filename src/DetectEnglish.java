@@ -7,7 +7,7 @@ public class DetectEnglish {
 
 	public static Hashtable<Long, String> dictionaryTable;
 	public static Hashtable<Long, String> mostLikelyTable;
-	public static Hashtable<Long, String> twoGramsTable;
+	public static Hashtable<Long, GroupProbabilityPair> twoGramsTable;
 
 	/**
 	 * Returns what fraction of the text can be called English.
@@ -65,9 +65,10 @@ public class DetectEnglish {
 	 * @return Float representing the fraction of words in the array that are
 	 *         English.
 	 */
+	@SuppressWarnings("unchecked")
 	public static float isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = Utilities.readHashTable("dictionary.htb");
+			dictionaryTable = (Hashtable<Long, String>) Utilities.readHashTable("dictionary.htb");
 		}
 		float englishWords = 0f;
 		for (String word : words) {
@@ -141,12 +142,13 @@ public class DetectEnglish {
 	 * @return An array containing of size 2 with all words found at [0] and
 	 *         probable words stored at [1].
 	 */
+	@SuppressWarnings("unchecked")
 	public static ArrayList<String>[] findWords(ArrayList<Character> letters) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = Utilities.readHashTable("dictionary.htb");
+			dictionaryTable = (Hashtable<Long, String>) Utilities.readHashTable("dictionary.htb");
 		}
 		if (mostLikelyTable.isEmpty()) {
-			mostLikelyTable = Utilities.readHashTable("mostProbable.htb");
+			mostLikelyTable = (Hashtable<Long, String>) Utilities.readHashTable("mostProbable.htb");
 		}
 		ArrayList<String> foundWords = new ArrayList<String>();
 		ArrayList<String> probableWords = new ArrayList<String>();
@@ -199,9 +201,10 @@ public class DetectEnglish {
 	 * @return String representing the best guess as to the actual words in the
 	 *         text.
 	 */
+	@SuppressWarnings("unchecked")
 	public static String respace(String text) {
 		if (twoGramsTable.isEmpty()) {
-			twoGramsTable = Utilities.readHashTable("2grams.htb");
+			twoGramsTable = (Hashtable<Long, GroupProbabilityPair>) Utilities.readHashTable("2grams.ohtb");
 		}
 		ArrayList<Character> letters = (ArrayList<Character>) text.replaceAll("[^a-zA-Z ]", "").chars()
 				.mapToObj(e -> (char) e).collect(Collectors.toList());
@@ -212,7 +215,6 @@ public class DetectEnglish {
 			ArrayList<String> foundWords = words[0];
 			ArrayList<String> probableWords = words[1];
 			ArrayList<GroupProbabilityPair> possibleGroups = new ArrayList<GroupProbabilityPair>();
-			String[] lines = Utilities.readFile("2grams.txt");
 			for (String word : probableWords) {
 				StringBuilder succeeding = new StringBuilder();
 				int length = word.length();
@@ -229,20 +231,8 @@ public class DetectEnglish {
 					break;
 				}
 				String toCheck = word + "," + succeeding.toString();
-				if (twoGramsTable.containsKey(toCheck)) {
-					possibleGroups = rank(new GroupProbabilityPair(i, toCheck.replaceAll(",", " ")), possibleGroups); // TODO
-																														// need
-																														// to
-																														// record
-																														// the
-																														// point
-																														// in
-																														// the
-																														// table
-																														// where
-																														// the
-																														// word
-																														// is.
+				if (twoGramsTable.containsKey(Utilities.hash64(toCheck))) {
+					possibleGroups = rank(twoGramsTable.get(Utilities.hash64(toCheck)), possibleGroups);
 				}
 			}
 			int[] toRemove = firstMatch(possibleGroups, letters); // Check if this equals 0, then examine words in
@@ -261,16 +251,13 @@ public class DetectEnglish {
 				changes = true;
 			} else {
 				// Examine found words and select the most likely.
-				lines = Utilities.readFile("mostProbable.txt");
 				String wordToRemove = "";
 				boolean found = false;
-				for (String line : lines) {
-					for (String word : foundWords) {
-						if (line.equals(word)) {
-							wordToRemove = word;
-							found = true;
-							break;
-						}
+				for (String word : foundWords) {
+					if (mostLikelyTable.containsKey(Utilities.hash64(word))) {
+						wordToRemove = word;
+						found = true;
+						break;
 					}
 					if (found)
 						break;
