@@ -8,8 +8,8 @@ Polyalphabetic
 Scytale
 Transposition
 Playfair
-
-Respace
+Improve performance of Kasiski analysis on short cipher texts.
 
 MISC:
+Multi-thread english detection.
 Hash all text files to increase access times. (2/6)
