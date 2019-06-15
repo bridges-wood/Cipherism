@@ -1,3 +1,5 @@
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class Tester {
@@ -14,8 +16,8 @@ public class Tester {
 				+ "				\"IN THESE QUARRELSOME TIMES IT MAY BE NECESSARY TO COMMISSION ACTIONS OR ENQUIRIES THAT SOME MIGHT REGARD AS BENEATH THE DIGNITY OF THE CROWN. THE SECRET SECRETARY CAN, BY CONCEALING THESE ACTIVITIES, PRESERVE THE REPUTATION OF YOUR GOVERNMENT AS A RELIABLE AND TRUSTWORTHY PARTICIPANT IN INTERNATIONAL AFFAIRS, WHILE ALSO PROVIDING YOU AND YOUR MINISTERS WITH THE WEAPONS TO DEFEAT OUR ENEMIES. IF WE SUCCEED AS I HOPE WE WILL, THEN WARS OF THE FUTURE MAY BE WON WITHOUT A SHOT BEING FIRED.\\r\\n\" + \r\n"
 				+ "				\"IT IS MY FERVENT HOPE THAT YOU AGREE WITH MY ANALYSIS AND THAT TOGETHER WE CAN MOVE TO ESTABLISH THE NEW OFFICE. I HAVE SEVERAL NAMES THAT I WOULD HUMBLY SUGGEST AS STRONG CANDIDATES FOR THE NEW ROLE. ALL ARE GOOD MEN, WITH MILITARY BACKGROUNDS AND A REPUTATION FOR HONOUR THAT NO-ONE COULD QUESTION. I WILL BE HAPPY TO DISCUSS THIS FURTHER AT YOUR PLEASURE.\\r\\n\" + \r\n"
 				+ "				\"YOUR FAITHFUL SERVANT,\\r\\n\" + \r\n" + "				\"CHARLES GREY";
-		String otherText = "KUSWRVZOULTHPTWGOVZOULFRJTKAS";
-		String otherOtherText = "King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
+		//String otherText = "KUSWRVZOULTHPTWGOVZOULFRJTKAS";
+		//String otherOtherText = "King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
 		// single word prediction.
 		// System.out.println(word);
@@ -28,13 +30,19 @@ public class Tester {
 		// otherText).entrySet()) {
 		// System.out.println(entry.getKey() + ":" + entry.getValue());
 		// }
-		int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
-		System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
+		//int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3, otherText), otherText);
+		//System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText, keys), otherText));
 		// System.out.println(DetectEnglish.detectEnglish(otherText));
 		// Utilities.generateObjectHashTable("2grams.txt ", "2grams.ohtb");
 		// System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
 		// DetectEnglish a = new DetectEnglish();
 		// System.out.println(a.respace(otherOtherText));
+		try {
+			System.out.println(InetAddress.getByName("192.168.1.166"));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {

@@ -74,7 +74,7 @@ public class Server {
 																		// the socket.
 			System.out.println("Sending messages to the client");
 			out.writeUTF(dataString); // Writes data to the client.
-			System.out.println("Closing socket and terminating program.");
+			System.out.println("Closing socket and terminating thread.");
 			out.flush(); // Cleans buffer.
 		}
 
