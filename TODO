@@ -1,6 +1,10 @@
 Cipher Analysis:
 Create method to determine if text is monoalphabetic or not.
 Multi-lemma analysis
+Chi Squared on letter counts
+Tetragrahic analysis for spaced and unspaced text.
+Translate wordScore into java. May replace detect english.
+Translate nGramScore into java.
 
 Deciphering:
 Monoalphabetic

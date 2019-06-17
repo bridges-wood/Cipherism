@@ -1,7 +1,10 @@
+package cipher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.stream.Collectors;
+
+import src.GroupProbabilityPair;
 
 public class DetectEnglish {
 

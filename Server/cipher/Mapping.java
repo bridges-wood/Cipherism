@@ -1,3 +1,4 @@
+package cipher;
 public class Mapping {
 	boolean isDefinite;
 	char fromChar;

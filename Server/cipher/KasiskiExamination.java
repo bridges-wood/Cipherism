@@ -1,8 +1,14 @@
+package cipher;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import src.IOC;
+import src.NGramAnalyser;
+import src.Vigenere;
+
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -39,7 +45,6 @@ public class KasiskiExamination {
 			for (int i = 0; i < 26; i++) {
 				int valueToInsert = computeFMS(NGramAnalyser // Compute FMS of the composite.
 						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i]))));
-				//TODO add in the detect english routine.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
 				FMSarray[i] = valueToInsert;
@@ -62,7 +67,7 @@ public class KasiskiExamination {
 			for (int i = 0; i < possibleKeys.length; i++) {
 				System.out.println(Vigenere.decrypt(text, possibleKeys[i]));
 				float toInsert = IOC
-						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i]))); // TODO add in detect english method.
+						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i])));
 				IOCs[i] = toInsert;
 				if (toInsert > IOCs[maxIndex])
 					maxIndex = i;
