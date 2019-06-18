@@ -9,7 +9,7 @@ public class Tester {
 	}
 	
 	public void run() {
-		//String otherText = "KUSWRVZOULTHPTWGOVZOULFRJTKAS";
+		String otherText = "thisisverysimilartoenglishtext";
 		//String otherOtherText = "King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
 		// single word prediction.
@@ -28,14 +28,10 @@ public class Tester {
 		// System.out.println(DetectEnglish.detectEnglish(otherText));
 		// Utilities.generateObjectHashTable("2grams.txt ", "2grams.ohtb");
 		// System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
-		// DetectEnglish a = new DetectEnglish();
+		DetectEnglish a = new DetectEnglish();
 		// System.out.println(a.respace(otherOtherText));
-		try {
-			System.out.println(InetAddress.getByName("192.168.1.166"));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//System.out.println(NGramAnalyser.computeScore(3, otherText, false));
+		a.score(otherText, 20);
 	}
 
 	public static void main(String[] args) {

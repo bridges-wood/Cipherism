@@ -1,7 +1,9 @@
 package cipher;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import src.GroupProbabilityPair;
@@ -11,6 +13,9 @@ public class DetectEnglish {
 	public static Hashtable<Long, String> dictionaryTable;
 	public static Hashtable<Long, String> mostLikelyTable;
 	public static Hashtable<Long, String> twoGramsTable;
+	public static TreeMap<String, Double> firstOrder = new TreeMap<String, Double>();
+	public static TreeMap<String, Double> secondOrder = new TreeMap<String, Double>();
+	double[] unseenScores = new double[50];
 
 	DetectEnglish() {
 		dictionaryTable = new Hashtable<Long, String>();
@@ -286,6 +291,105 @@ public class DetectEnglish {
 		return out.toString();
 	}
 
+	public void initialise() {
+		String[] lines = Utilities.readFile("1w.txt");
+		double N = 1024908267229d;
+		for (String line : lines) {
+			String[] splitLine = line.split(",");
+			double valueToInsert = Math.log10(Double.valueOf(splitLine[1]) / N);
+			firstOrder.put(splitLine[0], valueToInsert);
+		}
+		lines = Utilities.readFile("2w.txt");
+		for (String line : lines) {
+			String[] splitLine = line.split(",");
+			double valueToInsert;
+			if (!firstOrder.containsKey(splitLine[0])) {
+				valueToInsert = Math.log10(Double.parseDouble(splitLine[2]) / N);
+				secondOrder.put(splitLine[0] + " " + splitLine[1], valueToInsert);
+			} else {
+				valueToInsert = Math.log10(Double.parseDouble(splitLine[2]) / N) - firstOrder.get(splitLine[0]);
+				secondOrder.put(splitLine[0] + " " + splitLine[1], valueToInsert);
+			}
+		}
+		
+		for (int i = 0; i < 50; i++) {
+			unseenScores[i] = Math.log10(10 / (N * Math.pow(10, i)));
+		}
+	}
+
+	public double conditionalWordProbability(String word, String prev) {
+		if(prev == null) {
+			prev = "<UNK>";
+		}
+		if(!firstOrder.containsKey(word)) {
+			return unseenScores[word.length()];
+		} else if (!secondOrder.containsKey(prev + " " + word)){
+			return firstOrder.get(word);
+		} else {
+			return secondOrder.get(prev + " " + word);
+		}
+	}
+
+	public String score(String text, int maxWordLength) { //TODO this still doesn't actually work.
+		initialise();
+		char[] letters = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().toCharArray();
+		double[][] probabilities = new double[maxWordLength][letters.length];
+		String[][] strings = new String[maxWordLength][letters.length];
+		for (int r = 0; r < maxWordLength; r++) {
+			for (int c = 0; c < letters.length; c++) {
+				probabilities[r][c] = -99e99;
+				strings[r][c] = "";
+			}
+		}
+		for(int j = 0; j < maxWordLength; j++) {
+			StringBuilder graph = new StringBuilder();
+			for(int x = 0; x < j + 1; x++) {
+				graph.append(letters[x]);
+			}
+			String word = graph.toString();
+			probabilities[0][j] = conditionalWordProbability(word, null);
+			strings[0][j] = word; 
+		}
+		for(int i = 1; i < maxWordLength; i++) {
+			for(int j = 0; j < letters.length ; j++) {
+				if(i + j + 1 > letters.length) break;
+				int max;
+				if(i < maxWordLength) {
+					max = i;
+				} else {
+					max = maxWordLength;
+				}
+				TreeMap<Double, String> candidates = new TreeMap<Double, String>();
+				for(int k = 0; k < max; k++) {
+					StringBuilder word = new StringBuilder();
+					for(int a = i; a < i + j + 1; a++) {
+						word.append(letters[a]);
+					}
+					double score = probabilities[i - k - 1][k] + conditionalWordProbability(word.toString(), lastLetter(strings[i - k - 1][k]));
+					String toInsert = strings[i - k - 1][k] + word;
+					candidates.put(score, toInsert);
+				}
+				probabilities[i][j] = candidates.lastKey();
+				strings[i][j] = candidates.get(candidates.lastKey());
+			}
+		}
+		for (int r = 0; r < maxWordLength; r++) {
+			for (int c = 0; c < letters.length; c++) {
+				System.out.print("Probability: " + probabilities[r][c] + " ");
+				System.out.print("String: " + strings[r][c] + "\n");
+			}
+		}
+		return "";
+	}
+	
+	public String lastLetter (String in) {
+		if(in.length() == 0) {
+			return "";
+		} else {
+			char[] letters = in.toCharArray();
+			return Character.toString(letters[in.length() - 1]);
+		}
+	}
 	// Note: I would clean up the text, but respacing it is already computationally
 	// expensive as it is.
 }

@@ -1,8 +1,11 @@
 package cipher;
+
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class NGramAnalyser {
+
+	public static double floor;
 
 	/**
 	 * Creates a map of ngrams in target text.
@@ -136,4 +139,83 @@ public class NGramAnalyser {
 		return ngramsCopy;
 	}
 
+	/**
+	 * Computes the log score for the ngrams present in the analysed text. Higher is
+	 * better.
+	 * 
+	 * @param n       The length of the nGrams we wish to test for.
+	 * @param text    The input text to be analysed.
+	 * @param perGram Whether or not we want an adjusted score based on the length
+	 *                of text, in order to compare texts of varying lengths.
+	 * @return A double representing the total score of the text. Higher is better.
+	 */
+	public static double computeScore(int n, String text, boolean perGram) {
+		double score = 0;
+		TreeMap<String, Double> ngrams = loadNgramMap(n);
+		char[] letters = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().toCharArray(); // Clean up input.
+		for (int i = 0; i < letters.length - n; i += n) {// Assures we can get the most number of ngrams without
+															// overflow.
+			StringBuilder graph = new StringBuilder();
+			for (int j = 0; j < n; j++) {
+				graph.append(letters[i + j]);
+			} // Creates length n groups of letters from the text.
+			String group = graph.toString();
+			if (ngrams.containsKey(group)) {
+				score += ngrams.get(group);
+			} else {
+				score += floor;
+			}
+		}
+		if (perGram) {
+			return score / ngrams.keySet().size();
+		} else {
+			return score;
+		}
+	}
+
+	/**
+	 * Loads a TreeMap from a file containing ngrams in English and their relative
+	 * appearances in Google's trillion word corpus.
+	 * 
+	 * @param size The number of letters to be examined for.
+	 * @return A TreeMap containing ngrams and their logProbability of occurring.
+	 */
+	public static TreeMap<String, Double> loadNgramMap(int size) {
+		TreeMap<String, Double> chances = new TreeMap<String, Double>();
+		String[] lines = null;
+		switch (size) { // Load the file that we're interested in.
+		case 1:
+			lines = Utilities.readFile("1l.txt");
+			break;
+		case 2:
+			lines = Utilities.readFile("2l.txt");
+			break;
+		case 3:
+			lines = Utilities.readFile("3l.txt");
+			break;
+		case 4:
+			lines = Utilities.readFile("4l.txt");
+			break;
+		case 5:
+			lines = Utilities.readFile("5l.txt");
+			break;
+		}
+		for (String line : lines) {
+			String[] splitLine = line.split(",");
+			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
+		}
+		Double total = 0d;
+		Double[] values = chances.values().toArray(new Double[0]);
+		for (int i = 0; i < values.length; i++) {
+			total += values[i]; // Loads the total number of occurrences of all ngrams into one total.
+		}
+		for (String key : chances.keySet()) {
+			Double toInsert = Math.log10((double) chances.get(key) / total); // For every key, the log is taken to avoid
+																				// numerical underflow when operating
+																				// with such small probabilities.
+			chances.put(key, toInsert);
+		}
+		floor = Math.log10(0.01 / total); // A floor is devised to stop -infinity probabilities.
+		return chances;
+	}
 }
