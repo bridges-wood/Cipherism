@@ -10,7 +10,7 @@ public class Tester {
 	}
 
 	public void run() {
-		String otherText = "thisisverysimilartoenglishtext";
+		String otherText = "howcomplexcanweactuallymakeitbeforeitceasestocomprehendthestructureandformofwhatgoesin";
 		// String otherOtherText =
 		// "King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
@@ -35,7 +35,7 @@ public class Tester {
 		DetectEnglish b = new DetectEnglish();
 		// System.out.println(a.respace(otherOtherText));
 		// System.out.println(NGramAnalyser.computeScore(3, otherText, false));
-		System.out.println(b.viterbiRespace(otherText,20));
+		System.out.println(b.respace(otherText,20));
 	}
 
 	public static void main(String[] args) {

@@ -311,7 +311,23 @@ public class DetectEnglish {
 		}
 	}
 
-	public String viterbiRespace(String text, int maxWordLength) {
+	/**
+	 * Takes in text and determines using logarithmic word probabilities from
+	 * Google's Trillion Word Corpus, the most likely respaced version of the text.
+	 * 
+	 * @param text
+	 *            The text to be respaced into English.
+	 * @param maxWordLength
+	 *            The length of the longest word that could be found in the text.
+	 * @return The respaced text.
+	 */
+	@SuppressWarnings("unchecked")
+	public String respace(String text, int maxWordLength) {
+		// TODO this is very close to perfection. I think if we select the longest
+		// word.toString() it will work flawlessly.
+		if (dictionaryTable.isEmpty()) {
+			dictionaryTable = (Hashtable<Long, String>) Utilities.readHashTable("dictionary.htb");
+		}
 		String[] lines = Utilities.readFile("1w.txt");
 		double N = 1024908267229d;
 		for (String line : lines) {
@@ -351,29 +367,46 @@ public class DetectEnglish {
 			TreeMap<Double, String> compositeScores = new TreeMap<Double, String>();
 			for (Double probability : firstWords.descendingKeySet()) {
 				String possWord = firstWords.get(probability);
-				int adjustment = possWord.length();
-				word = new StringBuilder();
-				double compositeScore = -1000;
-				for (int i = adjustment; i < maxWordLength + adjustment; i++) {
-					if (i > letters.size() - 1)
+				if (!dictionaryTable.containsKey(Utilities.hash64(possWord))) {
+					continue;
+				} else {
+					if (possWord.length() == letters.size()) {
+						out.append(possWord + " ");
+						for (int i = 0; i < possWord.length(); i++) {
+							letters.remove(0);
+						}
+						System.out.println("Removed " + possWord);
 						break;
-					word.append(letters.get(i));
-					double tempScore = conditionalWordProbability(word.toString(), possWord) - probability;
-					// Need a good formula here that takes into account the chance of the previous
-					// word appearing.
-					if (tempScore > compositeScore) {
-						compositeScore = tempScore;
+					}
+					int adjustment = possWord.length();
+					word = new StringBuilder();
+					double compositeScore = -50000;
+					for (int i = adjustment; i < maxWordLength + adjustment; i++) {
+						if (i > letters.size() - 1)
+							break;
+						word.append(letters.get(i));
+						double tempScore = -50000;
+						if (dictionaryTable.containsKey(Utilities.hash64(word.toString()))) {
+							tempScore = conditionalWordProbability(word.toString(), possWord);
+						}
+						if (tempScore > compositeScore) {
+							compositeScore = tempScore;
+						}
+					}
+					System.out.println(possWord + " " + compositeScore);
+					compositeScores.put(compositeScore, possWord);
+				}
+			}
+			if (compositeScores.size() > 0) {
+				String toRemove = compositeScores.get(compositeScores.lastKey());
+				out.append(toRemove + " ");
+				if (letters.size() > 0) {
+					for (int i = 0; i < toRemove.length(); i++) {
+						letters.remove(0);
 					}
 				}
-				System.out.println(possWord + " " + compositeScore);
-				compositeScores.put(compositeScore, possWord);
+				System.out.println("Removed " + toRemove);
 			}
-			String toRemove = compositeScores.get(compositeScores.lastKey());
-			out.append(toRemove + " ");
-			for (int i = 0; i < toRemove.length(); i++) {
-				letters.remove(0);
-			}
-			System.out.println("Removed " + toRemove);
 		}
 
 		return out.toString().trim();
