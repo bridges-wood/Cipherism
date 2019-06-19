@@ -1,8 +1,5 @@
 package cipher;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class Tester {
 
 	Tester() {
@@ -10,8 +7,7 @@ public class Tester {
 	}
 
 	public void run() {
-		String otherText = "howcomplexcanweactuallymakeitbeforeitceasestocomprehendthestructureandformofwhatgoesin";
-		// String otherOtherText =
+		String otherText = "madsisauniquename";
 		// "King’sisaveryspecialplace,themomentyouwalkthroughthedoorsyoucansensethewarmth,purposeandenergyofallthepupilsandstaff.Thisisaschoolwhichvaluespositiverelationships,opportunityandgreatlearningaboveallelse,therebyallowingourpupilstomaketheverymostofthemselvesataschooltheylove.";
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
 		// single word prediction.
@@ -29,11 +25,11 @@ public class Tester {
 		// otherText), otherText);
 		// System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText,
 		// keys), otherText));
-		// System.out.println(DetectEnglish.detectEnglish(otherText));
+		
 		// Utilities.generateObjectHashTable("2grams.txt ", "2grams.ohtb");
 		// System.out.println(Utilities.readHashTable("hashed_dictionary.htb").keySet().contains(Utilities.hash64("ghgashdfj")));
 		DetectEnglish b = new DetectEnglish();
-		// System.out.println(a.respace(otherOtherText));
+		System.out.println(b.detectEnglish(otherText));
 		// System.out.println(NGramAnalyser.computeScore(3, otherText, false));
 		System.out.println(b.respace(otherText,20));
 	}
