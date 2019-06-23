@@ -13,14 +13,18 @@ public class DetectEnglish {
 	public static Hashtable<Long, String> dictionaryTable;
 	public static Hashtable<Long, String> mostLikelyTable;
 	public static Hashtable<Long, String> twoGramsTable;
-	public static TreeMap<String, Double> firstOrder = new TreeMap<String, Double>();
-	public static TreeMap<String, Double> secondOrder = new TreeMap<String, Double>();
+	public static TreeMap<String, Double> firstOrder;
+	public static TreeMap<String, Double> secondOrder;
+	public static TreeMap<Character, Double> letterProbabilities;
 	double[] unseenScores = new double[50];
 
 	DetectEnglish() {
 		dictionaryTable = new Hashtable<Long, String>();
 		mostLikelyTable = new Hashtable<Long, String>();
 		twoGramsTable = new Hashtable<Long, String>();
+		firstOrder = new TreeMap<String, Double>();
+		secondOrder = new TreeMap<String, Double>();
+		letterProbabilities = new TreeMap<Character, Double>();
 	}
 
 	/**
@@ -201,7 +205,8 @@ public class DetectEnglish {
 	}
 
 	/**
-	 * @deprecated Due to huge inefficiencies, this has been replaced by {@link #respace(String, int)}
+	 * @deprecated Due to HUGE inefficiencies, this has been replaced by
+	 *             {@link #respace(String, int)} .
 	 */
 	@SuppressWarnings("unchecked")
 	public String respace(String text) {
@@ -344,7 +349,7 @@ public class DetectEnglish {
 		for (int i = 0; i < 50; i++) { // Precalculate the probabilities of unseen words.
 			unseenScores[i] = Math.log10(10d / (N * Math.pow(10, i)));
 		}
-		ArrayList<Character> letters = (ArrayList<Character>) text.replaceAll("[^a-zA-Z ]", "").toLowerCase().chars()
+		ArrayList<Character> letters = (ArrayList<Character>) Utilities.cleanText(text).chars()
 				.mapToObj(e -> (char) e).collect(Collectors.toList()); // Clean up text and stream to list.
 		StringBuilder out = new StringBuilder();
 		boolean failed = false;
@@ -414,6 +419,26 @@ public class DetectEnglish {
 			}
 		}
 		return out.toString().trim();
+	}
+
+	public double chiSquaredTest(String text) {
+		if (letterProbabilities.isEmpty()) {
+			String[] lines = Utilities.readFile("1l.txt"); // 4374127904 is total to divide by.
+			for (String line : lines) {
+				String[] splitLine = line.split(",");
+				letterProbabilities.put(splitLine[0].charAt(0), Double.parseDouble(splitLine[1]) / 4374127904d);
+				// Puts the probability of the specified letter into the map.
+			}
+		}
+		text = Utilities.cleanText(text);
+		double length = text.length();
+		double score = 0;
+		TreeMap<String, Integer> letterFrequencies = NGramAnalyser.frequencyAnalysis(text);
+		for(Character letter : letterProbabilities.keySet()) {
+			double expectedCount = letterProbabilities.get(letter) * length;
+			score += Math.pow(letterFrequencies.get(letter.toString()) - expectedCount, 2) / expectedCount;
+		}
+		return score;
 	}
 
 }

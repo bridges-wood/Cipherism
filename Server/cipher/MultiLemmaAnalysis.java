@@ -15,7 +15,7 @@ public class MultiLemmaAnalysis {
 	 * @return
 	 */
 	public static String[] possibleLemmata(String text) {
-		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+"); // Removes all non-letter
+		String[] words = Utilities.cleanText(text).split("\\s+"); // Removes all non-letter
 																						// characters and splits by
 																						// whitespace.
 		int numWords = words.length;

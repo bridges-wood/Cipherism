@@ -18,8 +18,8 @@ public class Vigenere {
 
 	public static String decrypt(String text, String key) {
 		String output = "";
-		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
-		key = key.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+		text = Utilities.cleanText(text);
+		key = Utilities.cleanText(key);
 		for (int i = 0, j = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			if (c < 'a' || c > 'z')

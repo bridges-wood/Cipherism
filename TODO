@@ -1,10 +1,6 @@
 Cipher Analysis:
 Create method to determine if text is monoalphabetic or not.
 Multi-lemma analysis
-Chi Squared on letter counts
-Tetragrahic analysis for spaced and unspaced text.
-Translate wordScore into java. May replace detect english.
-Translate nGramScore into java.
 
 Deciphering:
 Monoalphabetic
@@ -12,10 +8,6 @@ Polyalphabetic
 Scytale
 Transposition
 Playfair
-Improve performance of Kasiski analysis on short cipher texts.
 
 MISC:
-Multi-thread english detection.
 Hash all text files to increase access times. (2/6)
-Idea:
-To detect english, run through text and record all the points that words start at and the length of each word, record which are probable. Go back through separating the words at different points and testing it with detect english. The setup with the highest score is english.

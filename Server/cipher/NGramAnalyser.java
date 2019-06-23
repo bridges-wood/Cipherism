@@ -6,6 +6,7 @@ import java.util.TreeMap;
 public class NGramAnalyser {
 
 	public static double floor;
+	public static String[] letters = "qwertyuiopasdfghjklzxcvbnm".split("");
 
 	/**
 	 * Creates a map of ngrams in target text.
@@ -17,12 +18,12 @@ public class NGramAnalyser {
 	 */
 	public static TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
-		// Breakdown by words or not (this is not neccessary as the code works on
+		// Breakdown by words or not (this is not necessary as the code works on
 		// unspaced inputs equally well)
-		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+"); // Takes every word in text and
-																						// removes all punctuation
-																						// before adding it to the
-																						// array.
+		String[] words = Utilities.cleanText(text).split("\\s+"); // Takes every word in text and
+																	// removes all punctuation
+																	// before adding it to the
+																	// array.
 		for (String word : words) {
 			String temp = word;
 			word = " " + temp + " "; // Adds spaces to the end of every word (Allows for word end and start
@@ -70,37 +71,29 @@ public class NGramAnalyser {
 	 * Creates a map of letter frequencies in target text.
 	 * 
 	 * @param text String to be analysed.
-	 * @return TreeMap of all ngrams and their integer occurences in text.
+	 * @return TreeMap of all letters and their integer occurrences in text.
 	 */
 	public static TreeMap<String, Integer> frequencyAnalysis(String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
-		// Breakdown by words or not (this is not neccessary as the code works on
+		// Breakdown by words or not (this is not necessary as the code works on
 		// unspaced inputs equally well)
-		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+"); // Takes every word in text and
-																						// removes all punctuation
-																						// before adding it to the
-																						// array.
-		for (String word : words) {
-			String temp = word;
-			word = " " + temp + " "; // Adds spaces to the end of every word (Allows for word end and start
-										// analysis).
-
-			char[] chars = word.toCharArray();
+		String[] characters = Utilities.cleanText(text).split(""); // Takes every word in text and
+																	// removes all punctuation
+																	// before adding it to the
+																	// array.
+		for (String letter : characters) {
 			// Generate ngrams for each word.
-			for (int i = 0; i < chars.length; i++) {
-				StringBuilder ngram = new StringBuilder();
-				ngram.append(chars[i]);
-				// Add ngrams to tree.
-				String finalNgram = ngram.toString();
-				if (ngrams.containsKey(finalNgram)) {
-					ngrams.put(finalNgram, ngrams.get(finalNgram) + 1);
-				} else {
-					ngrams.put(finalNgram, 1);
-				}
+			if (ngrams.containsKey(letter)) {
+				ngrams.put(letter, ngrams.get(letter) + 1);
+			} else {
+				ngrams.put(letter, 1);
 			}
-
 		}
-		ngrams.remove(" ");
+		for(String letter : letters) {
+			if(!ngrams.containsKey(letter)) {
+				ngrams.put(letter, 0);
+			}
+		}
 		return ngrams;
 	}
 
@@ -114,7 +107,7 @@ public class NGramAnalyser {
 	 */
 	public static TreeMap<String, Integer> kasiskiBase(int n, String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
-		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+		text = Utilities.cleanText(text);
 		char[] chars = text.toCharArray();
 		// Generate ngrams for each word.
 		for (int i = 0; i < (chars.length - n) + 1; i++) {
@@ -152,7 +145,7 @@ public class NGramAnalyser {
 	public static double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
 		TreeMap<String, Double> ngrams = loadNgramMap(n);
-		char[] letters = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().toCharArray(); // Clean up input.
+		char[] letters = Utilities.cleanText(text).toCharArray(); // Clean up input.
 		for (int i = 0; i < letters.length - n; i += n) {// Assures we can get the most number of ngrams without
 															// overflow.
 			StringBuilder graph = new StringBuilder();

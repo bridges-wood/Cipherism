@@ -1,4 +1,5 @@
 package cipher;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,8 +18,7 @@ public class Utilities {
 	/**
 	 * Returns all lines in a text file as separate words in a string array.
 	 * 
-	 * @param filename
-	 *            The name of the file to be retrieved.
+	 * @param filename The name of the file to be retrieved.
 	 * @return A string array of each line in the file.
 	 */
 	public static String[] readFile(String filename) {
@@ -43,8 +43,7 @@ public class Utilities {
 	/**
 	 * Gives the 64 bit FNV1a hash of an input string.
 	 *
-	 * @param text
-	 *            The text from which the hash is to be generated.
+	 * @param text The text from which the hash is to be generated.
 	 * @return The hash of the input data.
 	 */
 	public static long hash64(String text) {
@@ -65,10 +64,8 @@ public class Utilities {
 	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
 	 * String>.
 	 * 
-	 * @param filename
-	 *            The name of the file which lines are to be read from.
-	 * @param outputFilename
-	 *            The name of the file to which the hashtable is saved.
+	 * @param filename       The name of the file which lines are to be read from.
+	 * @param outputFilename The name of the file to which the hashtable is saved.
 	 */
 	public static void generateHashTable(String filename, String outputFilename) {
 		File fromFile = new File(filename);
@@ -94,10 +91,8 @@ public class Utilities {
 	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
 	 * GroupProbabilityPair>.
 	 * 
-	 * @param filename
-	 *            The name of the file which lines are to be read from.
-	 * @param outputFilename
-	 *            The name of the file to which the hashtable is saved.
+	 * @param filename       The name of the file which lines are to be read from.
+	 * @param outputFilename The name of the file to which the hashtable is saved.
 	 */
 	public static void generateObjectHashTable(String filename, String outputFilename) {
 		File fromFile = new File(filename);
@@ -109,7 +104,8 @@ public class Utilities {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				System.out.println(line);
-				hashTable.put(hash64(line), new GroupProbabilityPair(counter, line)); // Puts each line into the hashtable.
+				hashTable.put(hash64(line), new GroupProbabilityPair(counter, line)); // Puts each line into the
+																						// hashtable.
 				counter++;
 			}
 			sc.close();
@@ -146,4 +142,13 @@ public class Utilities {
 		}
 	}
 
+	/**
+	 * Cleans a given piece of text.
+	 * 
+	 * @param text The text to be cleaned.
+	 * @return The same text with only alphabetic characters, in lower case.
+	 */
+	public static String cleanText(String text) {
+		return text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+	}
 }

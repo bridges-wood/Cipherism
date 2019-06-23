@@ -1,4 +1,5 @@
 package cipher;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -208,8 +209,8 @@ public class KasiskiExamination {
 	 *         occurences.
 	 */
 	public static int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
-		text = text.replaceAll("[^a-zA-Z ]", "").toLowerCase(); // Normalise text to only lower case letters for ease of
-																// work.
+		text = Utilities.cleanText(text); // Normalise text to only lower case letters for ease of
+											// work.
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {
