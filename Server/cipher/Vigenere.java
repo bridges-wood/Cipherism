@@ -2,7 +2,22 @@ package cipher;
 
 public class Vigenere {
 
-	public static String encrypt(String text, String key) {
+	private Utilities u;
+
+	Vigenere() {
+		u = new Utilities();
+	}
+
+	/**
+	 * Encrypts the given text using the key.
+	 * 
+	 * @param text
+	 *            The text to be encrypted.
+	 * @param key
+	 *            The key used to encrypt the given text.
+	 * @return The encrypted text.
+	 */
+	public String encrypt(String text, String key) {
 		String output = "";
 		text = text.toLowerCase();
 		key = key.toLowerCase();
@@ -16,10 +31,19 @@ public class Vigenere {
 		return output;
 	}
 
-	public static String decrypt(String text, String key) {
+	/**
+	 * Decrypts the given text using the key.
+	 * 
+	 * @param text
+	 *            The text to be decrypted.
+	 * @param key
+	 *            The key used to decrypt the text.
+	 * @return The decrypted text.
+	 */
+	public String decrypt(String text, String key) {
 		String output = "";
-		text = Utilities.cleanText(text);
-		key = Utilities.cleanText(key);
+		text = u.cleanText(text);
+		key = u.cleanText(key);
 		for (int i = 0, j = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			if (c < 'a' || c > 'z')

@@ -1,4 +1,5 @@
 package cipher;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -6,24 +7,33 @@ import java.util.List;
 import cipher.Utilities;
 
 public class PredictWords {
+
+	private Utilities u;
+
+	PredictWords() {
+		u = new Utilities();
+	}
+
 	/**
 	 * Generate a series of possible words for an mono-alphabetically encoded
 	 * string.
 	 * 
-	 * @param word     The encoded word from which possible words can be generated.
-	 * @param probable Whether or not the list of most probable words should be
-	 *                 checked or not.
+	 * @param word
+	 *            The encoded word from which possible words can be generated.
+	 * @param probable
+	 *            Whether or not the list of most probable words should be checked
+	 *            or not.
 	 * @return A String array containing all the possible words the encrypted string
 	 *         could be.
 	 */
-	public static String[] predictedWords(String word, boolean probable) {
+	public String[] predictedWords(String word, boolean probable) {
 		int[] encodedForm = encodeWord(word);
 		List<String> possibleWords = new ArrayList<String>();
 		String[] lines;
 		if (probable) {
-			lines = Utilities.readFile("mostProbable.txt");
+			lines = u.readFile("mostProbable.txt");
 		} else {
-			lines = Utilities.readFile("dictionary.txt");
+			lines = u.readFile("dictionary.txt");
 		}
 		for (String line : lines) {
 			if (line.length() == word.length()) {// If the lengths match... (This is to thin the field examined and
@@ -39,10 +49,11 @@ public class PredictWords {
 	/**
 	 * Encode a string in character index form.
 	 * 
-	 * @param word The string to be encoded with the character index system.
+	 * @param word
+	 *            The string to be encoded with the character index system.
 	 * @return An integer array of the encoded string in character index form.
 	 */
-	public static int[] encodeWord(String word) {
+	public int[] encodeWord(String word) {
 		int[] encodedText = new int[word.length()]; // Create output array.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.
@@ -59,10 +70,11 @@ public class PredictWords {
 	/**
 	 * Encode a phrase in character index form.
 	 * 
-	 * @param phrase The string to be encoded with the character index system.
+	 * @param phrase
+	 *            The string to be encoded with the character index system.
 	 * @return An integer array of the encoded string in character index form.
 	 */
-	public static int[][] encodePhrase(String[] phrase) {
+	public int[][] encodePhrase(String[] phrase) {
 		int[][] encodedText = new int[phrase.length][]; // Create output array.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.

@@ -28,11 +28,13 @@ public class Tester {
 		// keys), otherText));
 
 		// Utilities.generateObjectHashTable("2grams.txt ", "2grams.ohtb");
-		DetectEnglish b = new DetectEnglish();
+		//DetectEnglish b = new DetectEnglish();
 		// System.out.println(b.detectEnglish(otherText));
 		// System.out.println(NGramAnalyser.computeScore(3, otherText, false));
 		// System.out.println(b.respace(otherText, 20));
-		System.out.println(b.chiSquaredTest(otherText));
+		//System.out.println(b.chiSquaredTest(otherText));
+		IOC i = new IOC();
+		i.peroidicIndexOfCoincidence(otherText);
 
 	}
 

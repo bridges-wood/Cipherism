@@ -5,25 +5,34 @@ import java.util.TreeMap;
 
 public class NGramAnalyser {
 
-	public static double floor;
-	public static String[] letters = "qwertyuiopasdfghjklzxcvbnm".split("");
+	private double floor;
+	private String[] letters;
+	private Utilities u;
+
+	NGramAnalyser() {
+		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
+		u = new Utilities();
+	}
 
 	/**
 	 * Creates a map of ngrams in target text.
 	 * 
-	 * @param n        Integer length of the ngrams to be found in the text.
-	 * @param text     String to be analysed.
-	 * @param isSpaced Boolean whether or not the text contains spaces already.
+	 * @param n
+	 *            Integer length of the ngrams to be found in the text.
+	 * @param text
+	 *            String to be analysed.
+	 * @param isSpaced
+	 *            Boolean whether or not the text contains spaces already.
 	 * @return TreeMap of all ngrams and fraction of text they represent.
 	 */
-	public static TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
+	public TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
 		// Breakdown by words or not (this is not necessary as the code works on
 		// unspaced inputs equally well)
-		String[] words = Utilities.cleanText(text).split("\\s+"); // Takes every word in text and
-																	// removes all punctuation
-																	// before adding it to the
-																	// array.
+		String[] words = u.cleanText(text).split("\\s+"); // Takes every word in text and
+															// removes all punctuation
+															// before adding it to the
+															// array.
 		for (String word : words) {
 			String temp = word;
 			word = " " + temp + " "; // Adds spaces to the end of every word (Allows for word end and start
@@ -70,17 +79,18 @@ public class NGramAnalyser {
 	/**
 	 * Creates a map of letter frequencies in target text.
 	 * 
-	 * @param text String to be analysed.
+	 * @param text
+	 *            String to be analysed.
 	 * @return TreeMap of all letters and their integer occurrences in text.
 	 */
-	public static TreeMap<String, Integer> frequencyAnalysis(String text) {
+	public TreeMap<String, Integer> frequencyAnalysis(String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
 		// Breakdown by words or not (this is not necessary as the code works on
 		// unspaced inputs equally well)
-		String[] characters = Utilities.cleanText(text).split(""); // Takes every word in text and
-																	// removes all punctuation
-																	// before adding it to the
-																	// array.
+		String[] characters = u.cleanText(text).split(""); // Takes every word in text and
+															// removes all punctuation
+															// before adding it to the
+															// array.
 		for (String letter : characters) {
 			// Generate ngrams for each word.
 			if (ngrams.containsKey(letter)) {
@@ -89,8 +99,8 @@ public class NGramAnalyser {
 				ngrams.put(letter, 1);
 			}
 		}
-		for(String letter : letters) {
-			if(!ngrams.containsKey(letter)) {
+		for (String letter : letters) {
+			if (!ngrams.containsKey(letter)) {
 				ngrams.put(letter, 0);
 			}
 		}
@@ -100,14 +110,16 @@ public class NGramAnalyser {
 	/**
 	 * Creates a map of ngrams and frequencies in unspaced target text.
 	 * 
-	 * @param n    Integer length of the ngrams to be found in the text.
-	 * @param text String to be analysed.
+	 * @param n
+	 *            Integer length of the ngrams to be found in the text.
+	 * @param text
+	 *            String to be analysed.
 	 * @return TreeMap of all length n strings in the text, in order to look for
 	 *         repeats.
 	 */
-	public static TreeMap<String, Integer> kasiskiBase(int n, String text) {
+	public TreeMap<String, Integer> kasiskiBase(int n, String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
-		text = Utilities.cleanText(text);
+		text = u.cleanText(text);
 		char[] chars = text.toCharArray();
 		// Generate ngrams for each word.
 		for (int i = 0; i < (chars.length - n) + 1; i++) {
@@ -136,16 +148,19 @@ public class NGramAnalyser {
 	 * Computes the log score for the ngrams present in the analysed text. Higher is
 	 * better.
 	 * 
-	 * @param n       The length of the nGrams we wish to test for.
-	 * @param text    The input text to be analysed.
-	 * @param perGram Whether or not we want an adjusted score based on the length
-	 *                of text, in order to compare texts of varying lengths.
+	 * @param n
+	 *            The length of the nGrams we wish to test for.
+	 * @param text
+	 *            The input text to be analysed.
+	 * @param perGram
+	 *            Whether or not we want an adjusted score based on the length of
+	 *            text, in order to compare texts of varying lengths.
 	 * @return A double representing the total score of the text. Higher is better.
 	 */
-	public static double computeScore(int n, String text, boolean perGram) {
+	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
 		TreeMap<String, Double> ngrams = loadNgramMap(n);
-		char[] letters = Utilities.cleanText(text).toCharArray(); // Clean up input.
+		char[] letters = u.cleanText(text).toCharArray(); // Clean up input.
 		for (int i = 0; i < letters.length - n; i += n) {// Assures we can get the most number of ngrams without
 															// overflow.
 			StringBuilder graph = new StringBuilder();
@@ -170,27 +185,28 @@ public class NGramAnalyser {
 	 * Loads a TreeMap from a file containing ngrams in English and their relative
 	 * appearances in Google's trillion word corpus.
 	 * 
-	 * @param size The number of letters to be examined for.
+	 * @param size
+	 *            The number of letters to be examined for.
 	 * @return A TreeMap containing ngrams and their logProbability of occurring.
 	 */
-	public static TreeMap<String, Double> loadNgramMap(int size) {
+	public TreeMap<String, Double> loadNgramMap(int size) {
 		TreeMap<String, Double> chances = new TreeMap<String, Double>();
 		String[] lines = null;
 		switch (size) { // Load the file that we're interested in.
 		case 1:
-			lines = Utilities.readFile("1l.txt");
+			lines = u.readFile("1l.txt");
 			break;
 		case 2:
-			lines = Utilities.readFile("2l.txt");
+			lines = u.readFile("2l.txt");
 			break;
 		case 3:
-			lines = Utilities.readFile("3l.txt");
+			lines = u.readFile("3l.txt");
 			break;
 		case 4:
-			lines = Utilities.readFile("4l.txt");
+			lines = u.readFile("4l.txt");
 			break;
 		case 5:
-			lines = Utilities.readFile("5l.txt");
+			lines = u.readFile("5l.txt");
 			break;
 		}
 		for (String line : lines) {

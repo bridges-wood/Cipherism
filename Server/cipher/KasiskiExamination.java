@@ -15,20 +15,31 @@ import java.util.TreeMap;
 
 public class KasiskiExamination {
 
-	public static char[] frequencyOrder = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
-	public static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
-	public static List<String> possKeys = new ArrayList<String>();
+	private char[] alphabet;
+	private List<String> possKeys;
+	private Utilities u;
+
+	KasiskiExamination() {
+		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
+		possKeys = new ArrayList<String>();
+		u = new Utilities();
+	}
+
+	// TODO Possibly re-add dectectEnglish to the keyGuesserVigenere method to
+	// refine the score of each key component.
 
 	/**
 	 * Provides the most likely string which is the key to a vigenere cipher. There
 	 * are issues when short sample texts with long keywords are analysed leading to
 	 * keys that are close but not perfect.
 	 * 
-	 * @param keyLength The predicted length of the key.
-	 * @param text      The encrypted text.
+	 * @param keyLength
+	 *            The predicted length of the key.
+	 * @param text
+	 *            The encrypted text.
 	 * @return The most likely key for the given text and key length.
 	 */
-	public static String keyGuesserVigenere(int keyLength, String text) {
+	public String keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
 		if (keyLength == 0) {
 			return "";
@@ -81,12 +92,13 @@ public class KasiskiExamination {
 	/**
 	 * Gives the frequency match score for given text.
 	 * 
-	 * @param letterOccurences A map containing each letter and their integer
-	 *                         occurences in the text.
+	 * @param letterOccurences
+	 *            A map containing each letter and their integer occurences in the
+	 *            text.
 	 * @return How many of the most and least likely six letters occur in the right
 	 *         regions of the analysed text.
 	 */
-	public static int computeFMS(Map<String, Integer> letterOccurences) {
+	public int computeFMS(Map<String, Integer> letterOccurences) {
 		int FMS = 0;
 		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' }; // The six least likely characters in English.
 		char[] mostLikely = new char[] { 'e', 't', 'a', 'o', 'i', 'n' }; // The six most likely characters in English.
@@ -158,12 +170,14 @@ public class KasiskiExamination {
 	/**
 	 * Determines the most likely key length for a given text.
 	 * 
-	 * @param text       The polyalphabetically enciphered text.
-	 * @param likelyKeys An array of the lengths of possible keys used to encipher
-	 *                   the text.
+	 * @param text
+	 *            The polyalphabetically enciphered text.
+	 * @param likelyKeys
+	 *            An array of the lengths of possible keys used to encipher the
+	 *            text.
 	 * @return The most likely key length.
 	 */
-	public static int mostLikelyKeyLength(String text, int[] likelyKeys) {
+	public int mostLikelyKeyLength(String text, int[] likelyKeys) {
 		int textLength = text.length(); // Creates a variable to store the length of the text to avoid recalculation.
 		float[] averageIOCs = new float[likelyKeys.length]; // An array to store the indices of coincidence of the
 															// different key lengths.
@@ -202,15 +216,16 @@ public class KasiskiExamination {
 	 * occurences of the most common factor. This seems to always locate the key
 	 * somewhere in the array though I don't yet understand why.
 	 * 
-	 * @param repeated A map of the repeated sequences of a given length in the
-	 *                 text.
-	 * @param text     The polyalphabetically encrypted text.
+	 * @param repeated
+	 *            A map of the repeated sequences of a given length in the text.
+	 * @param text
+	 *            The polyalphabetically encrypted text.
 	 * @return An array of the possible key lengths of the text and their repsective
 	 *         occurences.
 	 */
-	public static int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
-		text = Utilities.cleanText(text); // Normalise text to only lower case letters for ease of
-											// work.
+	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
+		text = u.cleanText(text); // Normalise text to only lower case letters for ease of
+									// work.
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {
@@ -258,10 +273,11 @@ public class KasiskiExamination {
 	 * Returns the key corresponding to the maximum value in a <Integer, Integer>
 	 * Map
 	 * 
-	 * @param map The input <Integer, Integer> Map.
+	 * @param map
+	 *            The input <Integer, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	public static Integer maxKeyInt(Map<Integer, Integer> map) {
+	public Integer maxKeyInt(Map<Integer, Integer> map) {
 		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
@@ -274,10 +290,11 @@ public class KasiskiExamination {
 	/**
 	 * Returns the key corresponding to the maximum value in a <String, Integer> Map
 	 * 
-	 * @param map The input <String, Integer> Map.
+	 * @param map
+	 *            The input <String, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	public static String maxKeyString(Map<String, Integer> map) {
+	public String maxKeyString(Map<String, Integer> map) {
 		return map.entrySet().stream().max((Entry<String, Integer> entry1, Entry<String, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
@@ -290,10 +307,11 @@ public class KasiskiExamination {
 	/**
 	 * Returns the key corresponding to the minimum value in a <String, Integer> Map
 	 * 
-	 * @param map The input <String, Integer> Map.
+	 * @param map
+	 *            The input <String, Integer> Map.
 	 * @return The key corresponding to the minimum value in the map.
 	 */
-	public static String minKeyString(Map<String, Integer> map) {
+	public String minKeyString(Map<String, Integer> map) {
 		Comparator<? super Entry<String, Integer>> valueComparator = (entry1, entry2) -> entry1.getValue()
 				.compareTo(entry2.getValue());
 
@@ -302,16 +320,17 @@ public class KasiskiExamination {
 	}
 
 	/**
-	 * Create a map with all primefactors in the differences between repeated
-	 * strings and their relative occurences.
+	 * Create a map with all prime factors in the differences between repeated
+	 * strings and their relative occurrences.
 	 * 
-	 * @param foundFactors A map corresponding to the factors of the differences
-	 *                     between repeated strings and their relative number of
-	 *                     occurences.
-	 * @param n            The number to be factorised.
+	 * @param foundFactors
+	 *            A map corresponding to the factors of the differences between
+	 *            repeated strings and their relative number of occurrences.
+	 * @param n
+	 *            The number to be factorized.
 	 * @return The map updated with n's factors.
 	 */
-	public static Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
+	public Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
 		for (int i = 2; i < Math.sqrt(n); i++) {
 			if (n % i == 0) {
 				if (!foundFactors.containsKey(i)) { // If this factor hasn't been found before:
@@ -333,10 +352,11 @@ public class KasiskiExamination {
 	/**
 	 * Provides the index of the highest value in a float array.
 	 * 
-	 * @param array An array of floats.
+	 * @param array
+	 *            An array of floats.
 	 * @return The index of the highest value in the array.
 	 */
-	public static int maxValueIndex(float[] array) {
+	public int maxValueIndex(float[] array) {
 		int maxIndex = 0;
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] > array[maxIndex]) {
@@ -350,15 +370,16 @@ public class KasiskiExamination {
 	 * Takes a 2D array of strings and outputs all the possible combinations of that
 	 * array.
 	 * 
-	 * @param input      The 2D (Likely truncated) String[] containing all the
-	 *                   possible letters at each point in the key.
-	 * @param currentKey The current combination of letters being produced by the
-	 *                   function.
-	 * @param counter    A variable to keep track how deep in the 2D array the
-	 *                   function is.
+	 * @param input
+	 *            The 2D (Likely truncated) String[] containing all the possible
+	 *            letters at each point in the key.
+	 * @param currentKey
+	 *            The current combination of letters being produced by the function.
+	 * @param counter
+	 *            A variable to keep track how deep in the 2D array the function is.
 	 * @return A String[] of possible keys.
 	 */
-	public static void combinations(String[][] input, String[] currentKey, int counter) {
+	public void combinations(String[][] input, String[] currentKey, int counter) {
 
 		if (counter == input.length) { // If current is a word containing one string from each level of the array...
 			StringBuilder out = new StringBuilder();

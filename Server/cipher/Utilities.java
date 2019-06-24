@@ -15,13 +15,22 @@ import src.GroupProbabilityPair;
 
 public class Utilities {
 
+	private long FNV1_64_INIT;
+	private long FNV1_PRIME_64;
+
+	Utilities() {
+		FNV1_64_INIT = 0xcbf29ce484222325L;
+		FNV1_PRIME_64 = 1099511628211L;
+	}
+
 	/**
 	 * Returns all lines in a text file as separate words in a string array.
 	 * 
-	 * @param filename The name of the file to be retrieved.
+	 * @param filename
+	 *            The name of the file to be retrieved.
 	 * @return A string array of each line in the file.
 	 */
-	public static String[] readFile(String filename) {
+	public String[] readFile(String filename) {
 		List<String> words = new ArrayList<String>();
 		File file = new File(filename);
 		Scanner sc = null;
@@ -37,16 +46,14 @@ public class Utilities {
 		return words.toArray(new String[0]);
 	}
 
-	private static final long FNV1_64_INIT = 0xcbf29ce484222325L;
-	private static final long FNV1_PRIME_64 = 1099511628211L;
-
 	/**
 	 * Gives the 64 bit FNV1a hash of an input string.
 	 *
-	 * @param text The text from which the hash is to be generated.
+	 * @param text
+	 *            The text from which the hash is to be generated.
 	 * @return The hash of the input data.
 	 */
-	public static long hash64(String text) {
+	public long hash64(String text) {
 		byte[] data = text.getBytes();
 		int length = data.length;
 		long hash = FNV1_64_INIT;
@@ -64,10 +71,12 @@ public class Utilities {
 	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
 	 * String>.
 	 * 
-	 * @param filename       The name of the file which lines are to be read from.
-	 * @param outputFilename The name of the file to which the hashtable is saved.
+	 * @param filename
+	 *            The name of the file which lines are to be read from.
+	 * @param outputFilename
+	 *            The name of the file to which the hashtable is saved.
 	 */
-	public static void generateHashTable(String filename, String outputFilename) {
+	public void generateHashTable(String filename, String outputFilename) {
 		File fromFile = new File(filename);
 		File toFile = new File(outputFilename);
 		Hashtable<Long, String> hashTable = new Hashtable<Long, String>();
@@ -91,10 +100,12 @@ public class Utilities {
 	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
 	 * GroupProbabilityPair>.
 	 * 
-	 * @param filename       The name of the file which lines are to be read from.
-	 * @param outputFilename The name of the file to which the hashtable is saved.
+	 * @param filename
+	 *            The name of the file which lines are to be read from.
+	 * @param outputFilename
+	 *            The name of the file to which the hashtable is saved.
 	 */
-	public static void generateObjectHashTable(String filename, String outputFilename) {
+	public void generateObjectHashTable(String filename, String outputFilename) {
 		File fromFile = new File(filename);
 		File toFile = new File(outputFilename);
 		Hashtable<Long, GroupProbabilityPair> hashTable = new Hashtable<Long, GroupProbabilityPair>();
@@ -124,7 +135,7 @@ public class Utilities {
 	 * @param filename
 	 * @return
 	 */
-	public static Hashtable<?, ?> readHashTable(String filename) {
+	public Hashtable<?, ?> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
 			FileInputStream fileIn = new FileInputStream(fromFile);
@@ -145,10 +156,11 @@ public class Utilities {
 	/**
 	 * Cleans a given piece of text.
 	 * 
-	 * @param text The text to be cleaned.
+	 * @param text
+	 *            The text to be cleaned.
 	 * @return The same text with only alphabetic characters, in lower case.
 	 */
-	public static String cleanText(String text) {
+	public String cleanText(String text) {
 		return text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
 	}
 }
