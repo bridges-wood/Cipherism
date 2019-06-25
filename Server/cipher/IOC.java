@@ -15,11 +15,9 @@ public class IOC {
 	/**
 	 * Returns the kappa value of the monogram analysed text.
 	 * 
-	 * @param letters
-	 *            A pre-created map of all monograms (ie. letters) in the text and
-	 *            the respective fractions of the whole they make up.
-	 * @param length
-	 *            Integer length of the text being analysed.
+	 * @param letters A pre-created map of all monograms (ie. letters) in the text
+	 *                and the respective fractions of the whole they make up.
+	 * @param length  Integer length of the text being analysed.
 	 * 
 	 * @return The kappa value of the text.
 	 */
@@ -37,8 +35,7 @@ public class IOC {
 	/**
 	 * Returns the true index of coincidence of analysed text.
 	 * 
-	 * @param letters
-	 *            A map of letters and their integer occurrences within text.
+	 * @param letters A map of letters and their integer occurrences within text.
 	 * @return A float.
 	 */
 	public float indexOfCoincidence(Map<String, Integer> letters) {
@@ -56,8 +53,7 @@ public class IOC {
 	 * Returns an array of the indices of coincidence for nth letters in the text
 	 * starting at 2.
 	 * 
-	 * @param text
-	 *            The text to be analysed.
+	 * @param text The text to be analysed.
 	 * @return An array of nth letter IOC scores.
 	 */
 	public float[] peroidicIndexOfCoincidence(String text) {
@@ -76,7 +72,6 @@ public class IOC {
 																					// added to the score.
 			}
 			out[nth - 2] = score / nth; // The score added to the array is magnitude adjusted to allow for comparison.
-			System.out.println(score / nth);
 		}
 		return out;
 	}

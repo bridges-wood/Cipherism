@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import src.IOC;
-import src.NGramAnalyser;
-import src.Vigenere;
-
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -18,11 +14,17 @@ public class KasiskiExamination {
 	private char[] alphabet;
 	private List<String> possKeys;
 	private Utilities u;
+	private NGramAnalyser n;
+	private Vigenere v;
+	private IOC i;
 
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
 		u = new Utilities();
+		n = new NGramAnalyser();
+		v = new Vigenere();
+		i = new IOC();
 	}
 
 	// TODO Possibly re-add dectectEnglish to the keyGuesserVigenere method to
@@ -33,10 +35,8 @@ public class KasiskiExamination {
 	 * are issues when short sample texts with long keywords are analysed leading to
 	 * keys that are close but not perfect.
 	 * 
-	 * @param keyLength
-	 *            The predicted length of the key.
-	 * @param text
-	 *            The encrypted text.
+	 * @param keyLength The predicted length of the key.
+	 * @param text      The encrypted text.
 	 * @return The most likely key for the given text and key length.
 	 */
 	public String keyGuesserVigenere(int keyLength, String text) {
@@ -55,8 +55,9 @@ public class KasiskiExamination {
 											// respective section to.
 			int maxValue = 0; // The most like english value in the array.
 			for (int i = 0; i < 26; i++) {
-				int valueToInsert = computeFMS(NGramAnalyser // Compute FMS of the composite.
-						.frequencyAnalysis(Vigenere.decrypt(finalString, Character.toString(alphabet[i]))));
+				int valueToInsert = computeFMS(
+						n.frequencyAnalysis(v.decrypt(finalString, Character.toString(alphabet[i]))));
+				// Compute FMS of the composite.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
 				FMSarray[i] = valueToInsert;
@@ -76,13 +77,12 @@ public class KasiskiExamination {
 			possibleKeys = possKeys.toArray(new String[0]);
 			float[] IOCs = new float[possibleKeys.length];
 			int maxIndex = 0;
-			for (int i = 0; i < possibleKeys.length; i++) {
-				System.out.println(Vigenere.decrypt(text, possibleKeys[i]));
-				float toInsert = IOC
-						.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(Vigenere.decrypt(text, possibleKeys[i])));
-				IOCs[i] = toInsert;
+			for (int length = 0; length < possibleKeys.length; length++) {
+				System.out.println(v.decrypt(text, possibleKeys[length]));
+				float toInsert = i.indexOfCoincidence(n.frequencyAnalysis(v.decrypt(text, possibleKeys[length])));
+				IOCs[length] = toInsert;
 				if (toInsert > IOCs[maxIndex])
-					maxIndex = i;
+					maxIndex = length;
 			}
 			return possibleKeys[maxIndex]; // Returns the most likely key.
 		}
@@ -92,9 +92,8 @@ public class KasiskiExamination {
 	/**
 	 * Gives the frequency match score for given text.
 	 * 
-	 * @param letterOccurences
-	 *            A map containing each letter and their integer occurences in the
-	 *            text.
+	 * @param letterOccurences A map containing each letter and their integer
+	 *                         occurences in the text.
 	 * @return How many of the most and least likely six letters occur in the right
 	 *         regions of the analysed text.
 	 */
@@ -170,11 +169,9 @@ public class KasiskiExamination {
 	/**
 	 * Determines the most likely key length for a given text.
 	 * 
-	 * @param text
-	 *            The polyalphabetically enciphered text.
-	 * @param likelyKeys
-	 *            An array of the lengths of possible keys used to encipher the
-	 *            text.
+	 * @param text       The polyalphabetically enciphered text.
+	 * @param likelyKeys An array of the lengths of possible keys used to encipher
+	 *                   the text.
 	 * @return The most likely key length.
 	 */
 	public int mostLikelyKeyLength(String text, int[] likelyKeys) {
@@ -191,9 +188,9 @@ public class KasiskiExamination {
 					composite.append(text.charAt(i + b));
 				}
 				String finalString = composite.toString();
-				total += IOC.indexOfCoincidence(NGramAnalyser.frequencyAnalysis(finalString)); // Total is the sum of
-																								// the indices of
-																								// conincidence.
+				total += i.indexOfCoincidence(n.frequencyAnalysis(finalString)); // Total is the sum of
+																					// the indices of
+																					// conincidence.
 			}
 			averageIOCs[counter] = total / keyLength; // Geometric mean to offset for the different numbers of indices
 														// of coincidence that will be developed for different key
@@ -216,10 +213,9 @@ public class KasiskiExamination {
 	 * occurences of the most common factor. This seems to always locate the key
 	 * somewhere in the array though I don't yet understand why.
 	 * 
-	 * @param repeated
-	 *            A map of the repeated sequences of a given length in the text.
-	 * @param text
-	 *            The polyalphabetically encrypted text.
+	 * @param repeated A map of the repeated sequences of a given length in the
+	 *                 text.
+	 * @param text     The polyalphabetically encrypted text.
 	 * @return An array of the possible key lengths of the text and their repsective
 	 *         occurences.
 	 */
@@ -273,8 +269,7 @@ public class KasiskiExamination {
 	 * Returns the key corresponding to the maximum value in a <Integer, Integer>
 	 * Map
 	 * 
-	 * @param map
-	 *            The input <Integer, Integer> Map.
+	 * @param map The input <Integer, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
 	public Integer maxKeyInt(Map<Integer, Integer> map) {
@@ -290,8 +285,7 @@ public class KasiskiExamination {
 	/**
 	 * Returns the key corresponding to the maximum value in a <String, Integer> Map
 	 * 
-	 * @param map
-	 *            The input <String, Integer> Map.
+	 * @param map The input <String, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
 	public String maxKeyString(Map<String, Integer> map) {
@@ -307,8 +301,7 @@ public class KasiskiExamination {
 	/**
 	 * Returns the key corresponding to the minimum value in a <String, Integer> Map
 	 * 
-	 * @param map
-	 *            The input <String, Integer> Map.
+	 * @param map The input <String, Integer> Map.
 	 * @return The key corresponding to the minimum value in the map.
 	 */
 	public String minKeyString(Map<String, Integer> map) {
@@ -323,11 +316,10 @@ public class KasiskiExamination {
 	 * Create a map with all prime factors in the differences between repeated
 	 * strings and their relative occurrences.
 	 * 
-	 * @param foundFactors
-	 *            A map corresponding to the factors of the differences between
-	 *            repeated strings and their relative number of occurrences.
-	 * @param n
-	 *            The number to be factorized.
+	 * @param foundFactors A map corresponding to the factors of the differences
+	 *                     between repeated strings and their relative number of
+	 *                     occurrences.
+	 * @param n            The number to be factorized.
 	 * @return The map updated with n's factors.
 	 */
 	public Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
@@ -352,8 +344,7 @@ public class KasiskiExamination {
 	/**
 	 * Provides the index of the highest value in a float array.
 	 * 
-	 * @param array
-	 *            An array of floats.
+	 * @param array An array of floats.
 	 * @return The index of the highest value in the array.
 	 */
 	public int maxValueIndex(float[] array) {
@@ -370,13 +361,12 @@ public class KasiskiExamination {
 	 * Takes a 2D array of strings and outputs all the possible combinations of that
 	 * array.
 	 * 
-	 * @param input
-	 *            The 2D (Likely truncated) String[] containing all the possible
-	 *            letters at each point in the key.
-	 * @param currentKey
-	 *            The current combination of letters being produced by the function.
-	 * @param counter
-	 *            A variable to keep track how deep in the 2D array the function is.
+	 * @param input      The 2D (Likely truncated) String[] containing all the
+	 *                   possible letters at each point in the key.
+	 * @param currentKey The current combination of letters being produced by the
+	 *                   function.
+	 * @param counter    A variable to keep track how deep in the 2D array the
+	 *                   function is.
 	 * @return A String[] of possible keys.
 	 */
 	public void combinations(String[][] input, String[] currentKey, int counter) {

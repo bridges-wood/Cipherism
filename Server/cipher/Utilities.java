@@ -11,8 +11,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
-import src.GroupProbabilityPair;
-
 public class Utilities {
 
 	private long FNV1_64_INIT;
