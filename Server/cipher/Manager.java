@@ -76,6 +76,10 @@ public class Manager {
 			if ((0.686 - kappa) / kappa < 0.3) {
 				return "Monoalphabetic";
 			} else {
+				float[] periodicIOCs = i.peroidicIndexOfCoincidence(text);
+				for(int i = 0; i < periodicIOCs.length; i++) {
+					periodicIOCs[i] = (float) Math.pow(1 - periodicIOCs[i], 2);
+				}
 				// For periodic analysis, need a reliable way to identify the 'peaks'. Take the
 				// distance from 1 and square it then look at minima.
 			}
