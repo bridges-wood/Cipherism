@@ -56,12 +56,12 @@ public class IOC {
 	 * @param text The text to be analysed.
 	 * @return An array of nth letter IOC scores.
 	 */
-	public float[] peroidicIndexOfCoincidence(String text) {
+	public double[] peroidicIndexOfCoincidence(String text) {
 		char[] letters = u.cleanText(text).toCharArray();
-		float[] out = new float[(letters.length / 2) - 1]; // Creates an array thats the size of the number scores we
+		double[] out = new double[(letters.length / 2) - 1]; // Creates an array thats the size of the number scores we
 															// shall gather.
 		for (int nth = 2; nth < letters.length / 2; nth++) {
-			float score = 0; // The score for the key length.
+			double score = 0; // The score for the key length.
 			for (int start = 0; start < nth; start++) { // Offsets until we get to one less the length of the key as we
 														// don't need to continue past there as we have already seen it.
 				StringBuilder nths = new StringBuilder(); // Creates a StringBuilder to store our nth letters in.

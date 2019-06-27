@@ -48,6 +48,7 @@ public class Vigenere {
 			char c = text.charAt(i);
 			if (c < 'a' || c > 'z')
 				continue;
+			System.out.println(key);
 			output += (char) ((c - key.charAt(j) + 26) % 26 + 'a');
 			j = ++j % key.length();
 		}

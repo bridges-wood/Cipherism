@@ -17,6 +17,7 @@ public class KasiskiExamination {
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
+	private DetectEnglish d;
 
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
@@ -25,10 +26,18 @@ public class KasiskiExamination {
 		n = new NGramAnalyser();
 		v = new Vigenere();
 		i = new IOC();
+		d = new DetectEnglish();
 	}
 
-	// TODO Possibly re-add dectectEnglish to the keyGuesserVigenere method to
-	// refine the score of each key component.
+	/**
+	 * Gives the most likely key for the given text.
+	 * 
+	 * @param text The input text to be text.
+	 * @return The most likely key used to encrypt the text.
+	 */
+	public String run(String text) {
+		return keyGuesserVigenere(mostLikelyKeyLength(likelyKeyLengths(n.kasiskiBase(3, text), text), text), text); //This returns an empty key.
+	}
 
 	/**
 	 * Provides the most likely string which is the key to a vigenere cipher. There
@@ -39,7 +48,7 @@ public class KasiskiExamination {
 	 * @param text      The encrypted text.
 	 * @return The most likely key for the given text and key length.
 	 */
-	public String keyGuesserVigenere(int keyLength, String text) {
+	private String keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
 		if (keyLength == 0) {
 			return "";
@@ -51,12 +60,12 @@ public class KasiskiExamination {
 				composite.append(text.charAt(i + b));
 			}
 			String finalString = composite.toString();
-			int[] FMSarray = new int[26]; // Create array for each letter to test how like english it decrypts its
-											// respective section to.
-			int maxValue = 0; // The most like english value in the array.
+			double[] FMSarray = new double[26]; // Create array for each letter to test how like english it decrypts its
+			// respective section to.
+			double maxValue = 0; // The most like english value in the array.
 			for (int i = 0; i < 26; i++) {
-				int valueToInsert = computeFMS(
-						n.frequencyAnalysis(v.decrypt(finalString, Character.toString(alphabet[i]))));
+				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
+				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse)) * d.detectEnglish(toAnalyse);
 				// Compute FMS of the composite.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
@@ -75,13 +84,14 @@ public class KasiskiExamination {
 		String[] possibleKeys = new String[0];
 		if (!possKeys.isEmpty()) { // Avoids Null Exceptions and the like.
 			possibleKeys = possKeys.toArray(new String[0]);
-			float[] IOCs = new float[possibleKeys.length];
+			double[] decryptionScores = new double[possibleKeys.length];
 			int maxIndex = 0;
 			for (int length = 0; length < possibleKeys.length; length++) {
 				System.out.println(v.decrypt(text, possibleKeys[length]));
-				float toInsert = i.indexOfCoincidence(n.frequencyAnalysis(v.decrypt(text, possibleKeys[length])));
-				IOCs[length] = toInsert;
-				if (toInsert > IOCs[maxIndex])
+				String toAnalyse = v.decrypt(text, possibleKeys[length]);
+				double toInsert = i.indexOfCoincidence(n.frequencyAnalysis(toAnalyse)) * d.detectEnglish(toAnalyse);
+				decryptionScores[length] = toInsert;
+				if (toInsert > decryptionScores[maxIndex])
 					maxIndex = length;
 			}
 			return possibleKeys[maxIndex]; // Returns the most likely key.
@@ -97,7 +107,7 @@ public class KasiskiExamination {
 	 * @return How many of the most and least likely six letters occur in the right
 	 *         regions of the analysed text.
 	 */
-	public int computeFMS(Map<String, Integer> letterOccurences) {
+	private int computeFMS(Map<String, Integer> letterOccurences) {
 		int FMS = 0;
 		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' }; // The six least likely characters in English.
 		char[] mostLikely = new char[] { 'e', 't', 'a', 'o', 'i', 'n' }; // The six most likely characters in English.
@@ -174,7 +184,7 @@ public class KasiskiExamination {
 	 *                   the text.
 	 * @return The most likely key length.
 	 */
-	public int mostLikelyKeyLength(String text, int[] likelyKeys) {
+	private int mostLikelyKeyLength(int[] likelyKeys, String text) {
 		int textLength = text.length(); // Creates a variable to store the length of the text to avoid recalculation.
 		float[] averageIOCs = new float[likelyKeys.length]; // An array to store the indices of coincidence of the
 															// different key lengths.
@@ -219,7 +229,7 @@ public class KasiskiExamination {
 	 * @return An array of the possible key lengths of the text and their repsective
 	 *         occurences.
 	 */
-	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
+	private int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
 		text = u.cleanText(text); // Normalise text to only lower case letters for ease of
 									// work.
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
@@ -272,7 +282,7 @@ public class KasiskiExamination {
 	 * @param map The input <Integer, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	public Integer maxKeyInt(Map<Integer, Integer> map) {
+	private Integer maxKeyInt(Map<Integer, Integer> map) {
 		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
@@ -288,7 +298,7 @@ public class KasiskiExamination {
 	 * @param map The input <String, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	public String maxKeyString(Map<String, Integer> map) {
+	private String maxKeyString(Map<String, Integer> map) {
 		return map.entrySet().stream().max((Entry<String, Integer> entry1, Entry<String, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
 																			// map, comparing all values. One is set to
@@ -304,7 +314,7 @@ public class KasiskiExamination {
 	 * @param map The input <String, Integer> Map.
 	 * @return The key corresponding to the minimum value in the map.
 	 */
-	public String minKeyString(Map<String, Integer> map) {
+	private String minKeyString(Map<String, Integer> map) {
 		Comparator<? super Entry<String, Integer>> valueComparator = (entry1, entry2) -> entry1.getValue()
 				.compareTo(entry2.getValue());
 
@@ -322,7 +332,7 @@ public class KasiskiExamination {
 	 * @param n            The number to be factorized.
 	 * @return The map updated with n's factors.
 	 */
-	public Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
+	private Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
 		for (int i = 2; i < Math.sqrt(n); i++) {
 			if (n % i == 0) {
 				if (!foundFactors.containsKey(i)) { // If this factor hasn't been found before:
@@ -347,7 +357,7 @@ public class KasiskiExamination {
 	 * @param array An array of floats.
 	 * @return The index of the highest value in the array.
 	 */
-	public int maxValueIndex(float[] array) {
+	private int maxValueIndex(float[] array) {
 		int maxIndex = 0;
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] > array[maxIndex]) {
@@ -369,7 +379,7 @@ public class KasiskiExamination {
 	 *                   function is.
 	 * @return A String[] of possible keys.
 	 */
-	public void combinations(String[][] input, String[] currentKey, int counter) {
+	private void combinations(String[][] input, String[] currentKey, int counter) {
 
 		if (counter == input.length) { // If current is a word containing one string from each level of the array...
 			StringBuilder out = new StringBuilder();

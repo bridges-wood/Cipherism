@@ -1,6 +1,7 @@
 package cipher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * For all devices connected to the server, we will assign a Manager to it.
@@ -11,24 +12,45 @@ public class Manager {
 	private IOC i;
 	private NGramAnalyser n;
 	private DetectEnglish d;
+	private KasiskiExamination k;
+	private Vigenere v;
 
 	Manager(String text) {
 		u = new Utilities();
 		i = new IOC();
 		n = new NGramAnalyser();
 		d = new DetectEnglish();
+		k = new KasiskiExamination();
+		v = new Vigenere();
 		run(u.cleanText(text));
 	}
 
-	private void run(String text) {
+	private String run(String text) {
 		switch (detectCipher(text)) {
-		case "Vigenere":
-			break;
+		case "Periodic":
+			// Need to make sure key isn't null.
+			return d.respace(v.decrypt(text, k.run(text)), 20);
 		case "Substitution":
+			// Start substitution breaking.
+			// Return most likely substitution.
+			break;
+		case "Baconian":
+			// ?
+			break;
+		case "Polybius":
+			// ?
+			break;
+		case "Complex Square":
+			// ?
+			break;
+		case "Transposition":
+			// ?
 			break;
 		default:
+			// Give all information known on the cipher.
 			break;
 		}
+		return "";
 	}
 
 	private int charCount(String text) {
@@ -42,48 +64,50 @@ public class Manager {
 		return found.size();
 	}
 
-	private String detectCipher(String text) {
-		/*
-		 * Set text to a char array. Analyse how many different characters there are.
-		 * Use chi squared analysis to look at text. If it's not close, look at the
-		 * letter frequencies. Check index of coincidence. If this is close to english,
-		 * probably a substitution. Check periodic IOC. If spikes are identified, it is
-		 * a periodic cipher. Look at cipher length and identify if its a square type
-		 * cipher or not.
-		 */
-		switch (charCount(text)) {
-		case 2:
+	public String detectCipher(String text) {
+		int charCount = charCount(text);
+		if (charCount <= 2) {
 			return "Baconian";
-		case 5 | 6:
-			return "Polybius";
-		case 23 | 24 | 25:
-			if (u.cleanText(text).length() > 420) {
-				return "Complex Square";
-			} else {
+		}
+		if (text.length() > 30) {
+			switch (charCount) {
+			case 5 | 6:
+				return "Polybius";
+			case 23 | 24 | 25:
+				if (u.cleanText(text).length() > 420) {
+					return "Complex Square";
+				} else {
+					return refineGuess(text);
+				}
+			default:
 				return refineGuess(text);
 			}
-		default:
+		} else {
 			return refineGuess(text);
 		}
 	}
 
 	private String refineGuess(String text) {
-		double chiSquared = d.chiSquaredTest(text) / text.length();
+		double chiSquared = d.chiSquaredTest(text);
+		System.out.println(chiSquared);
 		if (chiSquared < 70) {
 			return "Transpostion";
 		} else {
-			float kappa = i.indexOfCoincidence(n.frequencyAnalysis(text));
+			float kappa = i.kappaText(n.NgramAnalysis(1, text, false), text.length());
 			if ((0.686 - kappa) / kappa < 0.3) {
-				return "Monoalphabetic";
+				return "Substitution";
 			} else {
-				float[] periodicIOCs = i.peroidicIndexOfCoincidence(text);
-				for(int i = 0; i < periodicIOCs.length; i++) {
+				double[] periodicIOCs = i.peroidicIndexOfCoincidence(text);
+				for (int i = 0; i < periodicIOCs.length; i++) {
 					periodicIOCs[i] = (float) Math.pow(1 - periodicIOCs[i], 2);
 				}
-				// For periodic analysis, need a reliable way to identify the 'peaks'. Take the
-				// distance from 1 and square it then look at minima.
+				Arrays.sort(periodicIOCs);
+				if (periodicIOCs[0] < 0.25 * periodicIOCs[periodicIOCs.length - 1]) {
+					return "Periodic";
+				} else {
+					return "";
+				}
 			}
 		}
-		return "";
 	}
 }
