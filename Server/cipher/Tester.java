@@ -9,7 +9,7 @@ public class Tester {
 	}
 
 	public void run() {
-		String otherText = "trqmamfzuiagzifvhhwwaijxrmwewwlpxrlrmag";
+		String otherText = "DLGCEROWRCXPSREYJYXEPLMRBEPIPCXKRRXMDVWKRBDIQDQWCSDDAYBI"; //a test string to be encrypted Key: tester
 		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
 		// single word prediction.
 		// System.out.println(word);

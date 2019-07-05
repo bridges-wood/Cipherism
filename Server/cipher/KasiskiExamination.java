@@ -17,7 +17,6 @@ public class KasiskiExamination {
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
-	private DetectEnglish d;
 
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
@@ -26,7 +25,6 @@ public class KasiskiExamination {
 		n = new NGramAnalyser();
 		v = new Vigenere();
 		i = new IOC();
-		d = new DetectEnglish();
 	}
 
 	/**
@@ -36,7 +34,11 @@ public class KasiskiExamination {
 	 * @return The most likely key used to encrypt the text.
 	 */
 	public String run(String text) {
-		return keyGuesserVigenere(mostLikelyKeyLength(likelyKeyLengths(n.kasiskiBase(3, text), text), text), text); //This returns an empty key.
+		return keyGuesserVigenere(mostLikelyKeyLength(likelyKeyLengths(n.kasiskiBase(3, text), text), text), text); // This
+																													// returns
+																													// an
+																													// empty
+																													// key.
 	}
 
 	/**
@@ -48,7 +50,7 @@ public class KasiskiExamination {
 	 * @param text      The encrypted text.
 	 * @return The most likely key for the given text and key length.
 	 */
-	private String keyGuesserVigenere(int keyLength, String text) {
+	public String keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
 		if (keyLength == 0) {
 			return "";
@@ -65,7 +67,7 @@ public class KasiskiExamination {
 			double maxValue = 0; // The most like english value in the array.
 			for (int i = 0; i < 26; i++) {
 				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
-				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse)) * d.detectEnglish(toAnalyse);
+				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse));
 				// Compute FMS of the composite.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
@@ -87,9 +89,8 @@ public class KasiskiExamination {
 			double[] decryptionScores = new double[possibleKeys.length];
 			int maxIndex = 0;
 			for (int length = 0; length < possibleKeys.length; length++) {
-				System.out.println(v.decrypt(text, possibleKeys[length]));
 				String toAnalyse = v.decrypt(text, possibleKeys[length]);
-				double toInsert = i.indexOfCoincidence(n.frequencyAnalysis(toAnalyse)) * d.detectEnglish(toAnalyse);
+				double toInsert = i.indexOfCoincidence(n.frequencyAnalysis(toAnalyse));
 				decryptionScores[length] = toInsert;
 				if (toInsert > decryptionScores[maxIndex])
 					maxIndex = length;
@@ -184,32 +185,17 @@ public class KasiskiExamination {
 	 *                   the text.
 	 * @return The most likely key length.
 	 */
-	private int mostLikelyKeyLength(int[] likelyKeys, String text) {
-		int textLength = text.length(); // Creates a variable to store the length of the text to avoid recalculation.
-		float[] averageIOCs = new float[likelyKeys.length]; // An array to store the indices of coincidence of the
+	public int mostLikelyKeyLength(int[] likelyKeys, String text) {
+		Double[] averageIOCs = new Double[likelyKeys.length]; // An array to store the indices of coincidence of the
 															// different key lengths.
 		int counter = -1;
 		for (int keyLength : likelyKeys) { // For each of the possible key lengths:
 			counter++;
-			float total = 0;
-			for (int b = 0; b < keyLength; b++) { // b is the balance, to offset each composite string in the text.
-				StringBuilder composite = new StringBuilder(); // StringBuilder for each composite to increase speed.
-				for (int i = 0; i < textLength - b; i += keyLength) {
-					composite.append(text.charAt(i + b));
-				}
-				String finalString = composite.toString();
-				total += i.indexOfCoincidence(n.frequencyAnalysis(finalString)); // Total is the sum of
-																					// the indices of
-																					// conincidence.
-			}
-			averageIOCs[counter] = total / keyLength; // Geometric mean to offset for the different numbers of indices
-														// of coincidence that will be developed for different key
-														// lengths.
+			double total = i.periodIndexOfCoincidence(keyLength, text);
+			averageIOCs[counter] = total;
 		}
 		if (likelyKeys.length > 0) {
-			return likelyKeys[maxValueIndex(averageIOCs)]; // Returns the key length corresponding to the greatest
-															// average
-			// index of coincidence.
+			return likelyKeys[this.<Double>maxValueIndex(averageIOCs)];
 		} else {
 			return 0;
 		}
@@ -218,15 +204,15 @@ public class KasiskiExamination {
 
 	/**
 	 * Gives numbers representing the possible key lengths for a polyalphabetically
-	 * encypted text. If the key length is larger than any given value, it is likely
-	 * to be a multiple. The cutoff value for recommending keys, is 50% the
+	 * encrypted text. If the key length is larger than any given value, it is
+	 * likely to be a multiple. The cutoff value for recommending keys, is 50% the
 	 * occurences of the most common factor. This seems to always locate the key
 	 * somewhere in the array though I don't yet understand why.
 	 * 
 	 * @param repeated A map of the repeated sequences of a given length in the
 	 *                 text.
 	 * @param text     The polyalphabetically encrypted text.
-	 * @return An array of the possible key lengths of the text and their repsective
+	 * @return An array of the possible key lengths of the text and their respective
 	 *         occurences.
 	 */
 	private int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
@@ -236,14 +222,15 @@ public class KasiskiExamination {
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {
 			String current = (String) repeated.keySet().toArray()[0];
-			patterns.add(current);
+			patterns.add(current); // Adds all the repeated letter groups into a list of patterns.
 			repeated.remove(current);
 		}
 		int length = 1;
-		if (!patterns.isEmpty()) {
+		if (!patterns.isEmpty()) { // If there are patterns, set the length to look for to the length of those
+									// patters, otherwise, set it to one.
 			length = patterns.get(0).length();
 		}
-		for (String pattern : patterns) {
+		for (String pattern : patterns) { // For each pattern found find all the indices at which they start.s
 			List<Integer> startIndices = new ArrayList<Integer>();
 			for (int i = 0; i < text.length() - (length - 1); i++) {
 				String section = "";
@@ -257,12 +244,14 @@ public class KasiskiExamination {
 			Integer[] indices = startIndices.toArray(new Integer[0]);
 			for (int s = 1; s < indices.length; s++) {
 				factorise(factors, indices[s] - indices[s - 1]);
-			}
+			} // Factorise the distances between each occurrence of a particular pattern and
+				// append these to a list of factors and their respective occurrences.
 		}
 		List<Integer> output = new ArrayList<Integer>();
 		float cutoff = Float.MAX_VALUE;
 		if (!factors.isEmpty()) {
-			cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5);
+			cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5); // Cut off is equal to half the count of the most
+																		// likely factor.
 		}
 		for (int i = 0; i < factors.keySet().size(); i++) {
 			int key = maxKeyInt(factors);
@@ -271,7 +260,7 @@ public class KasiskiExamination {
 			}
 			output.add(key);
 			factors.remove(key);
-		}
+		} // Gives all factors that are at leat half as likely as the most common one.
 		return output.stream().mapToInt(Integer::intValue).toArray();
 	}
 
@@ -352,15 +341,15 @@ public class KasiskiExamination {
 	}
 
 	/**
-	 * Provides the index of the highest value in a float array.
+	 * Provides the index of the highest value in a generic array.
 	 * 
 	 * @param array An array of floats.
 	 * @return The index of the highest value in the array.
 	 */
-	private int maxValueIndex(float[] array) {
+	private <E extends Comparable<E> > int maxValueIndex(E[] array) {
 		int maxIndex = 0;
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] > array[maxIndex]) {
+			if (array[i].compareTo(array[maxIndex]) > 0) {
 				maxIndex = i;
 			}
 		}

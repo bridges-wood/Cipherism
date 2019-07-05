@@ -14,6 +14,7 @@ public class Manager {
 	private DetectEnglish d;
 	private KasiskiExamination k;
 	private Vigenere v;
+	private BruteForce b;
 
 	Manager(String text) {
 		u = new Utilities();
@@ -22,6 +23,7 @@ public class Manager {
 		d = new DetectEnglish();
 		k = new KasiskiExamination();
 		v = new Vigenere();
+		b = new BruteForce();
 		run(u.cleanText(text));
 	}
 
@@ -29,7 +31,13 @@ public class Manager {
 		switch (detectCipher(text)) {
 		case "Periodic":
 			// Need to make sure key isn't null.
-			return d.respace(v.decrypt(text, k.run(text)), 20);
+			String key = k.run(text);
+			if (key.equals("")) {
+				key = b.bruteForcePeriodic(text);
+			}
+			System.out.println(key);
+			System.out.println(d.respace(v.decrypt(text, key), 20));
+			return d.respace(v.decrypt(text, key), 20);
 		case "Substitution":
 			// Start substitution breaking.
 			// Return most likely substitution.
@@ -89,7 +97,6 @@ public class Manager {
 
 	private String refineGuess(String text) {
 		double chiSquared = d.chiSquaredTest(text);
-		System.out.println(chiSquared);
 		if (chiSquared < 70) {
 			return "Transpostion";
 		} else {

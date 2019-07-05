@@ -11,10 +11,8 @@ public class Vigenere {
 	/**
 	 * Encrypts the given text using the key.
 	 * 
-	 * @param text
-	 *            The text to be encrypted.
-	 * @param key
-	 *            The key used to encrypt the given text.
+	 * @param text The text to be encrypted.
+	 * @param key  The key used to encrypt the given text.
 	 * @return The encrypted text.
 	 */
 	public String encrypt(String text, String key) {
@@ -34,10 +32,8 @@ public class Vigenere {
 	/**
 	 * Decrypts the given text using the key.
 	 * 
-	 * @param text
-	 *            The text to be decrypted.
-	 * @param key
-	 *            The key used to decrypt the text.
+	 * @param text The text to be decrypted.
+	 * @param key  The key used to decrypt the text.
 	 * @return The decrypted text.
 	 */
 	public String decrypt(String text, String key) {
@@ -48,10 +44,11 @@ public class Vigenere {
 			char c = text.charAt(i);
 			if (c < 'a' || c > 'z')
 				continue;
-			System.out.println(key);
+			// This prints the key eight times, need to look at this.
 			output += (char) ((c - key.charAt(j) + 26) % 26 + 'a');
 			j = ++j % key.length();
 		}
 		return output;
 	}
+
 }

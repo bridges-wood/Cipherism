@@ -59,8 +59,8 @@ public class IOC {
 	public double[] peroidicIndexOfCoincidence(String text) {
 		char[] letters = u.cleanText(text).toCharArray();
 		double[] out = new double[(letters.length / 2) - 1]; // Creates an array thats the size of the number scores we
-															// shall gather.
-		for (int nth = 2; nth < letters.length / 2; nth++) {
+																// shall gather.
+		for (int nth = 2; (nth < (letters.length / 2) + 1); nth++) {
 			double score = 0; // The score for the key length.
 			for (int start = 0; start < nth; start++) { // Offsets until we get to one less the length of the key as we
 														// don't need to continue past there as we have already seen it.
@@ -74,5 +74,18 @@ public class IOC {
 			out[nth - 2] = score / nth; // The score added to the array is magnitude adjusted to allow for comparison.
 		}
 		return out;
+	}
+
+	public double periodIndexOfCoincidence(int length, String text) {
+		char[] letters = u.cleanText(text).toCharArray();
+		double score = 0;
+		for (int start = 0; start < length; start++) {
+			StringBuilder nths = new StringBuilder();
+			for (int i = 0; start + i < letters.length; i += length) {
+				nths.append(letters[start + i]);
+			}
+			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString()));
+		}
+		return score;
 	}
 }
