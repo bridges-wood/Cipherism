@@ -33,9 +33,9 @@ public class Manager {
 			// Need to make sure key isn't null.
 			String key = k.run(text);
 			if (key.equals("")) {
-				key = b.bruteForcePeriodic(text);
+				key = b.bruteForceAlt(text);
 			}
-			System.out.println(key);
+			System.out.println("Key: " + key);
 			System.out.println(d.respace(v.decrypt(text, key), 20));
 			return d.respace(v.decrypt(text, key), 20);
 		case "Substitution":
