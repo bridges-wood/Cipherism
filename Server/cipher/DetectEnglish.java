@@ -3,6 +3,7 @@ package cipher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ public class DetectEnglish {
 	private double[] unseenScores;
 	private Utilities u;
 	private NGramAnalyser n;
+	private WordGraph start = new WordGraph("", null);
 
 	DetectEnglish() {
 		dictionaryTable = new Hashtable<Long, String>();
@@ -92,6 +94,7 @@ public class DetectEnglish {
 				englishWords += 1;
 			}
 		}
+		System.out.println(englishWords / words.length);
 		return englishWords / words.length;
 	}
 
@@ -312,9 +315,12 @@ public class DetectEnglish {
 	}
 
 	/**
-	 * Takes in text and determines using logarithmic word probabilities from
-	 * Google's Trillion Word Corpus, the most likely respaced version of the text.
-	 * 
+	 * @deprecated This has been replaced by {@link #graphicalRespace(String, int)}
+	 *             <p>
+	 *             Takes in text and determines using logarithmic word probabilities
+	 *             from Google's Trillion Word Corpus, the most likely respaced
+	 *             version of the text.
+	 *             </p>
 	 * @param text          The text to be respaced into English.
 	 * @param maxWordLength The length of the longest word that could be found in
 	 *                      the text.
@@ -323,9 +329,9 @@ public class DetectEnglish {
 	@SuppressWarnings("unchecked")
 	public String respace(String text, int maxWordLength) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("dictionary.htb");
+			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
 		} // Loads the dictionary hashtable.
-		String[] lines = u.readFile("1w.txt");
+		String[] lines = u.readFile("Server\\StaticResources\\1w.txt");
 		double N = 1024908267229d; // The total number of words in the corpus.
 		for (String line : lines) {
 			String[] splitLine = line.split(",");
@@ -333,7 +339,7 @@ public class DetectEnglish {
 			firstOrder.put(splitLine[0], valueToInsert); // For all words on their own, their logarithmic probability is
 															// added to a map.
 		}
-		lines = u.readFile("2w.txt");
+		lines = u.readFile("Server\\StaticResources\\2w.txt");
 		for (String line : lines) {
 			String[] splitLine = line.split(",");
 			double valueToInsert;
@@ -422,6 +428,130 @@ public class DetectEnglish {
 	}
 
 	/**
+	 * Respaces text using a graphical method. Submethods:
+	 *
+	 * <p>
+	 * {@link #traverse(WordGraph, String, int)}
+	 * </p>
+	 * <p>
+	 * {@link #score(WordGraph)}
+	 * </p>
+	 * <p>
+	 * {@link #prune(WordGraph)}
+	 * </p>
+	 * <p>
+	 * {@link #reconstruct(WordGraph, StringBuilder)}
+	 * </p>
+	 *
+	 * @param text          The text to be respaced.
+	 * @param maxWordLength The maximum length of a word that could be possibly
+	 *                      recognised.
+	 * @return The input text, respaced.
+	 */
+	@SuppressWarnings("unchecked")
+	public String graphicalRespace(String text, int maxWordLength) {
+		if (mostLikelyTable.isEmpty()) {
+			mostLikelyTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\mostProbable.htb");
+		} // Loads the dictionary hashtable.
+		traverse(start, text, maxWordLength);
+		score(start);
+		prune(start);
+		return reconstruct(start, new StringBuilder()).toString().trim();
+	}
+
+	/**
+	 * Traverses the input text, building a graph up of possible words in the text
+	 * and possible words succeeding it.
+	 * 
+	 * @param parent        The node in the graph from which successive words are
+	 *                      drawn from.
+	 * @param text          The input text to be examined for words.
+	 * @param maxWordLength The maximum length of a word that could be possibly
+	 *                      recognised.
+	 * @return A graph representing all possible English word combinations within
+	 *         the text.
+	 */
+	private WordGraph traverse(WordGraph parent, String text, int maxWordLength) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
+			sb.append(text.charAt(i));
+			if (mostLikelyTable.containsKey(u.hash64(sb.toString()))) {
+				parent.children.add(new WordGraph(sb.toString(), parent));
+			}
+		}
+		if (parent.children.size() > 0) {
+			for (WordGraph child : parent.children) {
+				if (text.length() > child.word.length()) {
+					traverse(child, text.substring(child.word.length()), maxWordLength);
+				}
+			}
+		}
+
+		return parent;
+	}
+
+	/**
+	 * Moves through a graph of possible words in text, scoring each node based on
+	 * whether or not its children are English words.
+	 * 
+	 * @param parent The node from which children are drawn from to calculate its
+	 *               score.
+	 * @return The word-graph injested, with scores for each node representing the
+	 *         number of children per node that are English words.
+	 */
+	private WordGraph score(WordGraph parent) {
+		if (parent.children.isEmpty()) {
+			if (mostLikelyTable.containsKey(u.hash64(parent.word))) {
+				parent.score = 1;
+			}
+		} else {
+			for (WordGraph child : parent.children) {
+				score(child);
+				parent.score += child.score;
+			}
+		}
+		return parent;
+	}
+
+	/**
+	 * For each level on the word-graph, the node with the highest score remains.
+	 * 
+	 * @param parent The node from which child nodes are drawn.
+	 * @return A path graph of all the detectable English words that can be
+	 *         predicted to exist in the target text.
+	 */
+	private WordGraph prune(WordGraph parent) {
+		if (!parent.children.isEmpty()) {
+			WordGraph maxChild = parent.children.get(0);
+			for (WordGraph child : parent.children) {
+				if (child.score >= maxChild.score) {
+					maxChild = child;
+				}
+			}
+			parent.children = new ArrayList<WordGraph>();
+			parent.children.add(maxChild);
+			prune(maxChild);
+		}
+		return parent;
+	}
+
+	/**
+	 * Generates an English string from an input path graph.
+	 * 
+	 * @param parent The node from which child nodes are drawn.
+	 * @param sb     A stringbuilder used during recursive calls of this function.
+	 * @return A stringbuilder containing all the English words in the path graph,
+	 *         concatenated.
+	 */
+	private StringBuilder reconstruct(WordGraph parent, StringBuilder sb) {
+		sb.append(parent.word + " ");
+		if (!parent.children.isEmpty()) {
+			sb = reconstruct(parent.children.get(0), sb);
+		}
+		return sb;
+	}
+
+	/**
 	 * Gives the score of the given text as how close the text is to English.
 	 * 
 	 * @param text The text to be analysed.
@@ -429,7 +559,7 @@ public class DetectEnglish {
 	 */
 	public double chiSquaredTest(String text) {
 		if (letterProbabilities.isEmpty()) {
-			String[] lines = u.readFile("1l.txt"); // 4374127904 is total to divide by.
+			String[] lines = u.readFile("Server\\StaticResources\\1l.txt"); // 4374127904 is total to divide by.
 			for (String line : lines) {
 				String[] splitLine = line.split(",");
 				letterProbabilities.put(splitLine[0].charAt(0), Double.parseDouble(splitLine[1]) / 4374127904d);
@@ -447,4 +577,17 @@ public class DetectEnglish {
 		return score;
 	}
 
+	/**
+	 * Determines if a single word exists in the English language,.
+	 * 
+	 * @param word The word to be examined
+	 * @return Boolean whether word is English or not.
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean isEnglish(String word) {
+		if (dictionaryTable.isEmpty()) {
+			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
+		} // Loads the dictionary hashtable.
+		return dictionaryTable.containsKey(u.hash64(word));
+	}
 }
