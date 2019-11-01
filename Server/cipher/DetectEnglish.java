@@ -71,7 +71,7 @@ public class DetectEnglish {
 			return isEnglish(words.toArray(new String[0]));
 
 		} else {
-			return isEnglish(respace(text, 20).split(" "));
+			return isEnglish(graphicalRespace(text, 20).split(" "));
 		}
 	}
 
@@ -85,7 +85,7 @@ public class DetectEnglish {
 	@SuppressWarnings("unchecked")
 	public float isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("dictionary.htb");
+			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server//StaticResources//dictionary.htb");
 		}
 		float englishWords = 0f;
 		for (String word : words) {
@@ -453,6 +453,9 @@ public class DetectEnglish {
 		if (mostLikelyTable.isEmpty()) {
 			mostLikelyTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\mostProbable.htb");
 		} // Loads the dictionary hashtable.
+		if (dictionaryTable.isEmpty()) {
+			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
+		}
 		traverse(start, text, maxWordLength);
 		score(start);
 		prune(start);
@@ -475,7 +478,7 @@ public class DetectEnglish {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
-			if (mostLikelyTable.containsKey(u.hash64(sb.toString()))) {
+			if (dictionaryTable.containsKey(u.hash64(sb.toString()))) {
 				parent.children.add(new WordGraph(sb.toString(), parent));
 			}
 		}
@@ -501,6 +504,7 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (parent.children.isEmpty()) {
+			System.out.println(parent.word);
 			if (mostLikelyTable.containsKey(u.hash64(parent.word))) {
 				parent.score = 1;
 			}

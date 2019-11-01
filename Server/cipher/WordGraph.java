@@ -6,7 +6,7 @@ public class WordGraph {
 
 	public String word;
 	public WordGraph parent;
-	public LinkedList<WordGraph> children;
+	public LinkedList<WordGraph> children = new LinkedList<WordGraph>();
 	public int score;
 	
 	public WordGraph(String word, WordGraph parent) {

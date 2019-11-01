@@ -72,7 +72,7 @@ public class BruteForce {
 
 	
 	public String bruteForceAlt(String text) {
-		String[] lines = u.readFile("mostProbable.txt");
+		String[] lines = u.readFile("Server//StaticResources//mostProbable.txt");
 		String key = "";
 		float max = Float.MIN_VALUE;
 		for(String line : lines) {

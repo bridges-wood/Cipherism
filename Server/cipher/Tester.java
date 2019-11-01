@@ -1,7 +1,5 @@
 package cipher;
 
-import java.util.Map;
-
 public class Tester {
 
 	Tester() {
@@ -9,45 +7,18 @@ public class Tester {
 	}
 
 	public void run() {
-		String otherText = "DLCAYGMOZBSUXJMHNSWTQYZCBXFOPYJCBYK"; //a test string to be encrypted Key: tester
-		// for (String word : PredictWords.predictedWords("complexity", true)) { // Test
-		// single word prediction.
-		// System.out.println(word);
-		// }
-		// for (String word : MultiLemmaAnalysis.possibleLemmata("this is a sentence"))
-		// { // Test multi word prediction.
-		// System.out.println(word);
-		// }
-		// for (Map.Entry<String, Float> entry : NGramAnalyser.NgramAnalysis(5,
-		// otherText, false).entrySet()) {
-		// System.out.println(entry.getKey() + ":" + entry.getValue());
-		// }
-		// int[] keys = KasiskiExamination.likelyKeyLengths(NGramAnalyser.kasiskiBase(3,
-		// otherText), otherText);
-		// System.out.println(KasiskiExamination.keyGuesserVigenere(KasiskiExamination.mostLikelyKeyLength(otherText,
-		// keys), otherText));
-
-		// Utilities.generateObjectHashTable("2grams.txt ", "2grams.ohtb");
-		// DetectEnglish b = new DetectEnglish();
-		// System.out.println(b.detectEnglish(otherText));
-		// System.out.println(NGramAnalyser.computeScore(3, otherText, false));
-		// System.out.println(b.respace(otherText, 20));
-		// System.out.println(b.chiSquaredTest(otherText));
-		// IOC i = new IOC();
-		// float[] nums = i.peroidicIndexOfCoincidence(otherText);
-		// for (int x = 0; x < nums.length; x++) {
-		// System.out.println(x + 1 + " " + nums[x]);
-		// }
-		Manager m = new Manager(otherText);
+		Utilities u = new Utilities();
+		//u.generateHashTable("Server//StaticResources//mostProbable.txt", "Server//StaticResources//mostProbable.htb");
+		u.generateHashTable("Server//StaticResources//dictionary.txt", "Server//StaticResources//dictionary.htb");
+		/*Vigenere v = new Vigenere();
+		String otherText = v.encrypt("thisisateststring", "key"); //a test string to be encrypted Key: tester
+		Manager m = new Manager(otherText);*/
+		DetectEnglish d = new DetectEnglish();
+		System.out.println(d.graphicalRespace("thisisateststring", 20));
 	}
 
 	public static void main(String[] args) {
 		Tester a = new Tester();
-		try {
-			a.finalize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
 	}
 
 }

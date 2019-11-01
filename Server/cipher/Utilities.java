@@ -80,14 +80,20 @@ public class Utilities {
 		Hashtable<Long, String> hashTable = new Hashtable<Long, String>();
 		try {
 			Scanner sc = new Scanner(fromFile);
+			int counter = 0;
 			while (sc.hasNextLine()) {
+				counter++;
 				String line = sc.nextLine();
 				hashTable.put(hash64(line), line); // Puts each line into the hashtable.
+				if(counter % 1000 == 0) {
+					System.out.println(line);
+				}
 			}
 			sc.close();
 			FileOutputStream outputStream = new FileOutputStream(toFile);
 			ObjectOutputStream out = new ObjectOutputStream(outputStream);
 			out.writeObject(hashTable);
+			System.out.println("here");
 			out.close(); // Writes the dictionary to the file.
 		} catch (Exception e) {
 			e.printStackTrace();

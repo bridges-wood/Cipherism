@@ -36,8 +36,8 @@ public class Manager {
 				key = b.bruteForceAlt(text);
 			}
 			System.out.println("Key: " + key);
-			System.out.println(d.respace(v.decrypt(text, key), 20));
-			return d.respace(v.decrypt(text, key), 20);
+			System.out.println(d.graphicalRespace(v.decrypt(text, key), 20));
+			return d.graphicalRespace(v.decrypt(text, key), 20);
 		case "Substitution":
 			// Start substitution breaking.
 			// Return most likely substitution.
