@@ -528,7 +528,7 @@ public class DetectEnglish {
 					maxChild = child;
 				}
 			}
-			parent.children = new ArrayList<WordGraph>();
+			parent.children = new LinkedList<WordGraph>();
 			parent.children.add(maxChild);
 			prune(maxChild);
 		}
