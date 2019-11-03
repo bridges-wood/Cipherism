@@ -84,7 +84,7 @@ public class IOC {
 			for (int i = 0; start + i < letters.length; i += length) {
 				nths.append(letters[start + i]);
 			}
-			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString()));
+			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString())) / (double) length;
 		}
 		return score;
 	}

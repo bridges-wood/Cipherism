@@ -17,6 +17,7 @@ public class KasiskiExamination {
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
+	private DetectEnglish d;
 
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
@@ -25,6 +26,7 @@ public class KasiskiExamination {
 		n = new NGramAnalyser();
 		v = new Vigenere();
 		i = new IOC();
+		d = new DetectEnglish();
 	}
 
 	/**
@@ -34,11 +36,19 @@ public class KasiskiExamination {
 	 * @return The most likely key used to encrypt the text.
 	 */
 	public String run(String text) {
-		return keyGuesserVigenere(mostLikelyKeyLength(likelyKeyLengths(n.kasiskiBase(3, text), text), text), text); // This
-																													// returns
-																													// an
-																													// empty
-																													// key.
+
+		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
+		for (int i : likelyLengths) {
+			System.out.println(i + " is a likely key length");
+		}
+		String a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
+
+		// for(int i : likelyKeyLengths)
+		return a; // This
+					// returns
+					// an
+					// empty
+					// key.
 	}
 
 	/**
@@ -62,9 +72,9 @@ public class KasiskiExamination {
 				composite.append(text.charAt(i + b));
 			}
 			String finalString = composite.toString();
-			double[] FMSarray = new double[26]; // Create array for each letter to test how like english it decrypts its
+			double[] FMSarray = new double[26]; // Create array for each letter to test how like English it decrypts its
 			// respective section to.
-			double maxValue = 0; // The most like english value in the array.
+			double maxValue = 0; // The most like English value in the array.
 			for (int i = 0; i < 26; i++) {
 				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
 				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse));
@@ -75,8 +85,9 @@ public class KasiskiExamination {
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
 			for (int i = 0; i < 26; i++) {
-				if (FMSarray[i] == maxValue) // If the character is the most likely to create english, it is likely to
-												// be in the key so add it to the array.
+				if (FMSarray[i] > maxValue * 0.62) // If the character is the most likely to create English, it is
+													// likely to
+													// be in the key so add it to the array.
 					possibleCharacters.add(Character.toString(alphabet[i]));
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
@@ -86,6 +97,9 @@ public class KasiskiExamination {
 		String[] possibleKeys = new String[0];
 		if (!possKeys.isEmpty()) { // Avoids Null Exceptions and the like.
 			possibleKeys = possKeys.toArray(new String[0]);
+			for (String s : possibleKeys) {
+				System.out.println(s);
+			}
 			double[] decryptionScores = new double[possibleKeys.length];
 			int maxIndex = 0;
 			for (int length = 0; length < possibleKeys.length; length++) {
@@ -187,11 +201,12 @@ public class KasiskiExamination {
 	 */
 	public int mostLikelyKeyLength(int[] likelyKeys, String text) {
 		Double[] averageIOCs = new Double[likelyKeys.length]; // An array to store the indices of coincidence of the
-															// different key lengths.
+																// different key lengths.
 		int counter = -1;
 		for (int keyLength : likelyKeys) { // For each of the possible key lengths:
 			counter++;
 			double total = i.periodIndexOfCoincidence(keyLength, text);
+			System.out.println(likelyKeys[counter] + "," + total);
 			averageIOCs[counter] = total;
 		}
 		if (likelyKeys.length > 0) {
@@ -230,7 +245,7 @@ public class KasiskiExamination {
 									// patters, otherwise, set it to one.
 			length = patterns.get(0).length();
 		}
-		for (String pattern : patterns) { // For each pattern found find all the indices at which they start.s
+		for (String pattern : patterns) { // For each pattern found find all the indices at which they start.
 			List<Integer> startIndices = new ArrayList<Integer>();
 			for (int i = 0; i < text.length() - (length - 1); i++) {
 				String section = "";
@@ -244,23 +259,25 @@ public class KasiskiExamination {
 			Integer[] indices = startIndices.toArray(new Integer[0]);
 			for (int s = 1; s < indices.length; s++) {
 				factorise(factors, indices[s] - indices[s - 1]);
+				for (int key : factors.keySet()) {
+					System.out.println(key + " " + factors.get(key));
+				}
 			} // Factorise the distances between each occurrence of a particular pattern and
 				// append these to a list of factors and their respective occurrences.
 		}
 		List<Integer> output = new ArrayList<Integer>();
 		float cutoff = Float.MAX_VALUE;
 		if (!factors.isEmpty()) {
-			cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5); // Cut off is equal to half the count of the most
+			cutoff = (float) (factors.get(maxKeyInt(factors)) * 0.5); // Cut off is equal to one fifth the count of the
+																		// most
 																		// likely factor.
 		}
-		for (int i = 0; i < factors.keySet().size(); i++) {
-			int key = maxKeyInt(factors);
+		for (int key : factors.keySet()) {
 			if (factors.get(key) < cutoff) {
 				continue;
 			}
 			output.add(key);
-			factors.remove(key);
-		} // Gives all factors that are at leat half as likely as the most common one.
+		} // Gives all factors that are at least half as likely as the most common one.
 		return output.stream().mapToInt(Integer::intValue).toArray();
 	}
 
@@ -322,17 +339,12 @@ public class KasiskiExamination {
 	 * @return The map updated with n's factors.
 	 */
 	private Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
-		for (int i = 2; i < Math.sqrt(n); i++) {
+		for (int i = 2; i <= n; i++) {
 			if (n % i == 0) {
 				if (!foundFactors.containsKey(i)) { // If this factor hasn't been found before:
 					foundFactors.put(i, 1); // Initialise it...
 				} else {
 					foundFactors.put(i, foundFactors.get(i) + 1); // Or update it.
-				}
-				if (!foundFactors.containsKey(n / i)) { // If this factor hasn't been found before:
-					foundFactors.put(n / i, 1); // Initialise it...
-				} else {
-					foundFactors.put(n / i, foundFactors.get(n / i) + 1); // Or update it.
 				}
 			}
 		}
@@ -346,7 +358,7 @@ public class KasiskiExamination {
 	 * @param array An array of floats.
 	 * @return The index of the highest value in the array.
 	 */
-	private <E extends Comparable<E> > int maxValueIndex(E[] array) {
+	private <E extends Comparable<E>> int maxValueIndex(E[] array) {
 		int maxIndex = 0;
 		for (int i = 0; i < array.length; i++) {
 			if (array[i].compareTo(array[maxIndex]) > 0) {

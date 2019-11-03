@@ -70,7 +70,6 @@ public class BruteForce {
 		return editKey(text, minKey);
 	}
 
-	
 	public String bruteForceAlt(String text) {
 		String[] lines = u.readFile("Server//StaticResources//mostProbable.txt");
 		String key = "";
@@ -124,5 +123,14 @@ public class BruteForce {
 			}
 		}
 		return distance;
+	}
+
+	public String vigenereBruteforce(String text, int keyLength) {
+		StringBuilder key = new StringBuilder();
+		for(int i = 0; i < 20 && i < text.length(); i++) {
+			for(double j = 0; j < (key.length() ^ 26); j++) {
+				
+			}
+		}
 	}
 }

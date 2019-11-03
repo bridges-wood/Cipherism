@@ -478,7 +478,7 @@ public class DetectEnglish {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
-			if (dictionaryTable.containsKey(u.hash64(sb.toString()))) {
+			if (mostLikelyTable.containsKey(u.hash64(sb.toString()))) {
 				parent.children.add(new WordGraph(sb.toString(), parent));
 			}
 		}
