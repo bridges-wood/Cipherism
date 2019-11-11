@@ -14,7 +14,7 @@ public class Tester {
 		// "Server//StaticResources//dictionary.htb");
 		Vigenere v = new Vigenere();
 		String toEncrypt = "this is meant to be an example of a simple english text of enough length to demonstrate the features of this";
-		String otherText = v.encrypt(u.cleanText(toEncrypt), "bcdefghijk"); // a test string to be encrypted Key: tester
+		String otherText = v.encrypt(u.cleanText(toEncrypt), "two"); // a test string to be encrypted Key: tester
 		//System.out.println(otherText + " " + v.decrypt(u.cleanText(toEncrypt), "ankey"));
 		Manager m = new Manager(otherText);
 		// DetectEnglish d = new DetectEnglish();

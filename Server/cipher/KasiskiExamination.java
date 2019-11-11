@@ -1,13 +1,15 @@
 package cipher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import java.util.Optional;
 import java.util.TreeMap;
+import org.apache.commons.math3.*;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
 
@@ -17,8 +19,6 @@ public class KasiskiExamination {
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
-	private DetectEnglish d;
-
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
@@ -26,7 +26,7 @@ public class KasiskiExamination {
 		n = new NGramAnalyser();
 		v = new Vigenere();
 		i = new IOC();
-		d = new DetectEnglish();
+		new DetectEnglish();
 	}
 
 	/**
@@ -200,19 +200,39 @@ public class KasiskiExamination {
 	 * @return The most likely key length.
 	 */
 	public int mostLikelyKeyLength(int[] likelyKeys, String text) {
-		Double[] averageIOCs = new Double[likelyKeys.length]; // An array to store the indices of coincidence of the
+		double[] averageIOCs = new double[likelyKeys.length]; // An array to store the indices of coincidence of the
 																// different key lengths.
-		int counter = -1;
-		for (int keyLength : likelyKeys) { // For each of the possible key lengths:
-			counter++;
-			double total = i.periodIndexOfCoincidence(keyLength, text);
-			System.out.println(likelyKeys[counter] + "," + total);
-			averageIOCs[counter] = total;
-		}
-		if (likelyKeys.length > 0) {
-			return likelyKeys[this.<Double>maxValueIndex(averageIOCs)];
+		if (likelyKeys.length == 1) {
+			return likelyKeys[0];
+		} else if (likelyKeys.length == 2) {
+			return likelyKeys[1];
 		} else {
-			return 0;
+			int counter = -1;
+			for (int keyLength : likelyKeys) { // For each of the possible key lengths:
+				counter++;
+				double total = i.periodIndexOfCoincidence(keyLength, text);
+				System.out.println(likelyKeys[counter] + "," + total);
+				averageIOCs[counter] = total;
+			}
+			SimpleRegression reg = new SimpleRegression();
+
+			for (int i = 0; i < likelyKeys.length; i++) {
+				reg.addData(likelyKeys[i], averageIOCs[i]);
+			}
+
+			double slope = reg.getSlope();
+			double intercept = reg.getIntercept();
+			double maxDiff = Double.MIN_VALUE;
+			int bestKeyLength = 1;
+			for (int i = 0; i < likelyKeys.length; i++) {
+				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + 0.05*likelyKeys[i];
+				if (diff > maxDiff) {
+					maxDiff = diff;
+					bestKeyLength = likelyKeys[i];
+				}
+			}
+
+			return bestKeyLength;
 		}
 
 	}
@@ -259,9 +279,6 @@ public class KasiskiExamination {
 			Integer[] indices = startIndices.toArray(new Integer[0]);
 			for (int s = 1; s < indices.length; s++) {
 				factorise(factors, indices[s] - indices[s - 1]);
-				for (int key : factors.keySet()) {
-					System.out.println(key + " " + factors.get(key));
-				}
 			} // Factorise the distances between each occurrence of a particular pattern and
 				// append these to a list of factors and their respective occurrences.
 		}
