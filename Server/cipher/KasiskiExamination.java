@@ -1,27 +1,28 @@
 package cipher;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
-import org.apache.commons.math3.*;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
 
 	private char[] alphabet;
+	private Map<Character, Double> expectedLetterFrequencies;
 	private List<String> possKeys;
 	private Utilities u;
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
+
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
+		setExpectedLetterFrequencies();
 		u = new Utilities();
 		n = new NGramAnalyser();
 		v = new Vigenere();
@@ -29,6 +30,37 @@ public class KasiskiExamination {
 		new DetectEnglish();
 	}
 
+	private void setExpectedLetterFrequencies() {
+		Map<Character, Double> letterFrequencies = new TreeMap<Character, Double>();
+		letterFrequencies.put('e', 0.12702);
+		letterFrequencies.put('t', 0.09056);
+		letterFrequencies.put('a', 0.08167);
+		letterFrequencies.put('o', 0.07507);
+		letterFrequencies.put('i', 0.06966);
+		letterFrequencies.put('n', 0.06749);
+		letterFrequencies.put('s', 0.06327);
+		letterFrequencies.put('h', 0.06094);
+		letterFrequencies.put('r', 0.05987);
+		letterFrequencies.put('d', 0.04253);
+		letterFrequencies.put('l', 0.04025);
+		letterFrequencies.put('c', 0.02782);
+		letterFrequencies.put('u', 0.02758);
+		letterFrequencies.put('m', 0.02406);
+		letterFrequencies.put('w', 0.02360);
+		letterFrequencies.put('f', 0.02228);
+		letterFrequencies.put('g', 0.02015);
+		letterFrequencies.put('y', 0.01974);
+		letterFrequencies.put('p', 0.01929);
+		letterFrequencies.put('b', 0.01492);
+		letterFrequencies.put('v', 0.00978);
+		letterFrequencies.put('k', 0.00772);
+		letterFrequencies.put('j', 0.00153);
+		letterFrequencies.put('x', 0.00150);
+		letterFrequencies.put('q', 0.00095);
+		letterFrequencies.put('z', 0.00074);
+		this.expectedLetterFrequencies = letterFrequencies;
+	}
+	
 	/**
 	 * Gives the most likely key for the given text.
 	 * 
@@ -73,12 +105,11 @@ public class KasiskiExamination {
 			}
 			String finalString = composite.toString();
 			double[] FMSarray = new double[26]; // Create array for each letter to test how like English it decrypts its
-			// respective section to.
+												// respective section to.
 			double maxValue = 0; // The most like English value in the array.
 			for (int i = 0; i < 26; i++) {
 				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
-				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse));
-				// Compute FMS of the composite.
+				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse)); // Compute FMS of the composite.
 				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
 					maxValue = valueToInsert;
 				FMSarray[i] = valueToInsert;
@@ -181,7 +212,7 @@ public class KasiskiExamination {
 			} else {
 				break;
 			}
-			for (char c : mostLikely) { // If likely letters in english are similarly likely in the text increment the
+			for (char c : mostLikely) { // If likely letters in English are similarly likely in the text increment the
 										// FMS.
 				if (mostPopular.contains(c)) {
 					FMS++;
@@ -191,6 +222,14 @@ public class KasiskiExamination {
 		return FMS;
 	}
 
+	private double computeFractionalMS(Map<String, Integer> letterOccurences, int length) {
+		Map<Character, Double> observedLetterFrequencies = new TreeMap<Character, Double>();
+		for(String letter : letterOccurences.keySet()) {
+			// Use chi - squared to get one number for the statistical distance between the two distributions.
+		}
+		return 0;
+	}
+	
 	/**
 	 * Determines the most likely key length for a given text.
 	 * 
@@ -202,7 +241,9 @@ public class KasiskiExamination {
 	public int mostLikelyKeyLength(int[] likelyKeys, String text) {
 		double[] averageIOCs = new double[likelyKeys.length]; // An array to store the indices of coincidence of the
 																// different key lengths.
-		if (likelyKeys.length == 1) {
+		if (likelyKeys.length == 0) {
+			return 0;
+		} else if (likelyKeys.length == 1) {
 			return likelyKeys[0];
 		} else if (likelyKeys.length == 2) {
 			return likelyKeys[1];
@@ -225,7 +266,7 @@ public class KasiskiExamination {
 			double maxDiff = Double.MIN_VALUE;
 			int bestKeyLength = 1;
 			for (int i = 0; i < likelyKeys.length; i++) {
-				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + 0.05*likelyKeys[i];
+				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + 0.05 * likelyKeys[i];
 				if (diff > maxDiff) {
 					maxDiff = diff;
 					bestKeyLength = likelyKeys[i];
@@ -370,22 +411,6 @@ public class KasiskiExamination {
 	}
 
 	/**
-	 * Provides the index of the highest value in a generic array.
-	 * 
-	 * @param array An array of floats.
-	 * @return The index of the highest value in the array.
-	 */
-	private <E extends Comparable<E>> int maxValueIndex(E[] array) {
-		int maxIndex = 0;
-		for (int i = 0; i < array.length; i++) {
-			if (array[i].compareTo(array[maxIndex]) > 0) {
-				maxIndex = i;
-			}
-		}
-		return maxIndex;
-	}
-
-	/**
 	 * Takes a 2D array of strings and outputs all the possible combinations of that
 	 * array.
 	 * 
@@ -414,4 +439,6 @@ public class KasiskiExamination {
 			// Endfor - this ensures that all combinations are found.
 		}
 	}
+
+	
 }
