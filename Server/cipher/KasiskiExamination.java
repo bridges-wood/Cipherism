@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+
+import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
@@ -60,7 +62,7 @@ public class KasiskiExamination {
 		letterFrequencies.put('z', 0.00074);
 		this.expectedLetterFrequencies = letterFrequencies;
 	}
-	
+
 	/**
 	 * Gives the most likely key for the given text.
 	 * 
@@ -222,14 +224,34 @@ public class KasiskiExamination {
 		return FMS;
 	}
 
-	private double computeFractionalMS(Map<String, Integer> letterOccurences, int length) {
-		Map<Character, Double> observedLetterFrequencies = new TreeMap<Character, Double>();
-		for(String letter : letterOccurences.keySet()) {
-			// Use chi - squared to get one number for the statistical distance between the two distributions.
+	public double computeFractionalMS(Map<String, Integer> letterOccurences, int length) {
+		Map<Character, Long> observedLetterFrequencies = new TreeMap<Character, Long>();
+		if (letterOccurences.keySet().size() < 26) { // If some letters of the alphabet do not occur in the text...
+			List<Character> missingLetters = new ArrayList<Character>();
+			for (char c : alphabet) {
+				if (!letterOccurences.containsKey(Character.toString(c))) {
+					missingLetters.add(c); // Adds to the list of characters that don't exist in the the text.
+				}
+			}
+			for (char missing : missingLetters) {
+				letterOccurences.put(String.valueOf(missing), 0);
+			}
 		}
-		return 0;
+		for (String letter : letterOccurences.keySet()) {
+			System.out.println((long) (letterOccurences.get(letter) / length)); // TODO Longs cannot be retrieve a result less than 0 as longs cannot store fractions.
+			observedLetterFrequencies.put(letter.charAt(0), (long) letterOccurences.get(letter) / (long) length);
+		}
+		double[] ELFs = new double[26];
+		long[] OLFs = new long[26];
+		for(int i = 0; i < 26; i++) {
+			ELFs[i] = expectedLetterFrequencies.get(alphabet[i]) * length;
+			OLFs[i] = observedLetterFrequencies.get(alphabet[i]) * length;
+			System.out.println(ELFs[i] + " " + OLFs[i]);
+		}
+		ChiSquareTest chi = new ChiSquareTest();
+		return chi.chiSquareTest(ELFs, OLFs);
 	}
-	
+
 	/**
 	 * Determines the most likely key length for a given text.
 	 * 
@@ -440,5 +462,4 @@ public class KasiskiExamination {
 		}
 	}
 
-	
 }
