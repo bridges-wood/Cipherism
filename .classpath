@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="C:/Users/User/Downloads/commons-math3-3.6.1-bin.zip"/>
 	<classpathentry kind="lib" path="C:/Users/User/Documents/commons-math3-3.6.1-bin/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/Downloads/commonsmath/commons-math3-3.6.1/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

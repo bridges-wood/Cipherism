@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
@@ -224,8 +223,21 @@ public class KasiskiExamination {
 		return FMS;
 	}
 
+	/**
+	 * Calculates the <a href =
+	 * "https://en.wikipedia.org/wiki/Bhattacharyya_distance">Bhattacharyya Distance
+	 * </a> between the letters in a given string and the expected letter
+	 * distribution for English. Lower is better.
+	 * 
+	 * @param letterOccurences A map containing the integer occurrences of given
+	 *                         letters in the text to be examined.
+	 * @param length           The total length of the string from which the integer
+	 *                         letter occurrences are drawn from.
+	 * @return The Bhattacharyya Distance between the expected frequencies of
+	 *         English letters and the observed distribution.
+	 */
 	public double computeFractionalMS(Map<String, Integer> letterOccurences, int length) {
-		Map<Character, Long> observedLetterFrequencies = new TreeMap<Character, Long>();
+		Map<Character, Double> observedLetterFrequencies = new TreeMap<Character, Double>();
 		if (letterOccurences.keySet().size() < 26) { // If some letters of the alphabet do not occur in the text...
 			List<Character> missingLetters = new ArrayList<Character>();
 			for (char c : alphabet) {
@@ -238,18 +250,34 @@ public class KasiskiExamination {
 			}
 		}
 		for (String letter : letterOccurences.keySet()) {
-			System.out.println((long) (letterOccurences.get(letter) / length)); // TODO Longs cannot be retrieve a result less than 0 as longs cannot store fractions.
-			observedLetterFrequencies.put(letter.charAt(0), (long) letterOccurences.get(letter) / (long) length);
+			System.out.println((long) (letterOccurences.get(letter) / length));
+			observedLetterFrequencies.put(letter.charAt(0), (double) letterOccurences.get(letter) / (double) length);
 		}
-		double[] ELFs = new double[26];
-		long[] OLFs = new long[26];
-		for(int i = 0; i < 26; i++) {
-			ELFs[i] = expectedLetterFrequencies.get(alphabet[i]) * length;
-			OLFs[i] = observedLetterFrequencies.get(alphabet[i]) * length;
-			System.out.println(ELFs[i] + " " + OLFs[i]);
+		double[] ELPs = new double[26];
+		double[] OLPs = new double[26];
+		for (int i = 0; i < 26; i++) {
+			ELPs[i] = expectedLetterFrequencies.get(alphabet[i]);
+			OLPs[i] = observedLetterFrequencies.get(alphabet[i]);
+
 		}
-		ChiSquareTest chi = new ChiSquareTest();
-		return chi.chiSquareTest(ELFs, OLFs);
+		return bhattacharyyaDistance(ELPs, OLPs);
+	}
+
+	/**
+	 * Calculates the <a href =
+	 * "https://en.wikipedia.org/wiki/Bhattacharyya_distance">Bhattacharyya Distance
+	 * </a> between two necessarily categorical distributions.,
+	 * 
+	 * @param p The first distribution.
+	 * @param q The second distribution
+	 * @return The Bhattacharyya Distance between both distributions.
+	 */
+	private double bhattacharyyaDistance(double[] p, double[] q) {
+		double BC = 0;
+		for (int i = 0; i < p.length; i++) {
+			BC += Math.sqrt(p[i] * q[i]);
+		}
+		return -Math.log(BC);
 	}
 
 	/**
