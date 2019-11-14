@@ -17,7 +17,7 @@ public class Tester {
 		Vigenere v = new Vigenere();
 		String toEncrypt = "this is meant to be an example of a simple english text of enough length to demonstrate the features of this";
 		System.out.println(k.computeFractionalMS(n.frequencyAnalysis((u.cleanText(toEncrypt).replace(" ", ""))), u.cleanText(toEncrypt).replace(" ", "").length()));
-		String otherText = v.encrypt(u.cleanText(toEncrypt).replace(" ", ""), "two"); // a test string to be encrypted Key: tester
+		String otherText = v.encrypt(u.cleanText(toEncrypt).replace(" ", ""), "testkey"); // a test string to be encrypted Key: tester
 		//System.out.println(otherText + " " + v.decrypt(u.cleanText(toEncrypt), "ankey"));
 		//System.out.println(u.cleanText(toEncrypt).replace(" ", ""));
 		Manager m = new Manager(otherText);

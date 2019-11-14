@@ -132,5 +132,6 @@ public class BruteForce {
 				
 			}
 		}
+		return text;
 	}
 }

@@ -46,7 +46,7 @@ public class IOC {
 			IOC += i * (i - 1);
 		}
 		return IOC / ((rTotal * (rTotal - 1) / 26)); // Note, this ought to be as far from 1 as possible to indicate the
-														// presence of english. 1 is pure random text.
+														// presence of English. 1 is pure random text.
 	}
 
 	/**

@@ -71,9 +71,6 @@ public class KasiskiExamination {
 	public String run(String text) {
 
 		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
-		for (int i : likelyLengths) {
-			System.out.println(i + " is a likely key length");
-		}
 		String a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
 
 		// for(int i : likelyKeyLengths)
@@ -107,19 +104,18 @@ public class KasiskiExamination {
 			String finalString = composite.toString();
 			double[] FMSarray = new double[26]; // Create array for each letter to test how like English it decrypts its
 												// respective section to.
-			double maxValue = 0; // The most like English value in the array.
 			for (int i = 0; i < 26; i++) {
 				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
-				double valueToInsert = computeFMS(n.frequencyAnalysis(toAnalyse)); // Compute FMS of the composite.
-				if (valueToInsert > maxValue) // If the current value is greater than the max, update it.
-					maxValue = valueToInsert;
+				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length()); // Compute
+																												// FMS
+																												// of
+																												// the
+																												// composite.
 				FMSarray[i] = valueToInsert;
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
 			for (int i = 0; i < 26; i++) {
-				if (FMSarray[i] > maxValue * 0.62) // If the character is the most likely to create English, it is
-													// likely to
-													// be in the key so add it to the array.
+				if (FMSarray[i] < 0.5) // This selects the top ~40% of letters.
 					possibleCharacters.add(Character.toString(alphabet[i]));
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
@@ -133,15 +129,18 @@ public class KasiskiExamination {
 				System.out.println(s);
 			}
 			double[] decryptionScores = new double[possibleKeys.length];
-			int maxIndex = 0;
+			int minIndex = 0;
 			for (int length = 0; length < possibleKeys.length; length++) {
 				String toAnalyse = v.decrypt(text, possibleKeys[length]);
-				double toInsert = i.indexOfCoincidence(n.frequencyAnalysis(toAnalyse));
+				double toInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
 				decryptionScores[length] = toInsert;
-				if (toInsert > decryptionScores[maxIndex])
-					maxIndex = length;
+				if (toInsert < decryptionScores[minIndex]) {
+					minIndex = length;
+					System.out.println("The new best key is: " + possibleKeys[minIndex] + ". Its score is: " + toInsert);
+				}
 			}
-			return possibleKeys[maxIndex]; // Returns the most likely key.
+			System.out.println("The score of the real key is: " + computeFractionalMS(n.frequencyAnalysis(v.decrypt(text, "testkey")), text.length()));
+			return possibleKeys[minIndex]; // Returns the most likely key.
 		}
 		return null;
 	}
@@ -250,7 +249,6 @@ public class KasiskiExamination {
 			}
 		}
 		for (String letter : letterOccurences.keySet()) {
-			System.out.println((long) (letterOccurences.get(letter) / length));
 			observedLetterFrequencies.put(letter.charAt(0), (double) letterOccurences.get(letter) / (double) length);
 		}
 		double[] ELPs = new double[26];
@@ -302,7 +300,6 @@ public class KasiskiExamination {
 			for (int keyLength : likelyKeys) { // For each of the possible key lengths:
 				counter++;
 				double total = i.periodIndexOfCoincidence(keyLength, text);
-				System.out.println(likelyKeys[counter] + "," + total);
 				averageIOCs[counter] = total;
 			}
 			SimpleRegression reg = new SimpleRegression();

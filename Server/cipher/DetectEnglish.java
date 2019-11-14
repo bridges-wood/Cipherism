@@ -94,7 +94,6 @@ public class DetectEnglish {
 				englishWords += 1;
 			}
 		}
-		System.out.println(englishWords / words.length);
 		return englishWords / words.length;
 	}
 
@@ -504,7 +503,6 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (parent.children.isEmpty()) {
-			System.out.println(parent.word);
 			if (mostLikelyTable.containsKey(u.hash64(parent.word))) {
 				parent.score = 1;
 			}
