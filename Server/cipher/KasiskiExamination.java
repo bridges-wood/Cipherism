@@ -72,13 +72,7 @@ public class KasiskiExamination {
 
 		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
 		String a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
-
-		// for(int i : likelyKeyLengths)
-		return a; // This
-					// returns
-					// an
-					// empty
-					// key.
+		return a;
 	}
 
 	/**
@@ -136,10 +130,12 @@ public class KasiskiExamination {
 				decryptionScores[length] = toInsert;
 				if (toInsert < decryptionScores[minIndex]) {
 					minIndex = length;
-					System.out.println("The new best key is: " + possibleKeys[minIndex] + ". Its score is: " + toInsert);
+					System.out
+							.println("The new best key is: " + possibleKeys[minIndex] + ". Its score is: " + toInsert);
 				}
 			}
-			System.out.println("The score of the real key is: " + computeFractionalMS(n.frequencyAnalysis(v.decrypt(text, "testkey")), text.length()));
+			System.out.println("The score of the real key is: "
+					+ computeFractionalMS(n.frequencyAnalysis(v.decrypt(text, "testkey")), text.length()));
 			return possibleKeys[minIndex]; // Returns the most likely key.
 		}
 		return null;

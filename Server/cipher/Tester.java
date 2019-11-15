@@ -10,19 +10,16 @@ public class Tester {
 		Utilities u = new Utilities();
 		KasiskiExamination k = new KasiskiExamination();
 		NGramAnalyser n = new NGramAnalyser();
-		// u.generateHashTable("Server//StaticResources//mostProbable.txt",
-		// "Server//StaticResources//mostProbable.htb");
-		// u.generateHashTable("Server//StaticResources//dictionary.txt",
-		// "Server//StaticResources//dictionary.htb");
 		Vigenere v = new Vigenere();
+		DetectEnglish d = new DetectEnglish();
 		String toEncrypt = "this is meant to be an example of a simple english text of enough length to demonstrate the features of this";
-		System.out.println(k.computeFractionalMS(n.frequencyAnalysis((u.cleanText(toEncrypt).replace(" ", ""))), u.cleanText(toEncrypt).replace(" ", "").length()));
-		String otherText = v.encrypt(u.cleanText(toEncrypt).replace(" ", ""), "testkey"); // a test string to be encrypted Key: tester
-		//System.out.println(otherText + " " + v.decrypt(u.cleanText(toEncrypt), "ankey"));
-		//System.out.println(u.cleanText(toEncrypt).replace(" ", ""));
-		Manager m = new Manager(otherText);
-		// DetectEnglish d = new DetectEnglish();
-		// System.out.println(d.graphicalRespace("howmanywordsdoyouactuallyknow", 20));
+		toEncrypt = u.cleanText(toEncrypt).replace(" ", "");
+		d.graphicalRespace(toEncrypt, 20);
+		String key = "testkey";
+		//System.out.println(k.computeFractionalMS(n.frequencyAnalysis(toEncrypt), toEncrypt.length()));
+		String otherText = v.encrypt(toEncrypt, key);
+		System.out.println(otherText + " " + v.decrypt(otherText, key));
+		//Manager m = new Manager(otherText);
 	}
 
 	public static void main(String[] args) {
