@@ -471,12 +471,12 @@ public class DetectEnglish {
 	 *         the text.
 	 */
 	private WordGraph traverse(WordGraph parent, String text, int maxWordLength) {
-		//To avoid exceeding the heap, cap depth. TODO
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
-			parent.children.add(new WordGraph(sb.toString(), parent));
-			System.out.println(sb.toString());
+			if(mostLikelyTable.containsKey(u.hash64(sb.toString())));{
+				parent.children.add(new WordGraph(sb.toString(), parent));
+			}
 		}
 		if (parent.children.size() > 0) {
 			for (WordGraph child : parent.children) {
@@ -500,7 +500,7 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (parent.children.isEmpty()) {
-			if (dictionaryTable.containsKey(u.hash64(parent.word))) {
+			if (mostLikelyTable.containsKey(u.hash64(parent.word))) {
 				parent.score = 1;
 			}
 		} else {

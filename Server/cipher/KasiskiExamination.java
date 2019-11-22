@@ -2,6 +2,7 @@ package cipher;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +20,7 @@ public class KasiskiExamination {
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
+	private DetectEnglish d;
 
 	KasiskiExamination() {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
@@ -28,7 +30,7 @@ public class KasiskiExamination {
 		n = new NGramAnalyser();
 		v = new Vigenere();
 		i = new IOC();
-		new DetectEnglish();
+		d = new DetectEnglish();
 	}
 
 	private void setExpectedLetterFrequencies() {
@@ -68,26 +70,24 @@ public class KasiskiExamination {
 	 * @param text The input text to be text.
 	 * @return The most likely key used to encrypt the text.
 	 */
-	public String run(String text) {
+	public String[] run(String text) {
 
 		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
-		String a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
+		String[] a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
 		return a;
 	}
 
 	/**
-	 * Provides the most likely string which is the key to a vigenere cipher. There
-	 * are issues when short sample texts with long keywords are analysed leading to
-	 * keys that are close but not perfect.
+	 * Provides the most likely strings which could be the keys to a vigenere cipher.
 	 * 
 	 * @param keyLength The predicted length of the key.
 	 * @param text      The encrypted text.
 	 * @return The most likely key for the given text and key length.
 	 */
-	public String keyGuesserVigenere(int keyLength, String text) {
+	public String[] keyGuesserVigenere(int keyLength, String text) {
 		int textLength = text.length();
 		if (keyLength == 0) {
-			return "";
+			return new String[0];
 		}
 		String[][] possibleLetters = new String[keyLength][];
 		for (int b = 0; b < keyLength; b++) { // b is the balance, to offset each composite string in the text.
@@ -109,7 +109,7 @@ public class KasiskiExamination {
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
 			for (int i = 0; i < 26; i++) {
-				if (FMSarray[i] < 0.5) // This selects the top ~40% of letters.
+				if (FMSarray[i] < 0.6) // This selects the top ~40% of letters.
 					possibleCharacters.add(Character.toString(alphabet[i]));
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
@@ -122,33 +122,32 @@ public class KasiskiExamination {
 			for (String s : possibleKeys) {
 				System.out.println(s);
 			}
-			double[] decryptionScores = new double[possibleKeys.length];
-			int minIndex = 0;
-			for (int length = 0; length < possibleKeys.length; length++) {
-				String toAnalyse = v.decrypt(text, possibleKeys[length]);
-				double toInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
-				decryptionScores[length] = toInsert;
-				if (toInsert < decryptionScores[minIndex]) {
-					minIndex = length;
-					System.out
-							.println("The new best key is: " + possibleKeys[minIndex] + ". Its score is: " + toInsert);
+			LinkedList<String> likelyKeys = new LinkedList<String>();
+			for (int i = 0; i < possibleKeys.length; i++) {
+				System.out.println(d.detectEnglish(possibleKeys[i]) + " " + possibleKeys[i]);
+				if(d.detectEnglish(possibleKeys[i]) == 1.0) {
+					likelyKeys.push(possibleKeys[i]);
 				}
 			}
-			System.out.println("The score of the real key is: "
-					+ computeFractionalMS(n.frequencyAnalysis(v.decrypt(text, "testkey")), text.length()));
-			return possibleKeys[minIndex]; // Returns the most likely key.
+			int counter = 1;
+			for(String s : likelyKeys) {
+				System.out.println(counter + ". " + s + " is a likely key.");
+				counter++;
+			}
+			return new String[0];//possibleKeys[minIndex]; // Returns the most likely key.
 		}
 		return null;
 	}
 
 	/**
-	 * Gives the frequency match score for given text.
+	 * @deprecated Gives the frequency match score for given text.
 	 * 
 	 * @param letterOccurences A map containing each letter and their integer
 	 *                         occurences in the text.
 	 * @return How many of the most and least likely six letters occur in the right
 	 *         regions of the analysed text.
 	 */
+	@SuppressWarnings("unused")
 	private int computeFMS(Map<String, Integer> letterOccurences) {
 		int FMS = 0;
 		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' }; // The six least likely characters in English.

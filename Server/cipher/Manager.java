@@ -31,13 +31,8 @@ public class Manager {
 		switch (detectCipher(text)) {
 		case "Periodic":
 			// Need to make sure key isn't null.
-			String key = k.run(text);
-			if (key.equals("")) {
-				key = b.bruteForceAlt(text);
-			}
-			System.out.println("Key: " + key);
-			System.out.println(d.graphicalRespace(v.decrypt(text, key), 20));
-			return d.graphicalRespace(v.decrypt(text, key), 20);
+			String[] keys = k.run(text);
+			return "";
 		case "Substitution":
 			// Start substitution breaking.
 			// Return most likely substitution.
