@@ -14,12 +14,14 @@ public class Tester {
 		DetectEnglish d = new DetectEnglish();
 		String toEncrypt = "this is meant to be an example of a simple english text of enough length to demonstrate the features of this";
 		toEncrypt = u.cleanText(toEncrypt).replace(" ", "");
-		//d.graphicalRespace(toEncrypt, 20);
-		String key = "akey";
+		//System.out.println(toEncrypt);
+		System.out.println(d.graphicalRespace(toEncrypt, 20));
+		/*String key = "akey";
 		//System.out.println(k.computeFractionalMS(n.frequencyAnalysis(toEncrypt), toEncrypt.length()));
 		String otherText = v.encrypt(toEncrypt, key);
 		System.out.println(otherText + " " + v.decrypt(otherText, key));
-		Manager m = new Manager(otherText);
+		Manager m = new Manager(otherText);*/
+		
 	}
 
 	public static void main(String[] args) {

@@ -90665,18 +90665,15 @@ makar
 makars
 make
 makeable
-makeamountainoutofamolehill
 makebate
 makebates
 makefast
 makefasts
-makehaywhilethesunshines
 makeless
 maker
 makers
 makes
 makeshift
-makethebestofabadjob
 makeweight
 makeweights
 makimono
@@ -91475,16 +91472,11 @@ manuscript
 manuscripts
 manuses
 many
-manyalittlemakesamickle
-manyamicklemakesamuckle
 manyata
 manyatas
-manyatruewordisspokeninjest
 manyatta
 manyattas
 manyfold
-manyhandsmakelightwork
-manyhappyreturnsoftheday
 manyplies
 manzanilla
 manzanillas
@@ -92415,7 +92407,6 @@ mattered
 matterful
 mattering
 matterless
-matteroflifeanddeath
 matters
 mattery
 mattes
@@ -93428,7 +93419,6 @@ menseless
 menses
 mensh
 mensing
-menssanaincorporesano
 menstrua
 menstrual
 menstruate
@@ -99388,7 +99378,6 @@ musicalness
 musicals
 musicassette
 musicassettes
-musichascharmstosoothasavagebreast
 musician
 musicianer
 musicianers
@@ -100632,7 +100621,6 @@ necessitous
 necessitously
 necessitousness
 necessity
-necessityisthemotherofinvention
 neck
 neckatee
 neckband
@@ -100899,10 +100887,8 @@ neighing
 neighs
 neist
 neither
-neitherfishnorfleshnorgoodredherring
 neive
 neives
-nek
 nekton
 nektons
 nelies
@@ -101430,7 +101416,6 @@ nevelling
 nevels
 never
 nevermore
-nevertelltalesoutofschool
 nevertheless
 neves
 nevi
@@ -102700,7 +102685,6 @@ nothingism
 nothingisms
 nothingness
 nothings
-nothingtowritehomeabout
 notice
 noticeable
 noticeably
@@ -102716,7 +102700,6 @@ notifiers
 notifies
 notify
 notifying
-notimelikethepresent
 noting
 notion
 notional
@@ -104547,10 +104530,8 @@ oldfangled
 oldie
 oldies
 oldish
-oldmanofthesea
 oldness
 olds
-oldsinscastlongshadows
 oldster
 oldsters
 oldy
@@ -104838,7 +104819,6 @@ onding
 ondings
 one
 onefold
-onegoodturndeservesanother
 oneiric
 oneirocritic
 oneirocritical
@@ -104859,8 +104839,6 @@ onerousness
 oners
 ones
 oneself
-onestepatatime
-oneswallowdoesnotmakeasummer
 oneyer
 oneyers
 oneyre
@@ -104918,10 +104896,6 @@ onst
 onstage
 onstead
 onsteads
-onthefaceofit
-onthehornsofadilemma
-onthespurofthemoment
-ontheupandup
 onto
 ontogenesis
 ontogenetic
@@ -104935,7 +104909,6 @@ ontologically
 ontologist
 ontologists
 ontology
-ontopoftheworld
 onus
 onuses
 onward
@@ -106752,7 +106725,6 @@ outnumber
 outnumbered
 outnumbering
 outnumbers
-outofthefryingpanintothefire
 outpace
 outpaced
 outpaces
@@ -118712,7 +118684,6 @@ possessionary
 possessionate
 possessionates
 possessioned
-possessionisninepointsofthelaw
 possessions
 possessive
 possessively
@@ -119113,7 +119084,6 @@ pourie
 pouries
 pouring
 pourings
-pouroilontroubledwaters
 pourparler
 pourparlers
 pourpoint
@@ -120644,7 +120614,6 @@ preventers
 preventible
 preventing
 prevention
-preventionisbetterthancure
 preventions
 preventive
 preventively
@@ -121202,7 +121171,6 @@ procrastinated
 procrastinates
 procrastinating
 procrastination
-procrastinationisthethiefoftime
 procrastinative
 procrastinativeness
 procrastinator
@@ -123621,7 +123589,6 @@ punctualist
 punctualists
 punctualities
 punctuality
-punctualityisthepolitenessofprinces
 punctually
 punctuate
 punctuated
@@ -124081,8 +124048,6 @@ putterer
 putterers
 puttering
 putters
-putthecartbeforethehorse
-putthecatamongthepigeons
 putti
 puttie
 puttied
@@ -124095,7 +124060,6 @@ putto
 puttock
 puttocks
 putts
-puttwoandtwotogether
 putty
 puttying
 puture
@@ -137904,7 +137868,6 @@ scraperboard
 scraperboards
 scrapers
 scrapes
-scrapethebottomofthebarrel
 scrapie
 scraping
 scrapings
@@ -139004,7 +138967,6 @@ seeds
 seedsman
 seedsmen
 seedy
-seehowthelandlies
 seeing
 seeings
 seek
@@ -139059,7 +139021,6 @@ seethers
 seethes
 seething
 seethings
-seewhichwaythecatjumps
 seg
 segar
 segars
@@ -139710,7 +139671,6 @@ separated
 separately
 separateness
 separates
-separatethesheepfromthegoats
 separating
 separation
 separationism
@@ -141709,7 +141669,6 @@ shovers
 shoves
 shoving
 show
-showacleanpairofheels
 showbiz
 showbizzy
 showboat
@@ -141931,7 +141890,6 @@ shuddersome
 shuddery
 shuffle
 shuffled
-shuffleoffthismortalcoil
 shuffler
 shufflers
 shuffles
@@ -143082,7 +143040,6 @@ sixer
 sixers
 sixes
 sixfold
-sixofoneandhalfadozenoftheother
 sixpence
 sixpences
 sixpennies
@@ -145988,7 +145945,6 @@ somersets
 somersetted
 somersetting
 something
-somethingnastyinthewoodshed
 somethings
 sometime
 sometimes
@@ -146685,7 +146641,6 @@ sowls
 sown
 sows
 sowse
-sowthewindandreapthewhirlwind
 sox
 soy
 soya
@@ -146904,7 +146859,6 @@ sparer
 sparers
 spares
 sparest
-sparetherodandspoilthechild
 sparganium
 sparganiums
 sparge
@@ -148800,8 +148754,6 @@ squanders
 square
 squared
 squarely
-squareness
-squarepeginaroundhole
 squarer
 squarers
 squares
@@ -150351,7 +150303,6 @@ stickler
 sticklers
 stickles
 stickling
-stickoutlikeasorethumb
 sticks
 stickup
 stickups
@@ -151492,7 +151443,6 @@ strikeouts
 striker
 strikers
 strikes
-strikewhiletheironishot
 striking
 strikingly
 strikingness
@@ -156655,15 +156605,10 @@ take
 takeable
 takeaway
 takeaways
-takedownapegortwo
-takeitonthechin
-takeitorleaveit
 taken
 taker
 takers
 takes
-takethebullbythehorns
-taketwobitesatthecherry
 takhi
 takhis
 taki
@@ -156750,7 +156695,6 @@ talkies
 talking
 talkings
 talks
-talkthehindlegsoffadonkey
 talky
 tall
 tallage
@@ -157292,7 +157236,6 @@ tarragon
 tarras
 tarre
 tarred
-tarredwiththesamebrush
 tarres
 tarriance
 tarriances
@@ -158302,8 +158245,6 @@ tellins
 tells
 telltale
 telltales
-telltalesoutofschool
-tellthattothemarines
 tellural
 tellurate
 tellurates
@@ -159536,40 +159477,20 @@ theatrophones
 theave
 theaves
 thebaine
-thebestthingscomeinsmallparcels
-thebestthingsinlifearefree
-thebiggertheyarethehardertheyfall
-thebirdsandthebees
-theblindleadingtheblind
-thebootisontheotherfoot
 theca
 thecae
 thecal
 thecate
-thechickenshavecomehometoroost
-thechildisthefatheroftheman
 thecodont
 thecodonts
-thecourseoftrueloveneverdidrunsmooth
-thecustomerisalwaysright
-thedarkesthourisjustbeforethedawn
-thedevilfindsworkforidlehandstodo
 thee
-theearlybirdcatchestheworm
 theed
 theeing
 theek
 theeked
 theeking
 theeks
-theendjustifiesthemeans
-theendoftheroad
 thees
-theevilthatmendolivesafterthem
-theexceptionprovestherule
-theexceptionthatprovestherule
-thefatisinthefire
-thefemaleofthespeciesismoredeadlythanthemale
 theft
 theftboot
 theftboots
@@ -159578,14 +159499,9 @@ theftbotes
 thefts
 theftuous
 theftuously
-thegiftofthegab
 thegither
 thegn
 thegns
-thegoosethatlaysthegoldeneggs
-thegrassisalwaysgreenerontheothersideofthefence
-thegreymareisthebetterhorse
-thehandthatrocksthecradlerulestheworld
 theic
 theics
 theine
@@ -159596,10 +159512,6 @@ theist
 theistic
 theistical
 theists
-thelabourerisworthyofhishire
-theladydothprotesttoomuch
-thelongandtheshortofit
-thelongarmofthelaw
 thelytokous
 thelytoky
 them
@@ -159616,7 +159528,6 @@ themselves
 then
 thenabout
 thenabouts
-thenameofthegame
 thenar
 thenars
 thence
@@ -159771,9 +159682,6 @@ theotechny
 theotokos
 theow
 theows
-theproofofthepuddingisintheeating
-thequalityofmercyisnotstrained
-theraceisnottotheswift
 theralite
 therapeutic
 therapeutically
@@ -159948,7 +159856,6 @@ thesauruses
 these
 theses
 thesis
-theslingsandarrowsofoutrageousfortune
 thesmothete
 thesmothetes
 thespian
@@ -159958,11 +159865,9 @@ thetas
 thetch
 thete
 thetes
-thethinendofthewedge
 thetic
 thetical
 thetically
-theunspeakableinfullpursuitoftheuneatable
 theurgic
 theurgical
 theurgist
@@ -159972,8 +159877,6 @@ thew
 thewed
 thewes
 thewless
-theworldthefleshandthedevil
-thewrongsideofthetracks
 thews
 thewy
 they
@@ -160075,7 +159978,6 @@ thinginess
 thingliness
 thingness
 things
-thingsarenotalwayswhattheyseem
 thingumabob
 thingumabobs
 thingumajig
@@ -160496,16 +160398,13 @@ throughway
 throughways
 throve
 throw
-throwaspannerintheworks
 throwback
 throwbacks
-throwcautiontothewinds
 thrower
 throwers
 throwing
 throwings
 thrown
-throwoutthebabywiththebathwater
 throws
 throwster
 throwsters
@@ -160957,7 +160856,6 @@ timbrophilist
 timbrophilists
 timbrophily
 time
-timeandtidewaitfornoman
 timed
 timeframe
 timeframes
@@ -161380,7 +161278,6 @@ toady
 toadying
 toadyish
 toadyism
-toallintentsandpurposes
 toast
 toasted
 toaster
@@ -161406,8 +161303,6 @@ tobaccoes
 tobacconist
 tobacconists
 tobaccos
-tobegoingonwith
-:thatisthequestion
 tobies
 toboggan
 tobogganed
@@ -161418,7 +161313,6 @@ tobogganings
 tobogganist
 tobogganists
 toboggans
-toboldlygowherenomanhasgonebefore
 toby
 toc
 toccata
@@ -161838,11 +161732,9 @@ toolroom
 toolrooms
 tools
 toom
-toomanycooksspoilthebroth
 toomed
 tooming
 tooms
-toomuchofagoodthing
 toon
 toons
 toorie
@@ -165030,7 +164922,6 @@ truth
 truthful
 truthfully
 truthfulness
-truthisstrangerthanfiction
 truthless
 truthlessness
 truthlike
@@ -172700,7 +172591,6 @@ uptakes
 uptear
 uptearing
 uptears
-upthecreekwithoutapaddle
 upthrew
 upthrow
 upthrowing
@@ -177508,7 +177398,6 @@ wearability
 wearable
 wearer
 wearers
-wearesuchstuffasdreamsaremadeon
 wearied
 wearier
 wearies
@@ -177995,8 +177884,6 @@ whatso
 whatsoever
 whatsomever
 whatten
-whatyouloseontheswingsyougainontheroundabouts
-whatyouseeiswhatyouget
 whaup
 whaups
 whaur
@@ -178081,7 +177968,6 @@ whelped
 whelping
 whelps
 when
-whenallissaidanddone
 whenas
 whence
 whenceforth
@@ -179199,7 +179085,6 @@ withiest
 within
 withing
 without
-withoutdoors
 withouten
 withs
 withstand
@@ -179208,7 +179093,6 @@ withstanders
 withstanding
 withstands
 withstood
-withthebestwillintheworld
 withwind
 withwinds
 withy
