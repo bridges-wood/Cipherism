@@ -8,6 +8,7 @@ public class Tester {
 
 	public void run() {
 		Utilities u = new Utilities();
+		//u.generateHashTable("Server\\StaticResources\\UKACD17.TXT", "Server\\StaticResources\\dictionary.htb");
 		KasiskiExamination k = new KasiskiExamination();
 		NGramAnalyser n = new NGramAnalyser();
 		Vigenere v = new Vigenere();

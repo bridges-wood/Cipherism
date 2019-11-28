@@ -61953,7 +61953,6 @@ fyrds
 fys
 fytte
 fyttes
-g
 gab
 gabardine
 gabardines
@@ -67916,7 +67915,6 @@ gyve
 gyved
 gyves
 gyving
-h
 ha
 haaf
 haafs
@@ -81552,7 +81550,6 @@ izards
 izzard
 izzards
 izzat
-j
 jab
 jabbed
 jabber
@@ -83020,7 +83017,6 @@ juxtapositions
 jymold
 jynx
 jynxes
-k
 ka
 kaama
 kaamas
@@ -84920,7 +84916,6 @@ kythes
 kything
 kyu
 kyus
-l
 la
 laager
 laagered
@@ -89972,7 +89967,6 @@ lythes
 lythraceous
 lytta
 lyttas
-m
 ma
 maa
 maaed
@@ -99927,7 +99921,6 @@ mzee
 mzees
 mzungu
 mzungus
-n
 na
 naam
 naams
@@ -103327,7 +103320,6 @@ nystagmic
 nystagmoid
 nystagmus
 nystatin
-o
 oaf
 oafish
 oafishly
@@ -108557,7 +108549,6 @@ ozonizers
 ozonizes
 ozonizing
 ozonosphere
-p
 pa
 pabouche
 pabouches
@@ -124367,7 +124358,6 @@ pyxidium
 pyxing
 pyxis
 pzazz
-q
 qabalah
 qabalahs
 qadi
@@ -125402,7 +125392,6 @@ quotition
 quotitions
 quotum
 quotums
-r
 rabanna
 rabat
 rabatine
@@ -134868,7 +134857,6 @@ rype
 rypeck
 rypecks
 ryper
-s
 sab
 sabadilla
 sabaton
@@ -156199,7 +156187,6 @@ syvers
 syzygial
 syzygies
 syzygy
-t
 ta
 taal
 tab
@@ -166095,7 +166082,6 @@ tziganes
 tziganies
 tzigany
 tzimmes
-u
 uakari
 uakaris
 uberous
@@ -173116,7 +173102,6 @@ uxorilocal
 uxorious
 uxoriously
 uxoriousness
-v
 vac
 vacancies
 vacancy
@@ -176329,7 +176314,6 @@ vulvitis
 vum
 vying
 vyingly
-w
 wabain
 wabains
 wabbit
@@ -179947,7 +179931,6 @@ wytes
 wyting
 wyvern
 wyverns
-x
 xantham
 xanthan
 xanthate
@@ -180132,7 +180115,6 @@ xystoi
 xystos
 xysts
 xystus
-y
 yabber
 yabbered
 yabbering
@@ -180788,7 +180770,6 @@ yurt
 yurts
 yus
 ywis
-z
 zabaglione
 zabagliones
 zabaione

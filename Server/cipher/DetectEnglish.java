@@ -452,8 +452,8 @@ public class DetectEnglish {
 		if (dictionaryTable.isEmpty()) {
 			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
 		}
-		if (mostLikelyTable.isEmpty()) {
-			mostLikelyTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\mostProbable.htb");
+		if (twoGramsTable.isEmpty()) {
+			twoGramsTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\2grams.htb");
 		}
 		traverse(start, text, maxWordLength);
 		score(start);
@@ -504,13 +504,16 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (parent.children.isEmpty()) {
-			if (mostLikelyTable.containsKey(u.hash64(parent.word))) {
-				parent.score = 1;
-			}
+			parent.score = 1;
 		} else {
 			for (WordGraph child : parent.children) {
 				score(child);
 				parent.score += child.score;
+				//System.out.println(twoGramsTable.contains(parent.word + "," + child.word) + ":" + parent.word + " " + child.word);
+				if(twoGramsTable.contains(u.hash64(parent.word + "," + child.word))) { 
+					child.score = child.score + 20; //TODO need to weight common word combos better.
+				}
+				System.out.println(child.score + ":" + parent.word + " " + child.word);
 			}
 		}
 		return parent;
