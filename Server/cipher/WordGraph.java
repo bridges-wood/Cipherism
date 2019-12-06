@@ -13,4 +13,5 @@ public class WordGraph {
 		this.word = word;
 		this.parent = parent;
 	}
+
 }

@@ -9,14 +9,18 @@ public class Tester {
 	public void run() {
 		Utilities u = new Utilities();
 		//u.generateHashTable("Server\\StaticResources\\UKACD17.TXT", "Server\\StaticResources\\dictionary.htb");
+		//u.generateHashTable("Server\\StaticResources\\2grams.txt", "Server\\StaticResources\\2grams.htb");
 		KasiskiExamination k = new KasiskiExamination();
 		NGramAnalyser n = new NGramAnalyser();
 		Vigenere v = new Vigenere();
 		DetectEnglish d = new DetectEnglish();
-		String toEncrypt = "this is meant to be an example of a simple english text of enough length to demonstrate the features of this";
+		String toEncrypt = "woman lives after her heart stops for six hours";
 		toEncrypt = u.cleanText(toEncrypt).replace(" ", "");
 		//System.out.println(toEncrypt);
+		long start = System.nanoTime();
 		System.out.println(d.graphicalRespace(toEncrypt, 20));
+		System.out.print("For length of text: " + toEncrypt.length() + " that took " + (System.nanoTime() - start)*1E-9 + "seconds");
+		
 		/*String key = "akey";
 		//System.out.println(k.computeFractionalMS(n.frequencyAnalysis(toEncrypt), toEncrypt.length()));
 		String otherText = v.encrypt(toEncrypt, key);

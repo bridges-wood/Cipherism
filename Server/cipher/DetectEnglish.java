@@ -20,7 +20,7 @@ public class DetectEnglish {
 	DetectEnglish() {
 		dictionaryTable = new Hashtable<Long, String>();
 		mostLikelyTable = new Hashtable<Long, String>();
-		twoGramsTable = new Hashtable<Long, String>();
+		twoGramsTable = new Hashtable<Long, String>(); //TODO need to recompile to account for changes.
 		firstOrder = new TreeMap<String, Double>();
 		secondOrder = new TreeMap<String, Double>();
 		letterProbabilities = new TreeMap<Character, Double>();
@@ -477,8 +477,7 @@ public class DetectEnglish {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
-			if(dictionaryTable.containsKey(u.hash64(sb.toString()))){
-				System.out.println(sb.toString());
+			if (dictionaryTable.containsKey(u.hash64(sb.toString()))) {
 				parent.children.add(new WordGraph(sb.toString(), parent));
 			}
 		}
@@ -504,16 +503,18 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (parent.children.isEmpty()) {
-			parent.score = 1;
+			parent.score = parent.word.length()    ;
 		} else {
 			for (WordGraph child : parent.children) {
 				score(child);
-				parent.score += child.score;
-				//System.out.println(twoGramsTable.contains(parent.word + "," + child.word) + ":" + parent.word + " " + child.word);
-				if(twoGramsTable.contains(u.hash64(parent.word + "," + child.word))) { 
-					child.score = child.score + 20; //TODO need to weight common word combos better.
-				}
-				System.out.println(child.score + ":" + parent.word + " " + child.word);
+				parent.score = parent.score + child.score;
+				if (twoGramsTable.containsKey(u.hash64(parent.word + "," + child.word))) {
+					child.score *= 2; // TODO need to weight common word combos better.
+					child.score += child.word.length() * 2;
+					} else {
+						child.score /= 2;
+					}
+				//System.out.println(child.score + ":" + parent.word + " " + child.word);
 			}
 		}
 		return parent;
@@ -529,9 +530,12 @@ public class DetectEnglish {
 	private WordGraph prune(WordGraph parent) {
 		if (!parent.children.isEmpty()) {
 			WordGraph maxChild = parent.children.get(0);
+			System.out.println("For parent word: " + parent.word);
 			for (WordGraph child : parent.children) {
-				if (child.score >= maxChild.score) {
+				System.out.println(child.word + " : " + child.score);
+				if (child.score > maxChild.score) {
 					maxChild = child;
+					System.out.println(maxChild.word + " : " + maxChild.score);
 				}
 			}
 			parent.children = new LinkedList<WordGraph>();
