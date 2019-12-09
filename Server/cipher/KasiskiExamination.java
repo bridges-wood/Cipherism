@@ -117,7 +117,7 @@ public class KasiskiExamination {
 		combinations(possibleLetters, new String[possibleLetters.length], 0); // Generates all possible combinations of
 																				// likely letters in the key.
 		String[] possibleKeys = new String[0];
-		if (!possKeys.isEmpty()) { // Avoids Null Exceptions and the like.
+		if (!possKeys.isEmpty()) { // Avoids Null Pointer Exceptions and the like.
 			possibleKeys = possKeys.toArray(new String[0]);
 			for (String s : possibleKeys) {
 				System.out.println(s);
@@ -129,12 +129,12 @@ public class KasiskiExamination {
 					likelyKeys.push(possibleKeys[i]);
 				}
 			}
-			int counter = 1;
 			for(String s : likelyKeys) {
-				System.out.println(counter + ". " + s + " is a likely key.");
-				counter++;
+				if(d.isEnglish(v.decrypt(text, s).split(" ")) <  1) {
+					likelyKeys.remove(s);
+				}
 			}
-			return new String[0];//possibleKeys[minIndex]; // Returns the most likely key.
+			return likelyKeys.toArray(new String[likelyKeys.size()]);//possibleKeys[minIndex]; // Returns the most likely key.
 		}
 		return null;
 	}

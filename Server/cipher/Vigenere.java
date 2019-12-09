@@ -2,10 +2,7 @@ package cipher;
 
 public class Vigenere {
 
-	private Utilities u;
-
 	Vigenere() {
-		u = new Utilities();
 	}
 
 	/**

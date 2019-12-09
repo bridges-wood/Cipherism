@@ -59,11 +59,11 @@ public class BruteForce {
 		for (int c = 0; c < moreProbableKeyLengthsArr.length; c++) {
 			int keyLength = moreProbableKeyLengthsArr[c];
 			System.out.println(keyLength);
-			String predictedKey = k.keyGuesserVigenere(keyLength, text);
-			double keyScore = d.chiSquaredTest(v.decrypt(text, predictedKey));
+			String[] predictedKey = k.keyGuesserVigenere(keyLength, text);
+			double keyScore = d.chiSquaredTest(v.decrypt(text, predictedKey[0]));
 			System.out.println(predictedKey + ":" + keyScore);
 			if (keyScore < min) {
-				minKey = predictedKey;
+				minKey = predictedKey[0];
 				min = keyScore;
 			}
 		}

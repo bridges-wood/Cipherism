@@ -101,39 +101,6 @@ public class Utilities {
 	}
 
 	/**
-	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
-	 * GroupProbabilityPair>.
-	 * 
-	 * @param filename
-	 *            The name of the file which lines are to be read from.
-	 * @param outputFilename
-	 *            The name of the file to which the hashtable is saved.
-	 */
-	public void generateObjectHashTable(String filename, String outputFilename) {
-		File fromFile = new File(filename);
-		File toFile = new File(outputFilename);
-		Hashtable<Long, GroupProbabilityPair> hashTable = new Hashtable<Long, GroupProbabilityPair>();
-		try {
-			Scanner sc = new Scanner(fromFile);
-			int counter = 1;
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				System.out.println(line);
-				hashTable.put(hash64(line), new GroupProbabilityPair(counter, line)); // Puts each line into the
-																						// hashtable.
-				counter++;
-			}
-			sc.close();
-			FileOutputStream outputStream = new FileOutputStream(toFile);
-			ObjectOutputStream out = new ObjectOutputStream(outputStream);
-			out.writeObject(hashTable);
-			out.close(); // Writes the dictionary to the file.
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Returns the hashtable that was stored in a given file.
 	 * 
 	 * @param filename
