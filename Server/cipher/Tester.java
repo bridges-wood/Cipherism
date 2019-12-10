@@ -14,13 +14,13 @@ public class Tester {
 		NGramAnalyser n = new NGramAnalyser();
 		Vigenere v = new Vigenere();
 		DetectEnglish d = new DetectEnglish();
-		String toEncrypt = "woman lives after her heart stops for six hours";
+		String toEncrypt = "He completed six tours of duty in Northern Ireland and was seconded to a Nato task force.";
 		toEncrypt = u.cleanText(toEncrypt).replace(" ", "");
 		//System.out.println(toEncrypt);
-		long start = System.nanoTime();
+		System.out.println(d.graphicalRespace(toEncrypt, 20));;
+		Long start = System.nanoTime();
 		System.out.println(d.graphicalRespace(toEncrypt, 20));
 		System.out.print("For length of text: " + toEncrypt.length() + " that took " + (System.nanoTime() - start)*1E-9 + "seconds");
-		
 		/*String key = "akey";
 		//System.out.println(k.computeFractionalMS(n.frequencyAnalysis(toEncrypt), toEncrypt.length()));
 		String otherText = v.encrypt(toEncrypt, key);

@@ -27,7 +27,7 @@ public class DetectEnglish {
 	 * 
 	 * @param text The text to be analysed.
 	 * @return Float representing the fraction of text that can be classified as
-	 *         English. Scores above 0.75 for unspaced text and 0.85 for spaced text
+	 *         English. Scores above 0.75 for un-spaced text and 0.85 for spaced text
 	 *         are good indications of English.
 	 */
 	public float detectEnglish(String text) {
@@ -75,7 +75,6 @@ public class DetectEnglish {
 	 * @return Float representing the fraction of words in the array that are
 	 *         English.
 	 */
-	@SuppressWarnings("unchecked")
 	public float isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
 			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server//StaticResources//dictionary.htb");
@@ -106,17 +105,17 @@ public class DetectEnglish {
 	 * {@link #reconstruct(WordGraph, StringBuilder)}
 	 * </p>
 	 *
-	 * @param text          The text to be respaced.
+	 * @param text          The text to be re-spaced.
 	 * @param maxWordLength The maximum length of a word that could be possibly
 	 *                      recognised.
-	 * @return The input text, respaced.
+	 * @return The input text, re-spaced.
 	 */
 	public String graphicalRespace(String text, int maxWordLength) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
+			dictionaryTable = u.readHashTable("Server\\StaticResources\\dictionary.htb");
 		}
 		if (twoGramsTable.isEmpty()) {
-			twoGramsTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\2grams.htb");
+			twoGramsTable = u.readHashTable("Server\\StaticResources\\2grams.htb");
 		}
 		traverse(start, text, maxWordLength);
 		score(start);
@@ -208,8 +207,8 @@ public class DetectEnglish {
 	 * Generates an English string from an input path graph.
 	 * 
 	 * @param parent The node from which child nodes are drawn.
-	 * @param sb     A stringbuilder used during recursive calls of this function.
-	 * @return A stringbuilder containing all the English words in the path graph,
+	 * @param sb     A string-builder used during recursive calls of this function.
+	 * @return A string-builder containing all the English words in the path graph,
 	 *         concatenated.
 	 */
 	private StringBuilder reconstruct(WordGraph parent, StringBuilder sb) {
@@ -252,11 +251,10 @@ public class DetectEnglish {
 	 * @param word The word to be examined
 	 * @return Boolean whether word is English or not.
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean isEnglish(String word) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server\\StaticResources\\dictionary.htb");
-		} // Loads the dictionary hashtable.
+			dictionaryTable = u.readHashTable("Server\\StaticResources\\dictionary.htb");
+		} // Loads the dictionary hash-table.
 		return dictionaryTable.containsKey(u.hash64(word));
 	}
 }

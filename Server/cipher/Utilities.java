@@ -1,9 +1,12 @@
 package cipher;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -101,27 +104,24 @@ public class Utilities {
 	}
 
 	/**
-	 * Returns the hashtable that was stored in a given file.
+	 * Returns the hash-table that was stored in a given file. 10x Faster than previous method.
 	 * 
 	 * @param filename
 	 * @return
 	 */
-	public Hashtable<?, ?> readHashTable(String filename) {
+	public Hashtable<Long, String> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
-			FileInputStream fileIn = new FileInputStream(fromFile);
-			ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-			Object obj = objectIn.readObject();
-			objectIn.close();
-			if (Hashtable.class.isInstance(obj)) {
-				return (Hashtable<?, ?>) obj;
-			} else {
-				return null;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
+			BufferedInputStream s = new BufferedInputStream(new FileInputStream(fromFile));
+			byte[] toObject = s.readAllBytes();
+			s.close();
+			ByteArrayInputStream bis = new ByteArrayInputStream(toObject);
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			return (Hashtable<Long, String>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**
