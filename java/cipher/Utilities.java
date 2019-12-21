@@ -18,6 +18,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
+import com.esotericsoftware.kryo.Kryo;
+
 public class Utilities {
 
 	private long FNV1_64_INIT;
@@ -97,7 +99,7 @@ public class Utilities {
 				}
 			}
 			sc.close();
-			Kyro kyro = new Kyro();
+			Kryo kyro = new Kryo();
 			
 			System.out.println("here");
 			//out.close(); // Writes the dictionary to the file.
@@ -116,7 +118,7 @@ public class Utilities {
 		File fromFile = new File(filename);
 		try {
 			BufferedInputStream s = new BufferedInputStream(new FileInputStream(fromFile));
-			byte[] toObject = s.readAllBytes();
+			byte[] toObject = s.readAllBytes(); //Debug.
 			s.close();
 			ByteArrayInputStream bis = new ByteArrayInputStream(toObject);
 			ObjectInputStream ois = new ObjectInputStream(bis);
