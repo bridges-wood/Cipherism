@@ -2,7 +2,7 @@ package cipher;
 
 public class Caesar {
 
-	Caesar() {
+	public Caesar() {
 	}
 
 	/**
@@ -29,6 +29,7 @@ public class Caesar {
 			}
 			stringOut.append(new String(letters) + " ");
 		}
-		return stringOut.toString();
+		
+		return stringOut.toString().strip();
 	}
 }

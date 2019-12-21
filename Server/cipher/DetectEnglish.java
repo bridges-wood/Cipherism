@@ -77,7 +77,7 @@ public class DetectEnglish {
 	 */
 	public float isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("resources//dictionary.htb");
+			dictionaryTable = u.readHashTable("resources//dictionary.htb");
 		}
 		float englishWords = 0f;
 		for (String word : words) {
