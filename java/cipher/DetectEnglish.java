@@ -77,7 +77,7 @@ public class DetectEnglish {
 	 */
 	public float isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("Server//StaticResources//dictionary.htb");
+			dictionaryTable = (Hashtable<Long, String>) u.readHashTable("resources//dictionary.htb");
 		}
 		float englishWords = 0f;
 		for (String word : words) {
@@ -112,10 +112,10 @@ public class DetectEnglish {
 	 */
 	public String graphicalRespace(String text, int maxWordLength) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable("Server\\StaticResources\\dictionary.htb");
+			dictionaryTable = u.readHashTable("resources\\dictionary.htb");
 		}
 		if (twoGramsTable.isEmpty()) {
-			twoGramsTable = u.readHashTable("Server\\StaticResources\\2grams.htb");
+			twoGramsTable = u.readHashTable("resources\\2grams.htb");
 		}
 		traverse(start, text, maxWordLength);
 		score(start);
@@ -227,7 +227,7 @@ public class DetectEnglish {
 	 */
 	public double chiSquaredTest(String text) {
 		if (letterProbabilities.isEmpty()) {
-			String[] lines = u.readFile("Server\\StaticResources\\1l.txt"); // 4374127904 is total to divide by.
+			String[] lines = u.readFile("resources\\1l.txt"); // 4374127904 is total to divide by.
 			for (String line : lines) {
 				String[] splitLine = line.split(",");
 				letterProbabilities.put(splitLine[0].charAt(0), Double.parseDouble(splitLine[1]) / 4374127904d);
@@ -253,7 +253,7 @@ public class DetectEnglish {
 	 */
 	public boolean isEnglish(String word) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable("Server\\StaticResources\\dictionary.htb");
+			dictionaryTable = u.readHashTable("resources\\dictionary.htb");
 		} // Loads the dictionary hash-table.
 		return dictionaryTable.containsKey(u.hash64(word));
 	}
