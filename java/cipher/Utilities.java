@@ -1,29 +1,23 @@
 package cipher;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {
 
 	private long FNV1_64_INIT;
 	private long FNV1_PRIME_64;
+	private Kryo kyro = new Kryo();
 
 	Utilities() {
 		FNV1_64_INIT = 0xcbf29ce484222325L;
@@ -33,8 +27,7 @@ public class Utilities {
 	/**
 	 * Returns all lines in a text file as separate words in a string array.
 	 * 
-	 * @param filename
-	 *            The name of the file to be retrieved.
+	 * @param filename The name of the file to be retrieved.
 	 * @return A string array of each line in the file.
 	 */
 	public String[] readFile(String filename) {
@@ -56,8 +49,7 @@ public class Utilities {
 	/**
 	 * Gives the 64 bit FNV1a hash of an input string.
 	 *
-	 * @param text
-	 *            The text from which the hash is to be generated.
+	 * @param text The text from which the hash is to be generated.
 	 * @return The hash of the input data.
 	 */
 	public long hash64(String text) {
@@ -78,10 +70,8 @@ public class Utilities {
 	 * Creates a hashtable using fnv1 and each line of a given file of type <Long,
 	 * String>.
 	 * 
-	 * @param filename
-	 *            The name of the file which lines are to be read from.
-	 * @param outputFilename
-	 *            The name of the file to which the hashtable is saved.
+	 * @param filename       The name of the file which lines are to be read from.
+	 * @param outputFilename The name of the file to which the hashtable is saved.
 	 */
 	public void generateHashTable(String filename, String outputFilename) {
 		File fromFile = new File(filename);
@@ -94,22 +84,23 @@ public class Utilities {
 				counter++;
 				String line = sc.nextLine();
 				hashTable.put(hash64(line), line); // Puts each line into the hashtable.
-				if(counter % 1000 == 0) {
+				if (counter % 1000 == 0) {
 					System.out.println(line);
 				}
 			}
 			sc.close();
-			Kryo kyro = new Kryo();
-			
-			System.out.println("here");
-			//out.close(); // Writes the dictionary to the file.
+			kyro.register(hashTable.getClass());
+			Output out = new Output(new FileOutputStream(toFile));
+			kyro.writeObject(out, hashTable.getClass());
+			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Returns the hash-table that was stored in a given file. 10x Faster than previous method.
+	 * Returns the hash-table that was stored in a given file. 10x Faster than
+	 * previous method.
 	 * 
 	 * @param filename
 	 * @return
@@ -117,13 +108,12 @@ public class Utilities {
 	public Hashtable<Long, String> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
-			BufferedInputStream s = new BufferedInputStream(new FileInputStream(fromFile));
-			byte[] toObject = s.readAllBytes(); //Debug.
-			s.close();
-			ByteArrayInputStream bis = new ByteArrayInputStream(toObject);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			return (Hashtable<Long, String>) ois.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+			Input in = new Input(new FileInputStream(fromFile));
+			Hashtable<Long, String> output = new Hashtable<Long, String>();
+			kyro.readObject(in, output.getClass());
+			return output;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -132,8 +122,7 @@ public class Utilities {
 	/**
 	 * Cleans a given piece of text.
 	 * 
-	 * @param text
-	 *            The text to be cleaned.
+	 * @param text The text to be cleaned.
 	 * @return The same text with only alphabetic characters, in lower case.
 	 */
 	public String cleanText(String text) {

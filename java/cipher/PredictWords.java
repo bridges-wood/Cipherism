@@ -8,8 +8,8 @@ public class PredictWords {
 
 	private Utilities u;
 
-	PredictWords() {
-		u = new Utilities();
+	PredictWords(Utilities u) {
+		this.u = u;
 	}
 
 	/**

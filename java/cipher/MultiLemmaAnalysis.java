@@ -9,9 +9,9 @@ public class MultiLemmaAnalysis {
 	private Utilities u;
 	private PredictWords p;
 
-	MultiLemmaAnalysis() {
-		u = new Utilities();
-		p = new PredictWords();
+	MultiLemmaAnalysis(Utilities u, PredictWords p) {
+		this.u = u;
+		this.p = p;
 	}
 
 	/**

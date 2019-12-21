@@ -14,12 +14,12 @@ public class DetectEnglish {
 	private NGramAnalyser n;
 	private WordGraph start = new WordGraph("", null);
 
-	DetectEnglish() {
+	DetectEnglish(Utilities u, NGramAnalyser n) {
 		dictionaryTable = new Hashtable<Long, String>();
 		twoGramsTable = new Hashtable<Long, String>();
 		letterProbabilities = new TreeMap<Character, Double>();
-		u = new Utilities();
-		n = new NGramAnalyser();
+		this.u = u;
+		this.n = n;
 	}
 
 	/**

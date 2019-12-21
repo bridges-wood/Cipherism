@@ -14,13 +14,13 @@ public class BruteForce {
 	private PredictWords p;
 	private Utilities u;
 
-	BruteForce() {
-		i = new IOC();
-		k = new KasiskiExamination();
-		v = new Vigenere();
-		d = new DetectEnglish();
-		p = new PredictWords();
-		u = new Utilities();
+	BruteForce(IOC i, KasiskiExamination k, Vigenere v, DetectEnglish d, PredictWords p, Utilities u) {
+		this.i = i;
+		this.k = k;
+		this.v = v;
+		this.d = d;
+		this.p = p;
+		this.u = u;
 	}
 
 	public String bruteForcePeriodic(String text) {

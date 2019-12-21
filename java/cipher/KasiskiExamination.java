@@ -22,15 +22,15 @@ public class KasiskiExamination {
 	private IOC i;
 	private DetectEnglish d;
 
-	KasiskiExamination() {
+	KasiskiExamination(Utilities u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
 		setExpectedLetterFrequencies();
-		u = new Utilities();
-		n = new NGramAnalyser();
-		v = new Vigenere();
-		i = new IOC();
-		d = new DetectEnglish();
+		this.u = u;
+		this.n = n;
+		this.v = v;
+		this.i = i;
+		this.d = d;
 	}
 
 	private void setExpectedLetterFrequencies() {

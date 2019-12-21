@@ -16,14 +16,14 @@ public class Manager {
 	private Vigenere v;
 	private BruteForce b;
 
-	Manager(String text) {
-		u = new Utilities();
-		i = new IOC();
-		n = new NGramAnalyser();
-		d = new DetectEnglish();
-		k = new KasiskiExamination();
-		v = new Vigenere();
-		b = new BruteForce();
+	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v, BruteForce b) {
+		this.u = u;
+		this.i = i;
+		this.n = n;
+		this.d = d;
+		this.k = k;
+		this.v = v;
+		this.b = b;
 		run(u.cleanText(text));
 	}
 
