@@ -9,7 +9,7 @@ public class NGramAnalyser {
 	private String[] letters;
 	private Utilities u;
 
-	NGramAnalyser(Utilities u) {
+	public NGramAnalyser(Utilities u) {
 		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
 		this.u = u;
 	}

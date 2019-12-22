@@ -16,6 +16,9 @@ public class Caesar {
 		while (shift > 26) {
 			shift -= 26;
 		}
+		while(shift < 0) {
+			shift += 26;
+		}
 		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
 		StringBuilder stringOut = new StringBuilder();
 		for (String word : words) {
@@ -29,7 +32,7 @@ public class Caesar {
 			}
 			stringOut.append(new String(letters) + " ");
 		}
-		
-		return stringOut.toString().strip();
+		String toReturn = stringOut.toString();
+		return toReturn.strip();
 	}
 }

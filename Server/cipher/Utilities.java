@@ -1,9 +1,13 @@
 package cipher;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -19,7 +23,7 @@ public class Utilities {
 	private long FNV1_PRIME_64;
 	private Kryo kyro = new Kryo();
 
-	Utilities() {
+	public Utilities() {
 		FNV1_64_INIT = 0xcbf29ce484222325L;
 		FNV1_PRIME_64 = 1099511628211L;
 	}
@@ -108,12 +112,13 @@ public class Utilities {
 	public Hashtable<Long, String> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
-			Input in = new Input(new FileInputStream(fromFile));
-			Hashtable<Long, String> output = new Hashtable<Long, String>();
-			kyro.readObject(in, output.getClass());
-			return output;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			BufferedInputStream s = new BufferedInputStream(new FileInputStream(fromFile));
+			byte[] toObject = s.readAllBytes();
+			s.close();
+			ByteArrayInputStream bis = new ByteArrayInputStream(toObject);
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			return (Hashtable<Long, String>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return null;

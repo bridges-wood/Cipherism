@@ -16,7 +16,6 @@ public class CaesarTest {
 		Caesar tester = new Caesar();
 		
 		assertEquals("the quick brown fox jumps over the lazy dog".replaceAll(" ", ""), tester.CaesarShiftDecrypt(encrypted, shift));
-		fail("Failed Caesar decryption on: " + encrypted + " with offset 7.");
 	}
 
 }
