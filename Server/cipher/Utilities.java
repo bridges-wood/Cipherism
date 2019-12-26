@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {

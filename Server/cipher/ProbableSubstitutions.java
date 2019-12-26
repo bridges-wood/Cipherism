@@ -31,7 +31,7 @@ public class ProbableSubstitutions {
 															// data removal without harming the input to the function.
 		while (!freqs.isEmpty()) {// Tests to see if all the data has been assigned to a mapping.
 			String target = maxKey(freqs); // Finds the character corresponding to the highest probability.
-			mappings[pointer] = new Mapping(false, target.charAt(0), frequencyOrder[pointer]); // Creates a new mapping,
+			mappings[pointer] = new Mapping(target.charAt(0), frequencyOrder[pointer]); // Creates a new mapping,
 																								// in probability order
 																								// with the particular
 																								// character.
@@ -44,7 +44,7 @@ public class ProbableSubstitutions {
 				break;
 			if (!letterFrequencies.containsKey(Character.toString(letter))) { // If the letter of the alphabet doesn't
 																				// exist in the cipher text.
-				mappings[pointer] = new Mapping(false, letter, frequencyOrder[pointer]); // Creates new mapping.
+				mappings[pointer] = new Mapping(letter, frequencyOrder[pointer]); // Creates new mapping.
 				pointer++;
 			}
 		}

@@ -8,7 +8,7 @@ public class PredictWords {
 
 	private Utilities u;
 
-	PredictWords(Utilities u) {
+	public PredictWords(Utilities u) {
 		this.u = u;
 	}
 
@@ -29,9 +29,9 @@ public class PredictWords {
 		List<String> possibleWords = new ArrayList<String>();
 		String[] lines;
 		if (probable) {
-			lines = u.readFile("mostProbable.txt");
+			lines = u.readFile("src\\main\\resources\\mostProbable.txt");
 		} else {
-			lines = u.readFile("dictionary.txt");
+			lines = u.readFile("src\\main\\resources\\dictionary.txt");
 		}
 		for (String line : lines) {
 			if (line.length() == word.length()) {// If the lengths match... (This is to thin the field examined and

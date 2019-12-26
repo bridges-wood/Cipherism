@@ -27,8 +27,8 @@ public class DetectEnglish {
 	 * 
 	 * @param text The text to be analysed.
 	 * @return Float representing the fraction of text that can be classified as
-	 *         English. Scores above 0.75 for un-spaced text and 0.85 for spaced text
-	 *         are good indications of English.
+	 *         English. Scores above 0.75 for un-spaced text and 0.85 for spaced
+	 *         text are good indications of English.
 	 */
 	public float detectEnglish(String text) {
 		text = text.toLowerCase();
@@ -64,7 +64,15 @@ public class DetectEnglish {
 			return isEnglish(words.toArray(new String[0]));
 
 		} else {
-			return isEnglish(graphicalRespace(text, 20).split(" "));
+			return graphicalRespace(text, 20).replaceAll(" ", "").length() / text.length(); // This is due to the fact
+																							// that if there are any
+																							// non-English words in the
+																							// text, by nature they will
+																							// not appear in the
+																							// re-spaced text, so a
+																							// different approach must
+																							// be taken to account for
+																							// this.
 		}
 	}
 
@@ -76,6 +84,9 @@ public class DetectEnglish {
 	 *         English.
 	 */
 	public float isEnglish(String[] words) {
+		if (words.length == 0) {
+			return 0;
+		}
 		if (dictionaryTable.isEmpty()) {
 			dictionaryTable = u.readHashTable("src\\main\\resources\\dictionary.htb");
 		}
@@ -111,6 +122,7 @@ public class DetectEnglish {
 	 * @return The input text, re-spaced.
 	 */
 	public String graphicalRespace(String text, int maxWordLength) {
+		start.Clear();
 		if (dictionaryTable.isEmpty()) {
 			dictionaryTable = u.readHashTable("src\\main\\resources\\dictionary.htb");
 		}

@@ -1,8 +1,8 @@
 package cipher;
 public class Mapping {
 	boolean isDefinite;
-	char fromChar;
-	char toChar;
+	char cipherChar;
+	char plainChar;
 
 	/**
 	 * @param isDefinite Whether or not the relationship is definite in the text.
@@ -10,9 +10,9 @@ public class Mapping {
 	 * @param toChar     The deciphered character the enciphered character
 	 *                   represents.
 	 */
-	Mapping(boolean isDefinite, char fromChar, char toChar) {
-		this.isDefinite = isDefinite;
-		this.fromChar = fromChar;
-		this.toChar = toChar;
+	public Mapping(char fromChar, char toChar) {
+		this.isDefinite = false;
+		this.cipherChar = fromChar;
+		this.plainChar = toChar;
 	}
 }

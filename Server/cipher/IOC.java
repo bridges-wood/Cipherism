@@ -7,7 +7,7 @@ public class IOC {
 	private Utilities u;
 	private NGramAnalyser n;
 
-	IOC(Utilities u, NGramAnalyser n) {
+	public IOC(Utilities u, NGramAnalyser n) {
 		this.u = u;
 		this.n = n;
 	}

@@ -15,18 +15,15 @@ public class DetectEnglishTest {
 
 	@Test
 	public void testDetectEnglish() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testIsEnglishStringArray() {
-		fail("Not yet implemented");
+		assertTrue(tester.detectEnglish("this is a test string") == 1);
+		assertTrue(tester.detectEnglish("thisisateststring") == 1);
+		assertTrue(tester.detectEnglish("étoile") == 0);
+		assertTrue(tester.detectEnglish("test étoile") == 0.5);
 	}
 
 	@Test
 	public void testGraphicalRespace() {
-		String[] testCases = { "this is a test case", "let us invade" }; // TODO Assess why this loop gives comparison
-																			// errors between iterations.
+		String[] testCases = {"this is a test case", "check check one two"}; //Non-English text causes a failure as it cannot be recognised in the middle of the string.
 		for (String testCase : testCases) {
 			assertEquals("Failure on test case " + testCase, testCase,
 					tester.graphicalRespace(testCase.replace(" ", ""), 20));
@@ -36,12 +33,21 @@ public class DetectEnglishTest {
 
 	@Test
 	public void testChiSquaredTest() {
-		fail("Not yet implemented");
+		assertTrue(tester.chiSquaredTest("this is an english sentence") < 150);
 	}
 
 	@Test
 	public void testIsEnglishString() {
-		fail("Not yet implemented");
+		assertTrue(tester.isEnglish("lammer"));
+		assertTrue(tester.isEnglish("plenteously"));
+		assertTrue(tester.isEnglish("jannock"));
+		assertTrue(tester.isEnglish("bombproof"));
+		assertTrue(tester.isEnglish("reburials"));
+		assertTrue(tester.isEnglish("kursaals"));
+		assertTrue(tester.isEnglish("flukeworm"));
+		assertTrue(tester.isEnglish("requires"));
+		assertTrue(tester.isEnglish("subsacral"));
+		assertTrue(tester.isEnglish("saleable"));
 	}
 
 }

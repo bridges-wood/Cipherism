@@ -14,4 +14,9 @@ public class WordGraph {
 		this.parent = parent;
 	}
 
+	void Clear() {
+		this.children = new LinkedList<WordGraph>();
+		this.score = 0;
+		this.word = "";
+	}
 }

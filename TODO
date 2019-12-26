@@ -1,15 +1,3 @@
-Cipher Analysis:
-Create method to determine if text is monoalphabetic or not.
-Multi-lemma analysis
-
-Deciphering:
-Monoalphabetic
-Polyalphabetic
-Scytale
-Transposition
-Playfair
-
-MISC:
-Hash all text files to increase access times. (2/6)
-
---- Finish Manager ---
+Finish Tests
+Remember static modifier in SubstitutionTest. 
+Remove all calls to utilities within classes to clean text.

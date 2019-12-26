@@ -9,7 +9,7 @@ public class MultiLemmaAnalysis {
 	private Utilities u;
 	private PredictWords p;
 
-	MultiLemmaAnalysis(Utilities u, PredictWords p) {
+	public MultiLemmaAnalysis(Utilities u, PredictWords p) {
 		this.u = u;
 		this.p = p;
 	}
@@ -37,16 +37,16 @@ public class MultiLemmaAnalysis {
 		int[][] encodedGroup = p.encodePhrase(words); // Encode the text in character index form.
 		switch (numWords) { // Locates the file corresponding to the length of the input.
 		case 2:
-			lines = u.readFile("2grams.txt");
+			lines = u.readFile("src\\main\\resources\\2grams.txt");
 			break;
 		case 3:
-			lines = u.readFile("3grams.txt");
+			lines = u.readFile("src\\main\\resources\\3grams.txt");
 			break;
 		case 4:
-			lines = u.readFile("4grams.txt");
+			lines = u.readFile("src\\main\\resources\\4grams.txt");
 			break;
 		case 5:
-			lines = u.readFile("5grams.txt");
+			lines = u.readFile("src\\main\\resources\\5grams.txt");
 			break;
 		}
 		for (int i = 0; i < lines.length; i++) { // Iterates through the file, encoding each line in character index

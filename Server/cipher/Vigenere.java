@@ -2,7 +2,7 @@ package cipher;
 
 public class Vigenere {
 
-	Vigenere() {
+	public Vigenere() {
 	}
 
 	/**

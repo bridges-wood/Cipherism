@@ -10,7 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ BruteForceTest.class, CaesarTest.class, DetectEnglishTest.class, IOCTest.class,
 		KasiskiExaminationTest.class, MultiLemmaAnalysisTest.class, NGramAnalyserTest.class, PredictWordsTest.class,
-		ProbableSubstitutionsTest.class, UtilitiesTest.class, VigenereTest.class })
+		ProbableSubstitutionsTest.class, SubstitutionTest.class, UtilitiesTest.class, VigenereTest.class })
 public class CipherTest {
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(CipherTest.class);
