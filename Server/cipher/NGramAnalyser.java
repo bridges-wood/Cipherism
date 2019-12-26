@@ -1,6 +1,5 @@
 package cipher;
 
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class NGramAnalyser {
@@ -17,18 +16,13 @@ public class NGramAnalyser {
 	/**
 	 * Creates a map of ngrams in target text.
 	 * 
-	 * @param n
-	 *            Integer length of the ngrams to be found in the text.
-	 * @param text
-	 *            String to be analysed.
-	 * @param isSpaced
-	 *            Boolean whether or not the text contains spaces already.
+	 * @param n        Integer length of the ngrams to be found in the text.
+	 * @param text     String to be analysed.
+	 * @param isSpaced Boolean whether or not the text contains spaces already.
 	 * @return TreeMap of all ngrams and fraction of text they represent.
 	 */
 	public TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
-		// Breakdown by words or not (this is not necessary as the code works on
-		// unspaced inputs equally well)
 		String[] words = u.cleanText(text).split("\\s+"); // Takes every word in text and
 															// removes all punctuation
 															// before adding it to the
@@ -71,16 +65,13 @@ public class NGramAnalyser {
 		for (String key : ngrams.keySet()) {
 			ngrams.put(key, ngrams.get(key) / total);
 		}
-		// Test is to be on past cipher challenge answers to analyse how the author of
-		// the puzzles writes.
 		return ngrams;
 	}
 
 	/**
 	 * Creates a map of letter frequencies in target text.
 	 * 
-	 * @param text
-	 *            String to be analysed.
+	 * @param text String to be analysed.
 	 * @return TreeMap of all letters and their integer occurrences in text.
 	 */
 	public TreeMap<String, Integer> frequencyAnalysis(String text) {
@@ -110,10 +101,8 @@ public class NGramAnalyser {
 	/**
 	 * Creates a map of ngrams and frequencies in unspaced target text.
 	 * 
-	 * @param n
-	 *            Integer length of the ngrams to be found in the text.
-	 * @param text
-	 *            String to be analysed.
+	 * @param n    Integer length of the ngrams to be found in the text.
+	 * @param text String to be analysed.
 	 * @return TreeMap of all length n strings in the text, in order to look for
 	 *         repeats.
 	 */
@@ -135,33 +124,24 @@ public class NGramAnalyser {
 				ngrams.put(finalNgram, 1);
 			}
 		}
-		TreeMap<String, Integer> ngramsCopy = new TreeMap<String, Integer>();
-		for (Entry<String, Integer> entry : ngrams.entrySet()) {
-			if (entry.getValue() != 1)
-				ngramsCopy.put(entry.getKey(), entry.getValue());
-		}
-
-		return ngramsCopy;
+		return ngrams;
 	}
 
 	/**
 	 * Computes the log score for the ngrams present in the analysed text. Higher is
 	 * better.
 	 * 
-	 * @param n
-	 *            The length of the nGrams we wish to test for.
-	 * @param text
-	 *            The input text to be analysed.
-	 * @param perGram
-	 *            Whether or not we want an adjusted score based on the length of
-	 *            text, in order to compare texts of varying lengths.
+	 * @param n       The length of the nGrams we wish to test for.
+	 * @param text    The input text to be analysed.
+	 * @param perGram Whether or not we want an adjusted score based on the length
+	 *                of text, in order to compare texts of varying lengths.
 	 * @return A double representing the total score of the text. Higher is better.
 	 */
 	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
 		TreeMap<String, Double> ngrams = loadNgramMap(n);
 		char[] letters = u.cleanText(text).toCharArray(); // Clean up input.
-		for (int i = 0; i < letters.length - n; i += n) {// Assures we can get the most number of ngrams without
+		for (int i = 0; i <= letters.length - n; i += n) {// Assures we can get the most number of ngrams without
 															// overflow.
 			StringBuilder graph = new StringBuilder();
 			for (int j = 0; j < n; j++) {
@@ -185,8 +165,7 @@ public class NGramAnalyser {
 	 * Loads a TreeMap from a file containing ngrams in English and their relative
 	 * appearances in Google's trillion word corpus.
 	 * 
-	 * @param size
-	 *            The number of letters to be examined for.
+	 * @param size The number of letters to be examined for.
 	 * @return A TreeMap containing ngrams and their logProbability of occurring.
 	 */
 	public TreeMap<String, Double> loadNgramMap(int size) {
@@ -194,19 +173,19 @@ public class NGramAnalyser {
 		String[] lines = null;
 		switch (size) { // Load the file that we're interested in.
 		case 1:
-			lines = u.readFile("1l.txt");
+			lines = u.readFile("src\\main\\resources\\1l.txt");
 			break;
 		case 2:
-			lines = u.readFile("2l.txt");
+			lines = u.readFile("src\\main\\resources\\2l.txt");
 			break;
 		case 3:
-			lines = u.readFile("3l.txt");
+			lines = u.readFile("src\\main\\resources\\3l.txt");
 			break;
 		case 4:
-			lines = u.readFile("4l.txt");
+			lines = u.readFile("src\\main\\resources\\4l.txt");
 			break;
 		case 5:
-			lines = u.readFile("5l.txt");
+			lines = u.readFile("src\\main\\resources\\5l.txt");
 			break;
 		}
 		for (String line : lines) {

@@ -23,8 +23,9 @@ public class MultiLemmaAnalysisTest {
 
 	@Test
 	public void testPossibleLemmata() {
-		String[] cases = {"that the", "this is", "could be"};
-		for(String testCase : cases) {
+		String[] cases = { "that the", "this is", "could be", "this is an", "how could this", "this is the result of" };
+		// Test cases can be added as needed.
+		for (String testCase : cases) {
 			String[] possibleLemmata = tester.possibleLemmata(s.encrypt(testCase, mappings));
 			List<String> list = Arrays.asList(possibleLemmata);
 			assertTrue(list.contains(testCase));

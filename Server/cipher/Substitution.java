@@ -21,6 +21,10 @@ public class Substitution {
 		}
 		StringBuilder sb = new StringBuilder();
 		for (Character c : text.toCharArray()) {
+			if (c.equals(' ')) {
+				sb.append(' ');
+				continue;
+			}
 			for (Mapping m : mappings) {
 				if (m.plainChar == c) {
 					sb.append(m.cipherChar);
@@ -45,6 +49,10 @@ public class Substitution {
 		}
 		StringBuilder sb = new StringBuilder();
 		for (Character c : text.toCharArray()) {
+			if (c.equals(' ')) {
+				sb.append(' ');
+				continue;
+			}
 			for (Mapping m : mappings) {
 				if (m.cipherChar == c) {
 					sb.append(m.plainChar);

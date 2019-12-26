@@ -1,3 +1,4 @@
 Finish Tests
 Remember static modifier in SubstitutionTest. 
 Remove all calls to utilities within classes to clean text.
+Speed up loading of files into multi-line arrays.

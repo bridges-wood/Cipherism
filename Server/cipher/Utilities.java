@@ -1,11 +1,13 @@
 package cipher;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -36,16 +38,20 @@ public class Utilities {
 	public String[] readFile(String filename) {
 		List<String> words = new ArrayList<String>();
 		File file = new File(filename);
-		Scanner sc = null;
 		try {
-			sc = new Scanner(file);
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				words.add(line);
+			}
+			br.close();
 		} catch (FileNotFoundException e) {
-			System.err.println(e.toString());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		while (sc.hasNextLine()) { // Ensures that the scanner can still access the next set of data.
-			words.add(sc.nextLine());
-		}
-		sc.close();
 		return words.toArray(new String[0]);
 	}
 
