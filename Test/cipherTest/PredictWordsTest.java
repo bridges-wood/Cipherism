@@ -2,23 +2,41 @@ package cipherTest;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
+
+import cipher.Mapping;
+import cipher.PredictWords;
+import cipher.Substitution;
+import cipher.Utilities;
 
 public class PredictWordsTest {
 
+	Utilities u = new Utilities();
+	PredictWords tester = new PredictWords(u);
+	Substitution s = new Substitution();
+	Mapping[] mappings = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+
 	@Test
 	public void testPredictedWords() {
-		fail("Not yet implemented");
+		String[] testCases = { "this", "is", "a", "set", "of", "test", "words" };
+		for (String test : testCases) {
+			String encoding = s.encrypt(test, mappings);
+			List<String> possibleEncodings = Arrays.asList(tester.predictedWords(encoding, false));
+			assertTrue(possibleEncodings.contains(test));
+		}
 	}
 
 	@Test
 	public void testEncodeWord() {
-		fail("Not yet implemented");
+		assertArrayEquals(new int[] {0,1,2}, tester.encodeWord("the"));
 	}
 
 	@Test
 	public void testEncodePhrase() {
-		fail("Not yet implemented");
+		assertArrayEquals(new int[][] {{0,1,2,0}, {3,4,2,1}}, tester.encodePhrase("test case".split(" ")));
 	}
 
 }

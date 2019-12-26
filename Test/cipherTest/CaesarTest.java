@@ -5,10 +5,12 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import cipher.Caesar;
+import cipher.Utilities;
 
 public class CaesarTest {
 
-	Caesar tester = new Caesar();
+	Utilities u = new Utilities();
+	Caesar tester = new Caesar(u);
 	String encrypted = "aolxbpjriyvdumveqbtwzvclyaolshgfkvn"; // "The quick brown fox jumps over the lazy dog" ROT 7.
 	int shift = 19;
 

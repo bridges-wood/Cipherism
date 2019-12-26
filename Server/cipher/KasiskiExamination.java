@@ -1,12 +1,10 @@
 package cipher;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -22,7 +20,7 @@ public class KasiskiExamination {
 	private IOC i;
 	private DetectEnglish d;
 
-	KasiskiExamination(Utilities u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
+	public KasiskiExamination(Utilities u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
 		setExpectedLetterFrequencies();
@@ -78,7 +76,8 @@ public class KasiskiExamination {
 	}
 
 	/**
-	 * Provides the most likely strings which could be the keys to a vigenere cipher.
+	 * Provides the most likely strings which could be the keys to a vigenere
+	 * cipher.
 	 * 
 	 * @param keyLength The predicted length of the key.
 	 * @param text      The encrypted text.
@@ -119,102 +118,27 @@ public class KasiskiExamination {
 		String[] possibleKeys = new String[0];
 		if (!possKeys.isEmpty()) { // Avoids Null Pointer Exceptions and the like.
 			possibleKeys = possKeys.toArray(new String[0]);
-			for (String s : possibleKeys) {
-				System.out.println(s);
-			}
 			LinkedList<String> likelyKeys = new LinkedList<String>();
 			for (int i = 0; i < possibleKeys.length; i++) {
-				System.out.println(d.detectEnglish(possibleKeys[i]) + " " + possibleKeys[i]);
-				if(d.detectEnglish(possibleKeys[i]) == 1.0) {
+				if (d.detectEnglish(possibleKeys[i]) == 1.0) {
 					likelyKeys.push(possibleKeys[i]);
 				}
 			}
-			for(String s : likelyKeys) {
-				if(d.isEnglish(v.decrypt(text, s).split(" ")) <  1) {
-					likelyKeys.remove(s);
+			LinkedList<String> toRemove = new LinkedList<String>();
+			for (String s : likelyKeys) {
+				String decryption = d.graphicalRespace(v.decrypt(text, s), 20);
+				if (d.isEnglish(decryption.split(" ")) < 1
+						|| u.deSpace(decryption).length() < 0.25 * u.deSpace(text).length()) {
+					toRemove.add(s);
 				}
 			}
-			return likelyKeys.toArray(new String[likelyKeys.size()]);//possibleKeys[minIndex]; // Returns the most likely key.
+			for (String key : toRemove) {
+				likelyKeys.remove(key);
+			}
+			return likelyKeys.toArray(new String[likelyKeys.size()]);// possibleKeys[minIndex]; // Returns the most
+																		// likely key.
 		}
 		return null;
-	}
-
-	/**
-	 * @deprecated Gives the frequency match score for given text.
-	 * 
-	 * @param letterOccurences A map containing each letter and their integer
-	 *                         occurences in the text.
-	 * @return How many of the most and least likely six letters occur in the right
-	 *         regions of the analysed text.
-	 */
-	@SuppressWarnings("unused")
-	private int computeFMS(Map<String, Integer> letterOccurences) {
-		int FMS = 0;
-		char[] leastLikely = new char[] { 'v', 'k', 'x', 'q', 'j', 'z' }; // The six least likely characters in English.
-		char[] mostLikely = new char[] { 'e', 't', 'a', 'o', 'i', 'n' }; // The six most likely characters in English.
-		if (letterOccurences.keySet().size() < 26) { // If some letters of the alphabet do not occur in the text...
-			List<Character> missingLetters = new ArrayList<Character>();
-			for (char c : alphabet) {
-				if (!letterOccurences.containsKey(Character.toString(c))) {
-					missingLetters.add(c); // Adds to the list of characters that don't exist in the the text.
-				}
-			}
-			for (char l : leastLikely) { // If characters that are in the least likely are also missing, they contribute
-											// to the FMS score.
-				if (missingLetters.contains(l)) {
-					FMS++;
-				}
-			}
-		}
-		if (FMS < 6) { // If all the least likely characters don't exist in the text, don't bother
-						// computing the score of the least likely letters as that's just silly.
-			Map<String, Integer> copy = letterOccurences;
-			int missingLeastLikely = 6 - FMS; // Avoids looking at more characters than you need to in the map.
-			List<Character> leastPopular = new ArrayList<Character>();
-			for (int i = 0; i < missingLeastLikely; i++) {
-				if (!copy.isEmpty()) { // Insures no errors trying to remove items from an empty map.
-					String lowestKey = minKeyString(copy); // Finds the least likely letter in the array. Note - Not
-															// perfect as under certain conditions, there may be
-															// multiple least likely letters with the same number of
-															// occurences, but this has been judged to be a sufficiently
-															// unlikely edge case that it does not need to be accounted
-															// for.
-					leastPopular.add(lowestKey.charAt(0)); // Converts the letter to a char for storage in the list of
-															// least popular letters.
-					copy.remove(lowestKey); // Stops repeated access of the same letter.
-				} else {
-					break; // Insures no more iterations than absolutely necessary.
-				}
-			}
-			for (char c : leastLikely) { // If the least likely letters are the least likely in the text, increment the
-											// frequency match score.
-				if (leastPopular.contains(c)) {
-					FMS++;
-				}
-			}
-		}
-		Map<String, Integer> copy = letterOccurences;
-		List<Character> mostPopular = new ArrayList<Character>(); // A similar operation to the above, we cannot account
-																	// for the missing letters in this so we always have
-																	// to check for the top six.
-		for (int i = 0; i < 6; i++) {
-			if (!copy.isEmpty()) {
-				String highestKey = maxKeyString(copy); // Find the most likely letter. Note - it is possible for
-														// similar issues to above to occur when looking for the most
-														// likely letter.
-				mostPopular.add(highestKey.charAt(0));
-				copy.remove(highestKey);
-			} else {
-				break;
-			}
-			for (char c : mostLikely) { // If likely letters in English are similarly likely in the text increment the
-										// FMS.
-				if (mostPopular.contains(c)) {
-					FMS++;
-				}
-			}
-		}
-		return FMS;
 	}
 
 	/**
@@ -333,7 +257,7 @@ public class KasiskiExamination {
 	 * @return An array of the possible key lengths of the text and their respective
 	 *         occurences.
 	 */
-	private int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
+	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
 		text = u.cleanText(text); // Normalise text to only lower case letters for ease of
 									// work.
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
@@ -396,36 +320,6 @@ public class KasiskiExamination {
 																			// the map is compared to the current
 																			// maximum. When the final maximum value is
 																			// found, the corresponding key is returned.
-	}
-
-	/**
-	 * Returns the key corresponding to the maximum value in a <String, Integer> Map
-	 * 
-	 * @param map The input <String, Integer> Map.
-	 * @return The key corresponding to the maximum value in the map.
-	 */
-	private String maxKeyString(Map<String, Integer> map) {
-		return map.entrySet().stream().max((Entry<String, Integer> entry1, Entry<String, Integer> entry2) -> entry1
-				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
-																			// map, comparing all values. One is set to
-																			// the max of the two and the next value in
-																			// the map is compared to the current
-																			// maximum. When the final maximum value is
-																			// found, the corresponding key is returned.
-	}
-
-	/**
-	 * Returns the key corresponding to the minimum value in a <String, Integer> Map
-	 * 
-	 * @param map The input <String, Integer> Map.
-	 * @return The key corresponding to the minimum value in the map.
-	 */
-	private String minKeyString(Map<String, Integer> map) {
-		Comparator<? super Entry<String, Integer>> valueComparator = (entry1, entry2) -> entry1.getValue()
-				.compareTo(entry2.getValue());
-
-		Optional<Entry<String, Integer>> minValue = map.entrySet().stream().min(valueComparator);
-		return minValue.get().getKey();
 	}
 
 	/**

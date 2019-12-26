@@ -64,15 +64,10 @@ public class DetectEnglish {
 			return isEnglish(words.toArray(new String[0]));
 
 		} else {
-			return graphicalRespace(text, 20).replaceAll(" ", "").length() / text.length(); // This is due to the fact
-																							// that if there are any
-																							// non-English words in the
-																							// text, by nature they will
-																							// not appear in the
-																							// re-spaced text, so a
-																							// different approach must
-																							// be taken to account for
-																							// this.
+			return u.deSpace(graphicalRespace(text, 20)).length() / text.length();
+			// This is due to the fact that if there are any non-English words in the text,
+			// by nature they will not appear in the re-spaced text, so a different approach
+			// must be taken to account for this.
 		}
 	}
 

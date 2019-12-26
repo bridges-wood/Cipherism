@@ -2,7 +2,10 @@ package cipher;
 
 public class Caesar {
 
-	public Caesar() {
+	Utilities u;
+	
+	public Caesar(Utilities u) {
+		this.u = u;
 	}
 
 	/**
@@ -19,7 +22,7 @@ public class Caesar {
 		while(shift < 0) {
 			shift += 26;
 		}
-		String[] words = text.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+		String[] words = u.cleanText(text).split("\\s+");
 		StringBuilder stringOut = new StringBuilder();
 		for (String word : words) {
 			char[] letters = word.toCharArray();

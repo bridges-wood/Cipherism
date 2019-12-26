@@ -5,17 +5,18 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {
@@ -36,23 +37,20 @@ public class Utilities {
 	 * @return A string array of each line in the file.
 	 */
 	public String[] readFile(String filename) {
-		List<String> words = new ArrayList<String>();
+		List<String> words = new LinkedList<String>();
 		File file = new File(filename);
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line = null;
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(new FileInputStream(file), StandardCharsets.US_ASCII));
+			String line;
 			while ((line = br.readLine()) != null) {
 				words.add(line);
 			}
 			br.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return words.toArray(new String[0]);
+		return words.parallelStream().toArray(String[]::new);
 	}
 
 	/**
@@ -88,19 +86,14 @@ public class Utilities {
 		Hashtable<Long, String> hashTable = new Hashtable<Long, String>();
 		try {
 			Scanner sc = new Scanner(fromFile);
-			int counter = 0;
 			while (sc.hasNextLine()) {
-				counter++;
 				String line = sc.nextLine();
 				hashTable.put(hash64(line), line); // Puts each line into the hashtable.
-				if (counter % 1000 == 0) {
-					System.out.println(line);
-				}
 			}
 			sc.close();
 			kyro.register(hashTable.getClass());
 			Output out = new Output(new FileOutputStream(toFile));
-			kyro.writeObject(out, hashTable.getClass());
+			kyro.writeClassAndObject(out, hashTable);
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,18 +105,14 @@ public class Utilities {
 	 * previous method.
 	 * 
 	 * @param filename
-	 * @return
+	 * @return Loaded hash-table.
 	 */
 	public Hashtable<Long, String> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
-			BufferedInputStream s = new BufferedInputStream(new FileInputStream(fromFile));
-			byte[] toObject = s.readAllBytes();
-			s.close();
-			ByteArrayInputStream bis = new ByteArrayInputStream(toObject);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			return (Hashtable<Long, String>) ois.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+			Input in = new Input(new FileInputStream(fromFile));
+			return (Hashtable<Long, String>) kyro.readClassAndObject(in);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -137,5 +126,15 @@ public class Utilities {
 	 */
 	public String cleanText(String text) {
 		return text.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+	}
+
+	/**
+	 * Removes spaces from text.
+	 * 
+	 * @param text Text to have spaces removed from.
+	 * @return Un-spaced text.
+	 */
+	public String deSpace(String text) {
+		return text.replace("\\s+", "");
 	}
 }

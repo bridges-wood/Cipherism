@@ -1,4 +1,4 @@
 Finish Tests
 Remember static modifier in SubstitutionTest. 
 Remove all calls to utilities within classes to clean text.
-Speed up loading of files into multi-line arrays.
+Speed up multi-lemma analysis in generations of encodings. Some kind of hashtable?
