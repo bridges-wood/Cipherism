@@ -13,25 +13,19 @@ public class Manager {
 	private NGramAnalyser n;
 	private DetectEnglish d;
 	private KasiskiExamination k;
-	private Vigenere v;
-	private BruteForce b;
-
-	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v, BruteForce b) {
+	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v) {
 		this.u = u;
 		this.i = i;
 		this.n = n;
 		this.d = d;
 		this.k = k;
-		this.v = v;
-		this.b = b;
 		run(u.cleanText(text));
 	}
 
 	private String run(String text) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			// Need to make sure key isn't null.
-			String[] keys = k.run(text);
+			k.run(text);
 			return "";
 		case "Substitution":
 			// Start substitution breaking.
