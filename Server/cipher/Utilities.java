@@ -1,14 +1,11 @@
 package cipher;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -28,6 +25,8 @@ public class Utilities {
 	public Utilities() {
 		FNV1_64_INIT = 0xcbf29ce484222325L;
 		FNV1_PRIME_64 = 1099511628211L;
+		Hashtable<Long, String> init = new Hashtable<Long, String>();
+		kyro.register(init.getClass());
 	}
 
 	/**
@@ -91,7 +90,6 @@ public class Utilities {
 				hashTable.put(hash64(line), line); // Puts each line into the hashtable.
 			}
 			sc.close();
-			kyro.register(hashTable.getClass());
 			Output out = new Output(new FileOutputStream(toFile));
 			kyro.writeClassAndObject(out, hashTable);
 			out.close();
@@ -135,6 +133,6 @@ public class Utilities {
 	 * @return Un-spaced text.
 	 */
 	public String deSpace(String text) {
-		return text.replace("\\s+", "");
+		return text.replaceAll("\\s+", "");
 	}
 }

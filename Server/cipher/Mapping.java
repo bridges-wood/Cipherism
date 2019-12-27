@@ -1,8 +1,9 @@
 package cipher;
+
 public class Mapping {
-	boolean isDefinite;
-	char cipherChar;
-	char plainChar;
+	public boolean isDefinite;
+	public char cipherChar;
+	public char plainChar;
 
 	/**
 	 * @param isDefinite Whether or not the relationship is definite in the text.

@@ -9,7 +9,7 @@ public class ProbableSubstitutions {
 	private char[] frequencyOrder;
 	private char[] alphabet;
 
-	ProbableSubstitutions() {
+	public ProbableSubstitutions() {
 		frequencyOrder = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
 		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 	}

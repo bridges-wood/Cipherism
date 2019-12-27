@@ -26,10 +26,6 @@ public class UtilitiesTest {
 	@Test
 	public void testGenerateHashTable() {
 		tester.generateHashTable("TestResources\\readTest.txt", "TestResources\\hashTable.htb");
-		Hashtable<Long, String> table = tester.readHashTable("TestResources\\hashTable.htb");
-		for(String value : table.values()) {
-			System.out.println(value);
-		}
 	}
 
 	@Test
@@ -45,7 +41,12 @@ public class UtilitiesTest {
 
 	@Test
 	public void testCleanText() {
-		fail("Not yet implemented");
+		assertEquals(tester.cleanText("A򽚛ݚM둑aQ˛򖰭ݨ1⹦Mj󿅳ɿ뻜z晗񞠗紡򈁓Ӏm(J⃃!럑󣾜庴"), "amaqmjzmj");
+	}
+	
+	@Test
+	public void testDeSpace() {
+		assertEquals("", tester.deSpace(" 	"));
 	}
 
 }

@@ -13,14 +13,16 @@ public class BruteForce {
 	private DetectEnglish d;
 	private PredictWords p;
 	private Utilities u;
+	private NGramAnalyser n;
 
-	BruteForce(IOC i, KasiskiExamination k, Vigenere v, DetectEnglish d, PredictWords p, Utilities u) {
+	BruteForce(IOC i, KasiskiExamination k, Vigenere v, DetectEnglish d, PredictWords p, Utilities u, NGramAnalyser n) {
 		this.i = i;
 		this.k = k;
 		this.v = v;
 		this.d = d;
 		this.p = p;
 		this.u = u;
+		this.n = n;
 	}
 
 	public String bruteForcePeriodic(String text) {
@@ -125,13 +127,10 @@ public class BruteForce {
 		return distance;
 	}
 
-	public String vigenereBruteforce(String text, int keyLength) {
-		StringBuilder key = new StringBuilder();
-		for(int i = 0; i < 20 && i < text.length(); i++) {
-			for(double j = 0; j < (key.length() ^ 26); j++) {
-				
-			}
-		}
-		return text;
+	public String vigenereBruteforce(String text) {
+		int[] likelyLengths = k.likelyKeyLengths(n.kasiskiBase(2, text), text);
+		int length = k.mostLikelyKeyLength(likelyLengths, text);
+		//TODO generate all permutations for the key length
+		return "";
 	}
 }
