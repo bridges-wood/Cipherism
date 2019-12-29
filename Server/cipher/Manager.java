@@ -13,12 +13,25 @@ public class Manager {
 	private NGramAnalyser n;
 	private DetectEnglish d;
 	private KasiskiExamination k;
+	
+	public String result = "";
+	
 	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v) {
 		this.u = u;
 		this.i = i;
 		this.n = n;
 		this.d = d;
 		this.k = k;
+		run(u.cleanText(text));
+	}
+	
+	public Manager(String text){
+		this.u = new Utilities();
+		this.n = new NGramAnalyser(u);
+		this.i = new IOC(u, n);
+		this.d = new DetectEnglish(u, n);
+		Vigenere v = new Vigenere();
+		this.k = new KasiskiExamination(u, n, v, i, d);
 		run(u.cleanText(text));
 	}
 
@@ -73,8 +86,6 @@ public class Manager {
 			case 23 | 24 | 25:
 				if (u.cleanText(text).length() > 420) {
 					return "Complex Square";
-				} else {
-					return refineGuess(text);
 				}
 			default:
 				return refineGuess(text);

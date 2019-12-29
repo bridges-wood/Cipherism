@@ -1,4 +1,5 @@
 package comms;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import cipher.Manager;
 
 public class Server {
 
@@ -26,13 +29,13 @@ public class Server {
 				try {
 					@SuppressWarnings("resource") // Because the server should always be up, the socket is never closed
 													// programmatically.
-					ServerSocket serverSocket = new ServerSocket(8000);
+					ServerSocket serverSocket = new ServerSocket(4848);
 					System.out.println("Waiting for clients to connect...");
 					while (true) {
 						Socket clientSocket = serverSocket.accept();
 						// If any task comes through, a thread is automatically assigned to it.
-						clientProcessingPool.submit(new ClientTask(clientSocket));
-					}// need host and port, we want to connect to the ServerSocket at port 8000
+						clientProcessingPool.submit(new ServerTask(clientSocket));
+					} // need host and port, we want to connect to the ServerSocket at port 8000
 				} catch (IOException e) {
 					System.err.println("Unable to process client request");
 					e.printStackTrace();
@@ -43,18 +46,19 @@ public class Server {
 		serverThread.start();
 	}
 
-	private class ClientTask implements Runnable {
+	private class ServerTask implements Runnable {
 		private final Socket clientSocket;
 
-		private ClientTask(Socket clientSocket) {
+		private ServerTask(Socket clientSocket) {
 			this.clientSocket = clientSocket;
 		}
 
 		@Override
 		public void run() {
-			System.out.println("Got a client !");
-			String toSend = receive(clientSocket);
-			System.out.println("Data from Client: " + toSend);
+			String recieved = receive(clientSocket);
+			System.out.println("Data from Client: " + recieved);
+			Manager m = new Manager(recieved);
+			String toSend = m.result;
 			try {
 				send(toSend, clientSocket);
 			} catch (IOException e) {
@@ -96,9 +100,8 @@ public class Server {
 				String dataString = in.readUTF();
 				return dataString;
 			} catch (IOException e) {
-				e.printStackTrace();
+				return "fail";
 			}
-			return null;
 		}
 	}
 
