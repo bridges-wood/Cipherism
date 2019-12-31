@@ -83,7 +83,7 @@ public class DetectEnglish {
 			return 0;
 		}
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable("src\\main\\resources\\dictionary.htb");
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		float englishWords = 0f;
 		for (String word : words) {
@@ -119,10 +119,10 @@ public class DetectEnglish {
 	public String graphicalRespace(String text, int maxWordLength) {
 		start.Clear();
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable("src\\main\\resources\\dictionary.htb");
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		if (twoGramsTable.isEmpty()) {
-			twoGramsTable = u.readHashTable("src\\main\\resources\\2grams.htb");
+			twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
 		}
 		traverse(start, text, maxWordLength);
 		score(start);
@@ -147,13 +147,13 @@ public class DetectEnglish {
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
 			if (dictionaryTable.containsKey(u.hash64(sb.toString()))) {
-				parent.children.add(new WordGraph(sb.toString(), parent));
+				parent.getChildren().add(new WordGraph(sb.toString(), parent));
 			}
 		}
-		if (parent.children.size() > 0) {
-			for (WordGraph child : parent.children) {
-				if (text.length() > child.word.length()) {
-					traverse(child, text.substring(child.word.length()), maxWordLength);
+		if (parent.getChildren().size() > 0) {
+			for (WordGraph child : parent.getChildren()) {
+				if (text.length() > child.getWord().length()) {
+					traverse(child, text.substring(child.getWord().length()), maxWordLength);
 				}
 			}
 		}
@@ -171,17 +171,16 @@ public class DetectEnglish {
 	 *         number of children per node that are English words.
 	 */
 	private WordGraph score(WordGraph parent) {
-		if (parent.children.isEmpty()) {
-			parent.score = parent.word.length();
+		if (parent.getChildren().isEmpty()) {
+			parent.score = parent.getWord().length();
 		} else {
-			for (WordGraph child : parent.children) {
+			for (WordGraph child : parent.getChildren()) {
 				score(child);
 				parent.score = parent.score + child.score;
-				if (twoGramsTable.containsKey(u.hash64(parent.word + "," + child.word))) {
-					child.score *= 2;
-					child.score += child.word.length() * 2;
+				if (twoGramsTable.containsKey(u.hash64(parent.getWord() + "," + child.getWord()))) {
+					child.setScore(child.getScore() * 2 + child.getWord().length() *2);
 				} else {
-					child.score /= 2;
+					child.setScore(child.getScore() / 2);
 				}
 			}
 		}
@@ -196,15 +195,15 @@ public class DetectEnglish {
 	 *         predicted to exist in the target text.
 	 */
 	private WordGraph prune(WordGraph parent) {
-		if (!parent.children.isEmpty()) {
-			WordGraph maxChild = parent.children.get(0);
-			for (WordGraph child : parent.children) {
+		if (!parent.getChildren().isEmpty()) {
+			WordGraph maxChild = parent.getChildren().get(0);
+			for (WordGraph child : parent.getChildren()) {
 				if (child.score > maxChild.score) {
 					maxChild = child;
 				}
 			}
-			parent.children = new LinkedList<WordGraph>();
-			parent.children.add(maxChild);
+			parent.setChildren(new LinkedList<WordGraph>());
+			parent.addChild(maxChild);
 			prune(maxChild);
 		}
 		return parent;
@@ -219,9 +218,9 @@ public class DetectEnglish {
 	 *         concatenated.
 	 */
 	private StringBuilder reconstruct(WordGraph parent, StringBuilder sb) {
-		sb.append(parent.word + " ");
-		if (!parent.children.isEmpty()) {
-			sb = reconstruct(parent.children.get(0), sb);
+		sb.append(parent.getWord() + " ");
+		if (!parent.getChildren().isEmpty()) {
+			sb = reconstruct(parent.getChildren().get(0), sb);
 		}
 		return sb;
 	}
@@ -234,7 +233,8 @@ public class DetectEnglish {
 	 */
 	public double chiSquaredTest(String text) {
 		if (letterProbabilities.isEmpty()) {
-			String[] lines = u.readFile("src\\main\\resources\\1l.txt"); // 4374127904 is total to divide by.
+			// TODO make this read from a static file too. Refer to other todo.
+			String[] lines = u.readFile(u.MONOGRAM_TEXT_PATH); // 4374127904 is total to divide by.
 			for (String line : lines) {
 				String[] splitLine = line.split(",");
 				letterProbabilities.put(splitLine[0].charAt(0), Double.parseDouble(splitLine[1]) / 4374127904d);
@@ -260,7 +260,7 @@ public class DetectEnglish {
 	 */
 	public boolean isEnglish(String word) {
 		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable("src\\main\\resources\\dictionary.htb");
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		} // Loads the dictionary hash-table.
 		return dictionaryTable.containsKey(u.hash64(word));
 	}

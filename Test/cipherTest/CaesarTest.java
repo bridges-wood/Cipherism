@@ -9,15 +9,15 @@ import cipher.Utilities;
 
 public class CaesarTest {
 
-	Utilities u = new Utilities();
-	Caesar tester = new Caesar(u);
-	String encrypted = "aolxbpjriyvdumveqbtwzvclyaolshgfkvn"; // "The quick brown fox jumps over the lazy dog" ROT 7.
-	int shift = 19;
+	private Utilities u = new Utilities();
+	private Caesar tester = new Caesar(u);
+	private final String ENCRYPTED = "aolxbpjriyvdumveqbtwzvclyaolshgfkvn"; // "The quick brown fox jumps over the lazy dog" ROT 7.
+	private final int SHIFT = 19;
 
 	@Test
 	public void testCaesarShiftDecrypt() {
 		assertEquals("the quick brown fox jumps over the lazy dog".replaceAll(" ", ""),
-				tester.CaesarShiftDecrypt(encrypted, shift));
+				tester.CaesarShiftDecrypt(ENCRYPTED, SHIFT));
 	}
 
 }

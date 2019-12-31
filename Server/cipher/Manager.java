@@ -14,7 +14,7 @@ public class Manager {
 	private DetectEnglish d;
 	private KasiskiExamination k;
 	
-	public String result = "";
+	private String result = "";
 	
 	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v) {
 		this.u = u;
@@ -116,5 +116,13 @@ public class Manager {
 				}
 			}
 		}
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 }

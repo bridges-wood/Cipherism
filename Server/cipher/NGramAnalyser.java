@@ -173,19 +173,19 @@ public class NGramAnalyser {
 		String[] lines = null;
 		switch (size) { // Load the file that we're interested in.
 		case 1:
-			lines = u.readFile("src\\main\\resources\\1l.txt");
+			lines = u.readFile(u.MONOGRAM_TEXT_PATH);
 			break;
 		case 2:
-			lines = u.readFile("src\\main\\resources\\2l.txt");
+			lines = u.readFile(u.BIGRAM_TEXT_PATH);
 			break;
 		case 3:
-			lines = u.readFile("src\\main\\resources\\3l.txt");
+			lines = u.readFile(u.TRIGRAM_TEXT_PATH);
 			break;
 		case 4:
-			lines = u.readFile("src\\main\\resources\\4l.txt");
+			lines = u.readFile(u.QUADGRAM_TEXT_PATH);
 			break;
 		case 5:
-			lines = u.readFile("src\\main\\resources\\5l.txt");
+			lines = u.readFile(u.PENTAGRAM_TEXT_PATH);
 			break;
 		}
 		for (String line : lines) {

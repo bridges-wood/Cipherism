@@ -9,8 +9,8 @@ import cipher.Substitution;
 
 public class SubstitutionTest {
 
-	Substitution tester = new Substitution();
-	Mapping[] mappings = initialiseMappings("zyxwvutsrqponmlkjihgfedcba"); // Substitution alphabet to be tested.
+	private Substitution tester = new Substitution();
+	private final Mapping[] MAPPINGS = initialiseMappings("zyxwvutsrqponmlkjihgfedcba"); // Substitution alphabet to be tested.
 	
 	/**
 	 * Generates a complete letter-letter mapping for a substitution cipher.
@@ -30,12 +30,12 @@ public class SubstitutionTest {
 
 	@Test
 	public void testEncrypt() {
-		assertEquals(tester.encrypt("thequickbrownfoxjumpsoverthelazydog", mappings), "gsvjfrxpyildmulcqfnkhlevigsvozabwlt");
+		assertEquals(tester.encrypt("thequickbrownfoxjumpsoverthelazydog", MAPPINGS), "gsvjfrxpyildmulcqfnkhlevigsvozabwlt");
 	}
 
 	@Test
 	public void testDecrypt() {
-		assertEquals(tester.decrypt("gsvjfrxpyildmulcqfnkhlevigsvozabwlt", mappings), "thequickbrownfoxjumpsoverthelazydog");
+		assertEquals(tester.decrypt("gsvjfrxpyildmulcqfnkhlevigsvozabwlt", MAPPINGS), "thequickbrownfoxjumpsoverthelazydog");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

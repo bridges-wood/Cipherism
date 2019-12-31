@@ -58,7 +58,7 @@ public class Server {
 			String recieved = receive(clientSocket);
 			System.out.println("Data from Client: " + recieved);
 			Manager m = new Manager(recieved);
-			String toSend = m.result;
+			String toSend = m.getResult();
 			try {
 				send(toSend, clientSocket);
 			} catch (IOException e) {

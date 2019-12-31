@@ -8,19 +8,19 @@ import cipher.Vigenere;
 
 public class VigenereTest {
 	
-	Vigenere tester = new Vigenere();
-	String text = "thequickbrownfoxjumpsoverthelazydog"; // "The quick brown fox jumps over the lazy dog"
-	String key = "swordfish"; // It's always swordfish.
-	String encrypted = "ldshxnkcijkkeitfbbelgfyjzlowhoqbiwy"; //Using an already available encryptor.
+	private Vigenere tester = new Vigenere();
+	private final String TEXT = "thequickbrownfoxjumpsoverthelazydog"; // "The quick brown fox jumps over the lazy dog"
+	private final String KEY = "swordfish"; // It's always swordfish.
+	private final String ENCRYPTED = "ldshxnkcijkkeitfbbelgfyjzlowhoqbiwy"; //Using an already available encryptor.
 	
 	@Test
 	public void testEncrypt() {
-		assertEquals(tester.encrypt(text, key), encrypted);
+		assertEquals(tester.encrypt(TEXT, KEY), ENCRYPTED);
 	}
 
 	@Test
 	public void testDecrypt() {
-		assertEquals(tester.decrypt(encrypted, key), text);
+		assertEquals(tester.decrypt(ENCRYPTED, KEY), TEXT);
 	}
 
 }

@@ -10,7 +10,7 @@ import cipher.Utilities;
 
 public class UtilitiesTest {
 	
-	Utilities tester = new Utilities();
+	private Utilities tester = new Utilities();
 
 	@Test
 	public void testReadFile() {

@@ -37,16 +37,16 @@ public class MultiLemmaAnalysis {
 		int[][] encodedGroup = p.encodePhrase(words); // Encode the text in character index form.
 		switch (numWords) { // Locates the file corresponding to the length of the input.
 		case 2:
-			lines = u.readFile("src\\main\\resources\\2grams.txt");
+			lines = u.readFile(u.BIGRAM_WORD_TEXT_PATH);
 			break;
 		case 3:
-			lines = u.readFile("src\\main\\resources\\3grams.txt");
+			lines = u.readFile(u.TRIGRAM_WORD_TEXT_PATH);
 			break;
 		case 4:
-			lines = u.readFile("src\\main\\resources\\4grams.txt");
+			lines = u.readFile(u.QUADGRAM_WORD_TEXT_PATH);
 			break;
 		case 5:
-			lines = u.readFile("src\\main\\resources\\5grams.txt");
+			lines = u.readFile(u.PENTAGRAM_WORD_TEXT_PATH);
 			break;
 		}
 		for (int i = 0; i < lines.length; i++) { // Iterates through the file, encoding each line in character index

@@ -16,29 +16,29 @@ import cipher.Vigenere;
 
 public class KasiskiExaminationTest {
 
-	Utilities u = new Utilities();
-	NGramAnalyser n = new NGramAnalyser(u);
-	Vigenere v = new Vigenere();
-	IOC i = new IOC(u, n);
-	DetectEnglish d = new DetectEnglish(u, n);
-	KasiskiExamination tester = new KasiskiExamination(u, n, v, i, d);
-	String key = "test";
-	String plain = "The next thing I remember is, waking up with a feeling as if I had had a frightful nightmare,"
+	private Utilities u = new Utilities();
+	private NGramAnalyser n = new NGramAnalyser(u);
+	private Vigenere v = new Vigenere();
+	private IOC i = new IOC(u, n);
+	private DetectEnglish d = new DetectEnglish(u, n);
+	private KasiskiExamination tester = new KasiskiExamination(u, n, v, i, d);
+	private final String KEY = "test";
+	private final String PLAINTEXT = "The next thing I remember is, waking up with a feeling as if I had had a frightful nightmare,"
 			+ " and seeing before me a terrible red glare, crossed with thick black bars. I heard voices, too,"
 			+ " speaking with a hollow sound, and as if muffled by a rush of wind or water.";
-	String encrypted = v.encrypt(u.deSpace(u.cleanText(plain)), key);
+	private final String CIPHERTEXT = v.encrypt(u.deSpace(u.cleanText(PLAINTEXT)), KEY);
 
 	@Test
 	public void testKeyGuesserVigenere() {
-		List<String> keys = Arrays.asList(tester.keyGuesserVigenere(key.length(), encrypted));
-		assertTrue(keys.contains(key));
+		List<String> keys = Arrays.asList(tester.keyGuesserVigenere(KEY.length(), CIPHERTEXT));
+		assertTrue(keys.contains(KEY));
 	}
 
 	@Test
 	public void testMostLikelyKeyLength() {
 		String[] keys = { "test", "other", "key", "lengths" };
 		for (String key : keys) {
-			String encrypted = v.encrypt(plain, key);
+			String encrypted = v.encrypt(PLAINTEXT, key);
 			int[] likelyLengths = tester.likelyKeyLengths(n.kasiskiBase(2, encrypted), encrypted);
 			assertEquals(tester.mostLikelyKeyLength(likelyLengths, encrypted), key.length());
 		}

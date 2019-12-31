@@ -16,22 +16,21 @@ public class PredictWords {
 	 * Generate a series of possible words for an mono-alphabetically encoded
 	 * string.
 	 * 
-	 * @param word
-	 *            The encoded word from which possible words can be generated.
-	 * @param probable
-	 *            Whether or not the list of most probable words should be checked
-	 *            or not.
+	 * @param word     The encoded word from which possible words can be generated.
+	 * @param probable Whether or not the list of most probable words should be
+	 *                 checked or not.
 	 * @return A String array containing all the possible words the encrypted string
 	 *         could be.
 	 */
 	public String[] predictedWords(String word, boolean probable) {
+		// TODO speed up this method by using a bucketed hashtable for each encoding.
 		int[] encodedForm = encodeWord(word);
 		List<String> possibleWords = new ArrayList<String>();
 		String[] lines;
 		if (probable) {
-			lines = u.readFile("src\\main\\resources\\mostProbable.txt");
+			lines = u.readFile(u.MOST_PROBABLE_TEXT_PATH);
 		} else {
-			lines = u.readFile("src\\main\\resources\\dictionary.txt");
+			lines = u.readFile(u.DICTIONARY_TEXT_PATH);
 		}
 		for (String line : lines) {
 			if (line.length() == word.length()) {// If the lengths match... (This is to thin the field examined and
@@ -47,8 +46,7 @@ public class PredictWords {
 	/**
 	 * Encode a string in character index form.
 	 * 
-	 * @param word
-	 *            The string to be encoded with the character index system.
+	 * @param word The string to be encoded with the character index system.
 	 * @return An integer array of the encoded string in character index form.
 	 */
 	public int[] encodeWord(String word) {
@@ -68,8 +66,7 @@ public class PredictWords {
 	/**
 	 * Encode a phrase in character index form.
 	 * 
-	 * @param phrase
-	 *            The string to be encoded with the character index system.
+	 * @param phrase The string to be encoded with the character index system.
 	 * @return An integer array of the encoded string in character index form.
 	 */
 	public int[][] encodePhrase(String[] phrase) {

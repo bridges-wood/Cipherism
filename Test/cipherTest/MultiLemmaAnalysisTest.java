@@ -15,18 +15,18 @@ import cipher.Utilities;
 
 public class MultiLemmaAnalysisTest {
 
-	Utilities u = new Utilities();
-	PredictWords p = new PredictWords(u);
-	MultiLemmaAnalysis tester = new MultiLemmaAnalysis(u, p);
-	Substitution s = new Substitution();
-	Mapping[] mappings = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+	private Utilities u = new Utilities();
+	private PredictWords p = new PredictWords(u);
+	private MultiLemmaAnalysis tester = new MultiLemmaAnalysis(u, p);
+	private Substitution s = new Substitution();
+	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
 
 	@Test
 	public void testPossibleLemmata() {
 		String[] cases = { "that the", "this is", "could be", "this is an", "how could this", "this is the result of" };
 		// Test cases can be added as needed.
 		for (String testCase : cases) {
-			String[] possibleLemmata = tester.possibleLemmata(s.encrypt(testCase, mappings));
+			String[] possibleLemmata = tester.possibleLemmata(s.encrypt(testCase, MAPPINGS));
 			List<String> list = Arrays.asList(possibleLemmata);
 			assertTrue(list.contains(testCase));
 		}

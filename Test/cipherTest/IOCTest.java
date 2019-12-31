@@ -10,11 +10,11 @@ import cipher.Utilities;
 
 public class IOCTest {
 
-	Utilities u = new Utilities();
-	NGramAnalyser n = new NGramAnalyser(u);
-	IOC tester = new IOC(u, n);
-	float κr = 0.038466f;
-	float κp = 0.0686f;
+	private Utilities u = new Utilities();
+	private NGramAnalyser n = new NGramAnalyser(u);
+	private IOC tester = new IOC(u, n);
+	private final float κr = 0.038466f;
+	private final float κp = 0.0686f;
 
 	@Test
 	public void testKappaText() {

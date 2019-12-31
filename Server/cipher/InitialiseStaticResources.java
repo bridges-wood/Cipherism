@@ -6,8 +6,8 @@ static Utilities u = new Utilities();
 	
 	public static void uInit() {
 		System.out.println("Initialising...");
-		u.generateHashTable("src\\main\\resources\\dictionary.txt", "src\\main\\resources\\dictionary.htb");
-		u.generateHashTable("src\\main\\resources\\2grams.txt", "src\\main\\resources\\2grams.htb");
+		u.generateHashTable(u.DICTIONARY_TEXT_PATH, u.DICTIONARY_HASH_PATH);
+		u.generateHashTable(u.BIGRAM_WORD_TEXT_PATH, u.BIGRAM_WORD_HASH_PATH);
 		//u.generateHashTable(filename, outputFilename);
 	}
 

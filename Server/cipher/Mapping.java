@@ -1,9 +1,10 @@
 package cipher;
 
 public class Mapping {
-	public boolean isDefinite;
-	public char cipherChar;
-	public char plainChar;
+
+	private boolean isDefinite;
+	private char cipherChar;
+	private char plainChar;
 
 	/**
 	 * @param isDefinite Whether or not the relationship is definite in the text.
@@ -15,5 +16,29 @@ public class Mapping {
 		this.isDefinite = false;
 		this.cipherChar = fromChar;
 		this.plainChar = toChar;
+	}
+
+	public boolean isDefinite() {
+		return isDefinite;
+	}
+
+	public void setDefinite(boolean isDefinite) {
+		this.isDefinite = isDefinite;
+	}
+
+	public char getCipherChar() {
+		return cipherChar;
+	}
+
+	public void setCipherChar(char cipherChar) {
+		this.cipherChar = cipherChar;
+	}
+
+	public char getPlainChar() {
+		return plainChar;
+	}
+
+	public void setPlainChar(char plainChar) {
+		this.plainChar = plainChar;
 	}
 }

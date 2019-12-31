@@ -16,13 +16,13 @@ import cipher.Substitution;
 import cipher.Utilities;
 
 public class ProbableSubstitutionsTest {
-	
-	Substitution s = new Substitution();
-	Utilities u = new Utilities();
-	NGramAnalyser n = new NGramAnalyser(u);
-	ProbableSubstitutions tester = new ProbableSubstitutions();
-	Mapping[] mappings = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
-	String plain = "One stop brought us into the family sitting-room, without any introductory lobby"
+
+	private Substitution s = new Substitution();
+	private Utilities u = new Utilities();
+	private NGramAnalyser n = new NGramAnalyser(u);
+	private ProbableSubstitutions tester = new ProbableSubstitutions();
+	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+	private final String PLAINTEXT = "One stop brought us into the family sitting-room, without any introductory lobby"
 			+ " or passage: they call it here ‘the house’ pre-eminently.  It includes kitchen and parlour,"
 			+ " generally; but I believe at Wuthering Heights the kitchen is forced to retreat altogether"
 			+ " into another quarter: at least I distinguished a chatter of tongues, and a clatter of"
@@ -39,18 +39,18 @@ public class ProbableSubstitutionsTest {
 			+ " black ones lurking in the shade.  In an arch under the dresser reposed a huge,"
 			+ " liver-coloured bitch pointer, surrounded by a swarm of squealing puppies; and other dogs"
 			+ " haunted other recesses.";
-	//Wuthering Heights - Emily Bronte
-	String encrypted = s.encrypt(u.cleanText(plain), mappings);
-	
+	// Wuthering Heights - Emily Bronte
+	String encrypted = s.encrypt(u.cleanText(PLAINTEXT), MAPPINGS);
+
 	@Test
 	public void testProbableSubstitutionGenerator() {
 		Mapping[] probable = tester.probableSubstitutionGenerator(n.NgramAnalysis(1, encrypted, true));
 		List<Mapping> probableList = Arrays.asList(probable);
-		List<Mapping> mappingsList = Arrays.asList(mappings);
+		List<Mapping> mappingsList = Arrays.asList(MAPPINGS);
 		int counter = 0;
-		for(Mapping m : probableList) {
-			for(Mapping n : mappingsList) {
-				if(m.cipherChar == n.cipherChar && m.plainChar == n.plainChar) {
+		for (Mapping m : probableList) {
+			for (Mapping n : mappingsList) {
+				if (m.getCipherChar() == n.getCipherChar() && m.getPlainChar() == n.getPlainChar()) {
 					counter++;
 				}
 			}

@@ -32,6 +32,7 @@ public class KasiskiExamination {
 	}
 
 	private void setExpectedLetterFrequencies() {
+		// TODO This should be done by a static file.
 		Map<Character, Double> letterFrequencies = new TreeMap<Character, Double>();
 		letterFrequencies.put('e', 0.12702);
 		letterFrequencies.put('t', 0.09056);

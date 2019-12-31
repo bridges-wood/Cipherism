@@ -11,9 +11,9 @@ import cipher.Utilities;
 
 public class NGramAnalyserTest {
 
-	Utilities u = new Utilities();
-	NGramAnalyser tester = new NGramAnalyser(u);
-	String text = "Mr. Utterson the lawyer was a man of a rugged countenance that was never lighted by a smile; cold,"
+	private Utilities u = new Utilities();
+	private NGramAnalyser tester = new NGramAnalyser(u);
+	private final String PLAINTEXT = "Mr. Utterson the lawyer was a man of a rugged countenance that was never lighted by a smile; cold,"
 			+ " scanty and embarrassed in discourse; backward in sentiment; lean, long, dusty, dreary and yet somehow"
 			+ " lovable. At friendly meetings, and when the wine was to his taste, something eminently human beaconed"
 			+ " from his eye; something indeed which never found its way into his talk, but which spoke not only in"
@@ -30,30 +30,30 @@ public class NGramAnalyserTest {
 // Story of the Door from The Strange Case of Dr. Jekyll and Mr. Hyde.
 	@Test
 	public void testNgramAnalysis() {
-		TreeMap<String, Float> trigrams = tester.NgramAnalysis(3, text, true);
+		TreeMap<String, Float> trigrams = tester.NgramAnalysis(3, PLAINTEXT, true);
 		assertTrue(trigrams.get("he ") > 0);
 		assertEquals(trigrams.get("xe "), null);
 	}
 
 	@Test
 	public void testFrequencyAnalysis() {
-		TreeMap<String, Integer> letters = tester.frequencyAnalysis(text);
+		TreeMap<String, Integer> letters = tester.frequencyAnalysis(PLAINTEXT);
 		assertEquals(letters.get("e").intValue(), 131);
 		assertEquals(letters.get("z").intValue(), 0);
 	}
 
 	@Test
 	public void testKasiskiBase() {
-		TreeMap<String, Integer> map = tester.kasiskiBase(1, text); // Length 1
+		TreeMap<String, Integer> map = tester.kasiskiBase(1, PLAINTEXT); // Length 1
 		assertEquals(map.get("e").intValue(), 131);
 		assertEquals(map.get("x").intValue(), 1);
 		assertEquals(map.get("i").intValue(), 66);
 		assertEquals(map.get("z"), null);
-		map = tester.kasiskiBase(2, text); // Length 2
+		map = tester.kasiskiBase(2, PLAINTEXT); // Length 2
 		assertEquals(map.get("of").intValue(), 8);
 		assertEquals(map.get("in").intValue(), 31);
 		assertEquals(map.get("at").intValue(), 5);
-		map = tester.kasiskiBase(3, text); // Length 3
+		map = tester.kasiskiBase(3, PLAINTEXT); // Length 3
 		assertEquals(map.get("the").intValue(), 19);
 		assertEquals(map.get("who"), null);
 		assertEquals(map.get("how").intValue(), 1);

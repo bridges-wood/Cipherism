@@ -14,16 +14,16 @@ import cipher.Utilities;
 
 public class PredictWordsTest {
 
-	Utilities u = new Utilities();
-	PredictWords tester = new PredictWords(u);
-	Substitution s = new Substitution();
-	Mapping[] mappings = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+	private Utilities u = new Utilities();
+	private PredictWords tester = new PredictWords(u);
+	private Substitution s = new Substitution();
+	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
 
 	@Test
 	public void testPredictedWords() {
 		String[] testCases = { "this", "is", "a", "set", "of", "test", "words" };
 		for (String test : testCases) {
-			String encoding = s.encrypt(test, mappings);
+			String encoding = s.encrypt(test, MAPPINGS);
 			List<String> possibleEncodings = Arrays.asList(tester.predictedWords(encoding, false));
 			assertTrue(possibleEncodings.contains(test));
 		}
