@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -30,13 +33,15 @@ public class Utilities {
 	public final String QUADGRAM_TEXT_PATH = "src\\main\\resources\\4l.txt";
 	public final String PENTAGRAM_TEXT_PATH = "src\\main\\resources\\5l.txt";
 	public final String MOST_PROBABLE_TEXT_PATH = "src\\main\\resources\\mostProbable.txt";
+	public final String LETTER_FREQUENCIES_TEXT_PATH = "src\\main\\resources\\letterFrequencies.txt";
+	public final String LETTER_FREQUENCIES_MAP_PATH = "src\\main\\resources\\letterFrequencies.tmp";
 	private final long FNV1_64_INIT = 0xcbf29ce484222325L;
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();
 
 	public Utilities() {
-		Hashtable<Long, String> init = new Hashtable<Long, String>();
-		kyro.register(init.getClass()); // Registration is required for proper serialisation.
+		kyro.register(new Hashtable<Long, String>().getClass()); // Registration is required for proper serialisation.
+		kyro.register(new TreeMap<Character, Double>().getClass());
 	}
 
 	/**
@@ -159,5 +164,51 @@ public class Utilities {
 	 */
 	public String deSpace(String text) {
 		return text.replaceAll("\\s+", "");
+	}
+
+	/**
+	 * Returns the tree-map of letter frequencies that was stored in a specific
+	 * file.
+	 * 
+	 * @param filename
+	 * @return Loaded map of letter frequencies.
+	 */
+	public TreeMap<Character, Double> readLetterFrequencies(String filename) {
+		File fromFile = new File(filename);
+		try {
+			Input in = new Input(new FileInputStream(fromFile));
+			return (TreeMap<Character, Double>) kyro.readClassAndObject(in);
+		} catch (FileNotFoundException e) {
+			System.err.println("Map to be read not found.");
+		}
+		return null;
+	}
+
+	/**
+	 * Generates a tree-map of letter frequencies based on a text file.
+	 * 
+	 * @param filename The file name of the text file to be read.
+	 */
+	public void generateTreeMap(String filename, String outputFilename) {
+		File fromFile = new File(filename);
+		File toFile = new File(outputFilename);
+		Map<Character, Double> treeMap = new TreeMap<Character, Double>();
+		try {
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(new FileInputStream(fromFile), StandardCharsets.US_ASCII));
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split(",");
+				treeMap.put(parts[0].charAt(0), Double.valueOf(parts[1])); // Puts each line into the map.
+			}
+			br.close();
+			Output out = new Output(new FileOutputStream(toFile));
+			kyro.writeClassAndObject(out, treeMap);
+			out.close();
+		} catch (FileNotFoundException f) {
+			System.err.println("Text file to be hashed not found.");
+		} catch (IOException i) {
+			System.err.println("Buffered reader failed to read file correctly.");
+		}
 	}
 }

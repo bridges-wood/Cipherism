@@ -9,15 +9,15 @@ import java.util.TreeMap;
 public class DetectEnglish {
 
 	private Hashtable<Long, String> dictionaryTable, twoGramsTable;
-	private TreeMap<Character, Double> letterProbabilities;
+	private final TreeMap<Character, Double> letterProbabilities;
 	private Utilities u;
 	private NGramAnalyser n;
 	private WordGraph start = new WordGraph("", null);
 
 	public DetectEnglish(Utilities u, NGramAnalyser n) {
-		dictionaryTable = new Hashtable<Long, String>();
-		twoGramsTable = new Hashtable<Long, String>();
-		letterProbabilities = new TreeMap<Character, Double>();
+		dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
+		twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
+		letterProbabilities = u.readLetterFrequencies(u.LETTER_FREQUENCIES_MAP_PATH);
 		this.u = u;
 		this.n = n;
 	}
@@ -62,7 +62,6 @@ public class DetectEnglish {
 				}
 			}
 			return isEnglish(words.toArray(new String[0]));
-
 		} else {
 			return u.deSpace(graphicalRespace(text, 20)).length() / text.length();
 			// This is due to the fact that if there are any non-English words in the text,
@@ -81,9 +80,6 @@ public class DetectEnglish {
 	public float isEnglish(String[] words) {
 		if (words.length == 0) {
 			return 0;
-		}
-		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		float englishWords = 0f;
 		for (String word : words) {
@@ -118,12 +114,6 @@ public class DetectEnglish {
 	 */
 	public String graphicalRespace(String text, int maxWordLength) {
 		start.Clear();
-		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
-		}
-		if (twoGramsTable.isEmpty()) {
-			twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
-		}
 		traverse(start, text, maxWordLength);
 		score(start);
 		prune(start);
@@ -178,7 +168,7 @@ public class DetectEnglish {
 				score(child);
 				parent.score = parent.score + child.score;
 				if (twoGramsTable.containsKey(u.hash64(parent.getWord() + "," + child.getWord()))) {
-					child.setScore(child.getScore() * 2 + child.getWord().length() *2);
+					child.setScore(child.getScore() * 2 + child.getWord().length() * 2);
 				} else {
 					child.setScore(child.getScore() / 2);
 				}
@@ -232,16 +222,6 @@ public class DetectEnglish {
 	 * @return The Chi Squared value.
 	 */
 	public double chiSquaredTest(String text) {
-		if (letterProbabilities.isEmpty()) {
-			// TODO make this read from a static file too. Refer to other todo.
-			String[] lines = u.readFile(u.MONOGRAM_TEXT_PATH); // 4374127904 is total to divide by.
-			for (String line : lines) {
-				String[] splitLine = line.split(",");
-				letterProbabilities.put(splitLine[0].charAt(0), Double.parseDouble(splitLine[1]) / 4374127904d);
-				// Puts the probability of the specified letter into the map.
-			}
-		}
-		text = u.cleanText(text);
 		double length = text.length();
 		double score = 0;
 		TreeMap<String, Integer> letterFrequencies = n.frequencyAnalysis(text);
@@ -259,9 +239,6 @@ public class DetectEnglish {
 	 * @return Boolean whether word is English or not.
 	 */
 	public boolean isEnglish(String word) {
-		if (dictionaryTable.isEmpty()) {
-			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
-		} // Loads the dictionary hash-table.
 		return dictionaryTable.containsKey(u.hash64(word));
 	}
 }

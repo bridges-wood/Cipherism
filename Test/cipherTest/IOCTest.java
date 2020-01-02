@@ -12,7 +12,7 @@ public class IOCTest {
 
 	private Utilities u = new Utilities();
 	private NGramAnalyser n = new NGramAnalyser(u);
-	private IOC tester = new IOC(u, n);
+	private IOC tester = new IOC(n);
 	private final float κr = 0.038466f;
 	private final float κp = 0.0686f;
 

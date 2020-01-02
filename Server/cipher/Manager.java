@@ -13,9 +13,9 @@ public class Manager {
 	private NGramAnalyser n;
 	private DetectEnglish d;
 	private KasiskiExamination k;
-	
+
 	private String result = "";
-	
+
 	Manager(String text, Utilities u, IOC i, NGramAnalyser n, DetectEnglish d, KasiskiExamination k, Vigenere v) {
 		this.u = u;
 		this.i = i;
@@ -24,11 +24,11 @@ public class Manager {
 		this.k = k;
 		run(u.cleanText(text));
 	}
-	
-	public Manager(String text){
+
+	public Manager(String text) {
 		this.u = new Utilities();
 		this.n = new NGramAnalyser(u);
-		this.i = new IOC(u, n);
+		this.i = new IOC(n);
 		this.d = new DetectEnglish(u, n);
 		Vigenere v = new Vigenere();
 		this.k = new KasiskiExamination(u, n, v, i, d);

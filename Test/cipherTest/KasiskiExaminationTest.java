@@ -19,7 +19,7 @@ public class KasiskiExaminationTest {
 	private Utilities u = new Utilities();
 	private NGramAnalyser n = new NGramAnalyser(u);
 	private Vigenere v = new Vigenere();
-	private IOC i = new IOC(u, n);
+	private IOC i = new IOC(n);
 	private DetectEnglish d = new DetectEnglish(u, n);
 	private KasiskiExamination tester = new KasiskiExamination(u, n, v, i, d);
 	private final String KEY = "test";

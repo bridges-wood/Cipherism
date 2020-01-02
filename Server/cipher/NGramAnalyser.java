@@ -5,7 +5,7 @@ import java.util.TreeMap;
 public class NGramAnalyser {
 
 	private double floor;
-	private String[] letters;
+	private final String[] letters;
 	private Utilities u;
 
 	public NGramAnalyser(Utilities u) {
@@ -23,10 +23,10 @@ public class NGramAnalyser {
 	 */
 	public TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
-		String[] words = u.cleanText(text).split("\\s+"); // Takes every word in text and
-															// removes all punctuation
-															// before adding it to the
-															// array.
+		String[] words = text.split("\\s+"); // Takes every word in text and
+												// removes all punctuation
+												// before adding it to the
+												// array.
 		for (String word : words) {
 			String temp = word;
 			word = " " + temp + " "; // Adds spaces to the end of every word (Allows for word end and start
@@ -53,6 +53,8 @@ public class NGramAnalyser {
 		if (!isSpaced) {
 			ngrams.remove(" " + text.substring(0, n - 1));
 			ngrams.remove(text.substring(text.length() - (n - 1)) + " ");
+			// This removes the nGram that was found at the start and end containing the
+			// spaces added in before.
 		}
 		if (n == 1) {
 			ngrams.remove(" ");
@@ -78,10 +80,10 @@ public class NGramAnalyser {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
 		// Breakdown by words or not (this is not necessary as the code works on
 		// unspaced inputs equally well)
-		String[] characters = u.cleanText(text).split(""); // Takes every word in text and
-															// removes all punctuation
-															// before adding it to the
-															// array.
+		String[] characters = text.split(""); // Takes every word in text and
+												// removes all punctuation
+												// before adding it to the
+												// array.
 		for (String letter : characters) {
 			// Generate ngrams for each word.
 			if (ngrams.containsKey(letter)) {
@@ -108,7 +110,6 @@ public class NGramAnalyser {
 	 */
 	public TreeMap<String, Integer> kasiskiBase(int n, String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
-		text = u.cleanText(text);
 		char[] chars = text.toCharArray();
 		// Generate ngrams for each word.
 		for (int i = 0; i < (chars.length - n) + 1; i++) {
@@ -140,7 +141,7 @@ public class NGramAnalyser {
 	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
 		TreeMap<String, Double> ngrams = loadNgramMap(n);
-		char[] letters = u.cleanText(text).toCharArray(); // Clean up input.
+		char[] letters = text.toCharArray(); // Clean up input.
 		for (int i = 0; i <= letters.length - n; i += n) {// Assures we can get the most number of ngrams without
 															// overflow.
 			StringBuilder graph = new StringBuilder();

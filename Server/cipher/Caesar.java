@@ -2,36 +2,24 @@ package cipher;
 
 public class Caesar {
 
-	Utilities u;
-	
-	public Caesar(Utilities u) {
-		this.u = u;
+	public Caesar() {
 	}
 
 	/**
-	 * @param text
-	 *            The enciphered text to be decoded.
-	 * @param shift
-	 *            The shift that has been applied to the text.
+	 * @param text  The enciphered text to be decoded.
+	 * @param shift The shift that has been applied to the text.
 	 * @return A string that has undergone the Caesar shift.
 	 */
 	public String CaesarShiftDecrypt(String text, int shift) {
-		while (shift > 26) {
-			shift -= 26;
-		}
-		while(shift < 0) {
-			shift += 26;
-		}
-		String[] words = u.cleanText(text).split("\\s+");
+		shift %= 26; // This avoids any issues with keys that aren't from 0 to 26.
+		String[] words = text.split("\\s+"); // Automatically handles spaces.
 		StringBuilder stringOut = new StringBuilder();
 		for (String word : words) {
-			char[] letters = word.toCharArray();
+			char[] letters = word.toCharArray(); // Builds a new char array for each word, so all encrypting is done in
+													// place.
 			for (int i = 0; i < letters.length; i++) {
-				int out = letters[i] + shift;
-				if (out > 122) {
-					out -= 26;
-				}
-				letters[i] = (char) out;
+				int out = ((letters[i] - 97) + shift) % 26; // Normalises to zero so modulo arithmetic can be used.
+				letters[i] = (char) (out + 97);
 			}
 			stringOut.append(new String(letters) + " ");
 		}

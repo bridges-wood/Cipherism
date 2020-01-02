@@ -11,8 +11,8 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
 
-	private char[] alphabet;
-	private Map<Character, Double> expectedLetterFrequencies;
+	private final char[] ALPHABET;
+	private final Map<Character, Double> expectedLetterFrequencies;
 	private List<String> possKeys;
 	private Utilities u;
 	private NGramAnalyser n;
@@ -21,46 +21,14 @@ public class KasiskiExamination {
 	private DetectEnglish d;
 
 	public KasiskiExamination(Utilities u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
-		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
+		ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
-		setExpectedLetterFrequencies();
+		expectedLetterFrequencies = u.readLetterFrequencies(u.LETTER_FREQUENCIES_MAP_PATH);
 		this.u = u;
 		this.n = n;
 		this.v = v;
 		this.i = i;
 		this.d = d;
-	}
-
-	private void setExpectedLetterFrequencies() {
-		// TODO This should be done by a static file.
-		Map<Character, Double> letterFrequencies = new TreeMap<Character, Double>();
-		letterFrequencies.put('e', 0.12702);
-		letterFrequencies.put('t', 0.09056);
-		letterFrequencies.put('a', 0.08167);
-		letterFrequencies.put('o', 0.07507);
-		letterFrequencies.put('i', 0.06966);
-		letterFrequencies.put('n', 0.06749);
-		letterFrequencies.put('s', 0.06327);
-		letterFrequencies.put('h', 0.06094);
-		letterFrequencies.put('r', 0.05987);
-		letterFrequencies.put('d', 0.04253);
-		letterFrequencies.put('l', 0.04025);
-		letterFrequencies.put('c', 0.02782);
-		letterFrequencies.put('u', 0.02758);
-		letterFrequencies.put('m', 0.02406);
-		letterFrequencies.put('w', 0.02360);
-		letterFrequencies.put('f', 0.02228);
-		letterFrequencies.put('g', 0.02015);
-		letterFrequencies.put('y', 0.01974);
-		letterFrequencies.put('p', 0.01929);
-		letterFrequencies.put('b', 0.01492);
-		letterFrequencies.put('v', 0.00978);
-		letterFrequencies.put('k', 0.00772);
-		letterFrequencies.put('j', 0.00153);
-		letterFrequencies.put('x', 0.00150);
-		letterFrequencies.put('q', 0.00095);
-		letterFrequencies.put('z', 0.00074);
-		this.expectedLetterFrequencies = letterFrequencies;
 	}
 
 	/**
@@ -99,7 +67,7 @@ public class KasiskiExamination {
 			double[] FMSarray = new double[26]; // Create array for each letter to test how like English it decrypts its
 												// respective section to.
 			for (int i = 0; i < 26; i++) {
-				String toAnalyse = v.decrypt(finalString, Character.toString(alphabet[i]));
+				String toAnalyse = v.decrypt(finalString, Character.toString(ALPHABET[i]));
 				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length()); // Compute
 																												// FMS
 																												// of
@@ -110,7 +78,7 @@ public class KasiskiExamination {
 			List<String> possibleCharacters = new ArrayList<String>();
 			for (int i = 0; i < 26; i++) {
 				if (FMSarray[i] < 0.6) // This selects the top ~40% of letters.
-					possibleCharacters.add(Character.toString(alphabet[i]));
+					possibleCharacters.add(Character.toString(ALPHABET[i]));
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
 		}
@@ -159,7 +127,7 @@ public class KasiskiExamination {
 		Map<Character, Double> observedLetterFrequencies = new TreeMap<Character, Double>();
 		if (letterOccurences.keySet().size() < 26) { // If some letters of the alphabet do not occur in the text...
 			List<Character> missingLetters = new ArrayList<Character>();
-			for (char c : alphabet) {
+			for (char c : ALPHABET) {
 				if (!letterOccurences.containsKey(Character.toString(c))) {
 					missingLetters.add(c); // Adds to the list of characters that don't exist in the the text.
 				}
@@ -174,8 +142,8 @@ public class KasiskiExamination {
 		double[] ELPs = new double[26];
 		double[] OLPs = new double[26];
 		for (int i = 0; i < 26; i++) {
-			ELPs[i] = expectedLetterFrequencies.get(alphabet[i]);
-			OLPs[i] = observedLetterFrequencies.get(alphabet[i]);
+			ELPs[i] = expectedLetterFrequencies.get(ALPHABET[i]);
+			OLPs[i] = observedLetterFrequencies.get(ALPHABET[i]);
 
 		}
 		return bhattacharyyaDistance(ELPs, OLPs);
@@ -259,8 +227,6 @@ public class KasiskiExamination {
 	 *         occurences.
 	 */
 	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
-		text = u.cleanText(text); // Normalise text to only lower case letters for ease of
-									// work.
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {

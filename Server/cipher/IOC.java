@@ -4,11 +4,9 @@ import java.util.Map;
 
 public class IOC {
 
-	private Utilities u;
 	private NGramAnalyser n;
 
-	public IOC(Utilities u, NGramAnalyser n) {
-		this.u = u;
+	public IOC(NGramAnalyser n) {
 		this.n = n;
 	}
 
@@ -26,10 +24,12 @@ public class IOC {
 		for (float f : letters.values()) {
 			kappa += f * ((f * (length - 1)) / (length - 1));
 		}
-		return kappa; // NOTE: For monoalphabetic encryptions, κp will be close to the nominal 0.0686
-						// and above the random, κr: 0.038466. For polyalphabetic ciphers it is
-						// somewhere in
-						// between the two.
+		return kappa;
+		/*
+		 * NOTE: For mono-alphabetic encryptions, κp will be close to the nominal 0.0686
+		 * and above the random, κr: 0.038466. For poly-alphabetic ciphers it is
+		 * somewhere in between the two.
+		 */
 	}
 
 	/**
@@ -45,8 +45,11 @@ public class IOC {
 			rTotal += i;
 			IOC += i * (i - 1);
 		}
-		return IOC / ((rTotal * (rTotal - 1) / 26)); // Note, this ought to be as far from 1 as possible to indicate the
-														// presence of English. 1 is pure random text.
+		return IOC / ((rTotal * (rTotal - 1) / 26));
+		/*
+		 * Note: This ought to be as far from 1 as possible to indicate the presence of
+		 * English. 1 is pure random text.
+		 */
 	}
 
 	/**
@@ -57,7 +60,7 @@ public class IOC {
 	 * @return An array of nth letter IOC scores.
 	 */
 	public double[] peroidicIndexOfCoincidence(String text) {
-		char[] letters = u.cleanText(text).toCharArray();
+		char[] letters = text.toCharArray();
 		double[] out = new double[(letters.length / 2) - 1]; // Creates an array thats the size of the number scores we
 																// shall gather.
 		for (int nth = 2; (nth < (letters.length / 2) + 1); nth++) {
@@ -76,8 +79,16 @@ public class IOC {
 		return out;
 	}
 
+	/**
+	 * Calculates the sum of the indices of coincidence for each period for a given
+	 * key length.
+	 * 
+	 * @param length The key length to be analysed.
+	 * @param text   The text to be analysed.
+	 * @return The sum of the indices of coincidence for the text.
+	 */
 	public double periodIndexOfCoincidence(int length, String text) {
-		char[] letters = u.cleanText(text).toCharArray();
+		char[] letters = text.toCharArray();
 		double score = 0;
 		for (int start = 0; start < length; start++) {
 			StringBuilder nths = new StringBuilder();
@@ -85,6 +96,10 @@ public class IOC {
 				nths.append(letters[start + i]);
 			}
 			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString())) / (double) length;
+			/*
+			 * Adjusts the score based on the length of the text being analysed to allow for
+			 * comparison.
+			 */
 		}
 		return score;
 	}
