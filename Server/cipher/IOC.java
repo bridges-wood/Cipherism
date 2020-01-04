@@ -1,6 +1,7 @@
 package cipher;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 public class IOC {
 
@@ -13,16 +14,16 @@ public class IOC {
 	/**
 	 * Returns the kappa value of the monogram analysed text.
 	 * 
-	 * @param letters A pre-created map of all monograms (ie. letters) in the text
+	 * @param treeMap A pre-created map of all monograms (ie. letters) in the text
 	 *                and the respective fractions of the whole they make up.
 	 * @param length  Integer length of the text being analysed.
 	 * 
 	 * @return The kappa value of the text.
 	 */
-	public float kappaText(Map<String, Float> letters, float length) {
-		float kappa = 0f;
-		for (float f : letters.values()) {
-			kappa += f * ((f * (length - 1)) / (length - 1));
+	public double kappaText(TreeMap<String, Double> treeMap, float length) {
+		double kappa = 0d;
+		for (double d : treeMap.values()) {
+			kappa += d * ((d * (length - 1)) / (length - 1));
 		}
 		return kappa;
 		/*
@@ -95,12 +96,12 @@ public class IOC {
 			for (int i = 0; start + i < letters.length; i += length) {
 				nths.append(letters[start + i]);
 			}
-			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString())) / (double) length;
+			score += indexOfCoincidence(n.frequencyAnalysis(nths.toString())); // / (double) length;
 			/*
 			 * Adjusts the score based on the length of the text being analysed to allow for
 			 * comparison.
 			 */
 		}
-		return score;
+		return score / (double) length;
 	}
 }

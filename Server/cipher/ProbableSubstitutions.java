@@ -1,6 +1,5 @@
 package cipher;
 
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -24,10 +23,10 @@ public class ProbableSubstitutions {
 	 * @return An array of type Mapping describing the most likely letter
 	 *         substitutions based on frequency analysis of the cipher text.
 	 */
-	public Mapping[] probableSubstitutionGenerator(TreeMap<String, Float> letterFrequencies) {
+	public Mapping[] probableSubstitutionGenerator(TreeMap<String, Double> letterFrequencies) {
 		Mapping[] mappings = new Mapping[26]; // An array of Mappings, one for each letter of the alphabet.
 		int pointer = 0;
-		TreeMap<String, Float> freqs = letterFrequencies; // This temporarily handles all the frequencies to allow for
+		TreeMap<String, Double> freqs = letterFrequencies; // This temporarily handles all the frequencies to allow for
 															// data removal without harming the input to the function.
 		while (!freqs.isEmpty()) {// Tests to see if all the data has been assigned to a mapping.
 			String target = maxKey(freqs); // Finds the character corresponding to the highest probability.
@@ -53,14 +52,14 @@ public class ProbableSubstitutions {
 	}
 
 	/**
-	 * Returns the string corresponding to the maximum float value in a <String,
-	 * Integer> Map
+	 * Returns the string corresponding to the maximum double value in a <String,
+	 * Double> Map
 	 * 
-	 * @param map The input <String, Integer> Map.
-	 * @return The key corresponding to the maximum float value in the map.
+	 * @param freqs The input <String, Double> Map.
+	 * @return The key corresponding to the maximum double value in the map.
 	 */
-	public String maxKey(Map<String, Float> map) {
-		return map.entrySet().stream().max((Entry<String, Float> entry1, Entry<String, Float> entry2) -> entry1
+	public String maxKey(TreeMap<String, Double> freqs) {
+		return freqs.entrySet().stream().max((Entry<String, Double> entry1, Entry<String, Double> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey();
 		/*
 		 * Looks through all the K, V pairs in the map, comparing all values. One is set

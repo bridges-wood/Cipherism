@@ -21,8 +21,8 @@ public class NGramAnalyser {
 	 * @param isSpaced Boolean whether or not the text contains spaces already.
 	 * @return TreeMap of all ngrams and fraction of text they represent.
 	 */
-	public TreeMap<String, Float> NgramAnalysis(int n, String text, boolean isSpaced) {
-		TreeMap<String, Float> ngrams = new TreeMap<String, Float>();
+	public TreeMap<String, Double> NgramAnalysis(int n, String text, boolean isSpaced) {
+		TreeMap<String, Double> ngrams = new TreeMap<String, Double>();
 		String[] words = text.split("\\s+"); // Takes every word in text and
 												// removes all punctuation
 												// before adding it to the
@@ -45,7 +45,7 @@ public class NGramAnalyser {
 					if (ngrams.containsKey(finalNgram)) {
 						ngrams.put(finalNgram, ngrams.get(finalNgram) + 1);
 					} else {
-						ngrams.put(finalNgram, 1f);
+						ngrams.put(finalNgram, 1d);
 					}
 				}
 			}
@@ -59,10 +59,10 @@ public class NGramAnalyser {
 		if (n == 1) {
 			ngrams.remove(" ");
 		}
-		// Set float to fraction of the total the n gram represents.
-		float total = 0f;
-		for (float f : ngrams.values()) {
-			total += f;
+		// Set double to fraction of the total the n gram represents.
+		double total = 0d;
+		for (double d : ngrams.values()) {
+			total += d;
 		} // Collect total number of ngrams in text.
 		for (String key : ngrams.keySet()) {
 			ngrams.put(key, ngrams.get(key) / total);

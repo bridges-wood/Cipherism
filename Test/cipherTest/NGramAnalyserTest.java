@@ -31,7 +31,7 @@ public class NGramAnalyserTest {
 // Story of the Door from The Strange Case of Dr. Jekyll and Mr. Hyde.
 	@Test
 	public void testNgramAnalysis() {
-		TreeMap<String, Float> trigrams = tester.NgramAnalysis(3, PLAINTEXT, true);
+		TreeMap<String, Double> trigrams = tester.NgramAnalysis(3, PLAINTEXT, true);
 		assertTrue(trigrams.get("he ") > 0);
 		assertEquals(trigrams.get("xe "), null);
 	}

@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import org.junit.Test;
@@ -60,9 +59,9 @@ public class ProbableSubstitutionsTest {
 
 	@Test
 	public void testMaxKey() {
-		Map<String, Float> newMap = new TreeMap<String, Float>();
-		newMap.put("1", 1.0f);
-		newMap.put("2", 2.0f);
+		TreeMap<String, Double> newMap = new TreeMap<String, Double>();
+		newMap.put("1", 1.0d);
+		newMap.put("2", 2.0d);
 		assertEquals(tester.maxKey(newMap), "2");
 	}
 
