@@ -52,9 +52,9 @@ public class Mapping {
 	 * @return MappingPair containing mappings a and b.
 	 */
 	public MappingPair swap(Mapping a, Mapping b) {
-		char temp = b.getCipherChar();
-		b.setCipherChar(a.getCipherChar());
-		a.setCipherChar(temp);
+		char temp = b.getPlainChar();
+		b.setPlainChar(a.getPlainChar());
+		a.setPlainChar(temp);
 		return new MappingPair(a, b);
 	}
 

@@ -46,20 +46,20 @@ public class CipherBreakers {
 		Mapping m = new Mapping();
 		int counter = 0;
 		Random rng = new Random();
-		while (counter <= 1000000) {
-			System.out.println(s.decrypt(text, mappings));
-			double score = u.deSpace(d.graphicalRespace(s.decrypt(text, mappings), 20)).length() / text.length();
+		while (counter <= 1000) {
+			double score = n.computeScore(3, s.decrypt(text, mappings), false);
 			int a = rng.nextInt(26);
 			int b = rng.nextInt(26);
 			MappingPair pair = m.swap(mappings[a], mappings[b]);
-			Mapping[] child = Arrays.stream(mappings).map(mapping -> mapping == null ? null : new Mapping()).toArray(Mapping[] :: new);
+			Mapping[] child = mappings.clone();
 			child[a] = pair.getA();
 			child[b] = pair.getB();
-			if(u.deSpace(d.graphicalRespace(s.decrypt(text, child), 20)).length() / text.length() > score) {
-				counter = 0;
+			if(n.computeScore(3, s.decrypt(text, child), false) > score) {
+				System.out.println(s.decrypt(text, mappings));
 				mappings = child;
+				counter = 0;
 			} else {
-				counter += 1;
+				counter++;
 			}
 		}
 		return d.graphicalRespace(s.decrypt(text, mappings), 20);
