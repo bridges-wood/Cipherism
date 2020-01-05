@@ -63,7 +63,7 @@ public class NGramAnalyserTest {
 	@Test
 	public void testComputeScore() {
 		double score = tester.computeScore(3, "the", false);
-		assertEquals(Math.log10(77534223d / 4274127909d), score, 0.1);
+		assertEquals(Math.log10(77534223d / 4274127909d), score, 0.0000000001);
 	}
 
 	@Test

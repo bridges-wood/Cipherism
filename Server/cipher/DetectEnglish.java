@@ -31,6 +31,7 @@ public class DetectEnglish {
 	 *         text are good indications of English.
 	 */
 	public float detectEnglish(String text) {
+		// TODO implement skipping of broken text and improve word scoring.
 		text = text.toLowerCase();
 		boolean spaced = false;
 		for (int i = 0; i < text.length(); i++) {

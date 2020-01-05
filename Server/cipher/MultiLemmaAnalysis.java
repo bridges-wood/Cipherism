@@ -18,15 +18,14 @@ public class MultiLemmaAnalysis {
 	 * Generate possible lemmata that the fractions of the string in the text could
 	 * correspond to.
 	 * 
-	 * @param text
-	 *            A section of encoded ciphertext from which possible lemmata are to
-	 *            be generated. This can only be 2 to 5 words in length.
+	 * @param text A section of encoded ciphertext from which possible lemmata are
+	 *             to be generated. This can only be 2 to 5 words in length.
 	 * @return
 	 */
 	public String[] possibleLemmata(String text) {
 		String[] words = text.split("\\s+"); // Removes all non-letter
-															// characters and splits by
-															// whitespace.
+												// characters and splits by
+												// whitespace.
 		int numWords = words.length;
 		if (numWords < 2 || numWords > 5) { // Since we only have files with word combinations of up to size five...
 			return null;

@@ -30,18 +30,16 @@ public class KasiskiExamination {
 		this.i = i;
 		this.d = d;
 	}
-
+	
 	/**
-	 * Gives the most likely key for the given text.
+	 * Gives the most likely keys for the given text.
 	 * 
 	 * @param text The input text to be text.
 	 * @return The most likely key used to encrypt the text.
 	 */
-	public String[] run(String text) {
-
+	public String[] vigenereKeys(String text) {
 		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
-		String[] a = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
-		return a;
+		return keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
 	}
 
 	/**

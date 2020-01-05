@@ -141,9 +141,9 @@ public class NGramAnalyser {
 	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
 		TreeMap<String, Double> ngrams = loadNgramMap(n);
-		char[] letters = text.toCharArray(); // Clean up input.
-		for (int i = 0; i <= letters.length - n; i += n) {// Assures we can get the most number of ngrams without
-															// overflow.
+		char[] letters = text.toCharArray();
+		for (int i = 0; i <= letters.length - n; i++) {// Assures we can get the most number of ngrams without
+														// overflow.
 			StringBuilder graph = new StringBuilder();
 			for (int j = 0; j < n; j++) {
 				graph.append(letters[i + j]);
@@ -194,14 +194,13 @@ public class NGramAnalyser {
 			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
 		}
 		Double total = 0d;
-		Double[] values = chances.values().toArray(new Double[0]);
-		for (int i = 0; i < values.length; i++) {
-			total += values[i]; // Loads the total number of occurrences of all ngrams into one total.
+		for (double value : chances.values()) {
+			total += value; // Sum all the occurrences of all ngrams.
 		}
 		for (String key : chances.keySet()) {
-			Double toInsert = Math.log10((double) chances.get(key) / total); // For every key, the log is taken to avoid
-																				// numerical underflow when operating
-																				// with such small probabilities.
+			Double toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
+																	// numerical underflow when operating
+																	// with such small probabilities.
 			chances.put(key, toInsert);
 		}
 		floor = Math.log10(0.01 / total); // A floor is devised to stop -infinity probabilities.

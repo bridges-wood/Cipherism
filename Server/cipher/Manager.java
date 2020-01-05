@@ -13,9 +13,12 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 public class Manager {
 
 	private Utilities u;
+	private ProbableSubstitutions p;
 	private IOC i;
 	private NGramAnalyser n;
 	private KasiskiExamination k;
+	private CipherBreakers c;
+	private DetectEnglish d;
 
 	private String result = "";
 	private String text = "";
@@ -23,8 +26,11 @@ public class Manager {
 	public Manager(String text, boolean test) {
 		this.text = text;
 		this.u = new Utilities();
+		this.p = new ProbableSubstitutions();
 		this.n = new NGramAnalyser(u);
 		this.i = new IOC(n);
+		this.d = new DetectEnglish(u, n);
+		this.c = new CipherBreakers(u, k, d, p, n);
 		if (!test)
 			run(u.cleanText(text));
 	}
@@ -32,11 +38,9 @@ public class Manager {
 	private String run(String text) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			k.run(text);
-			return "";
+			return c.vigenereBreaker(text);
 		case "Substitution":
-			// TODO create a single method to automate breaking a substitution cipher.
-			break;
+			return c.substitutionBreaker(text);
 		}
 		return "";
 	}
