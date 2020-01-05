@@ -24,19 +24,19 @@ public class PredictWordsTest {
 		String[] testCases = { "this", "is", "a", "set", "of", "test", "words" };
 		for (String test : testCases) {
 			String encoding = s.encrypt(test, MAPPINGS);
-			List<String> possibleEncodings = Arrays.asList(tester.predictedWords(encoding, false));
+			List<String> possibleEncodings = Arrays.asList(tester.predictedWords(encoding));
 			assertTrue(possibleEncodings.contains(test));
 		}
 	}
 
 	@Test
 	public void testEncodeWord() {
-		assertArrayEquals(new int[] {0,1,2}, tester.encodeWord("the"));
+		assertEquals("012", tester.encodeWord("the"));
 	}
 
 	@Test
 	public void testEncodePhrase() {
-		assertArrayEquals(new int[][] {{0,1,2,0}, {3,4,2,1}}, tester.encodePhrase("test case".split(" ")));
+		assertArrayEquals(new String[] {"0120", "3421"}, tester.encodePhrase("test case".split(" ")));
 	}
 
 }

@@ -6,11 +6,21 @@ public class NGramAnalyser {
 
 	private double floor;
 	private final String[] letters;
+	private final TreeMap<String, Double> MONOGRAMS;
+	private final TreeMap<String, Double> BIGRAMS;
+	private final TreeMap<String, Double> TRIGRAMS;
+	private final TreeMap<String, Double> QUADGRAMS;
+	private final TreeMap<String, Double> PENTAGRAMS;
 	private Utilities u;
 
 	public NGramAnalyser(Utilities u) {
 		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
 		this.u = u;
+		this.MONOGRAMS = u.loadNgramMap(1);
+		this.BIGRAMS = u.loadNgramMap(2);
+		this.TRIGRAMS = u.loadNgramMap(3);
+		this.QUADGRAMS = u.loadNgramMap(4);
+		this.PENTAGRAMS = u.loadNgramMap(5);
 	}
 
 	/**
@@ -140,7 +150,7 @@ public class NGramAnalyser {
 	 */
 	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
-		TreeMap<String, Double> ngrams = loadNgramMap(n);
+		TreeMap<String, Double> ngrams = u.loadNgramMap(n);
 		char[] letters = text.toCharArray();
 		for (int i = 0; i <= letters.length - n; i++) {// Assures we can get the most number of ngrams without
 														// overflow.
@@ -162,48 +172,23 @@ public class NGramAnalyser {
 		}
 	}
 
-	/**
-	 * Loads a TreeMap from a file containing ngrams in English and their relative
-	 * appearances in Google's trillion word corpus.
-	 * 
-	 * @param size The number of letters to be examined for.
-	 * @return A TreeMap containing ngrams and their logProbability of occurring.
-	 */
-	public TreeMap<String, Double> loadNgramMap(int size) {
-		TreeMap<String, Double> chances = new TreeMap<String, Double>();
-		String[] lines = null;
-		switch (size) { // Load the file that we're interested in.
-		case 1:
-			lines = u.readFile(u.MONOGRAM_TEXT_PATH);
-			break;
-		case 2:
-			lines = u.readFile(u.BIGRAM_TEXT_PATH);
-			break;
-		case 3:
-			lines = u.readFile(u.TRIGRAM_TEXT_PATH);
-			break;
-		case 4:
-			lines = u.readFile(u.QUADGRAM_TEXT_PATH);
-			break;
-		case 5:
-			lines = u.readFile(u.PENTAGRAM_TEXT_PATH);
-			break;
-		}
-		for (String line : lines) {
-			String[] splitLine = line.split(",");
-			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
-		}
-		Double total = 0d;
-		for (double value : chances.values()) {
-			total += value; // Sum all the occurrences of all ngrams.
-		}
-		for (String key : chances.keySet()) {
-			Double toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
-																	// numerical underflow when operating
-																	// with such small probabilities.
-			chances.put(key, toInsert);
-		}
-		floor = Math.log10(0.01 / total); // A floor is devised to stop -infinity probabilities.
-		return chances;
+	public TreeMap<String, Double> getMONOGRAMS() {
+		return MONOGRAMS;
+	}
+
+	public TreeMap<String, Double> getBIGRAMS() {
+		return BIGRAMS;
+	}
+
+	public TreeMap<String, Double> getTRIGRAMS() {
+		return TRIGRAMS;
+	}
+
+	public TreeMap<String, Double> getQUADGRAMS() {
+		return QUADGRAMS;
+	}
+
+	public TreeMap<String, Double> getPENTAGRAMS() {
+		return PENTAGRAMS;
 	}
 }

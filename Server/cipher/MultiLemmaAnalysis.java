@@ -33,7 +33,7 @@ public class MultiLemmaAnalysis {
 		List<String> possibleLemata = new ArrayList<String>(); // Creates a dynamic list as we do not know how many
 																// possible lemata will be drawn.
 		String[] lines = null;
-		int[][] encodedGroup = p.encodePhrase(words); // Encode the text in character index form.
+		String[] encodedGroup = p.encodePhrase(words); // Encode the text in character index form.
 		switch (numWords) { // Locates the file corresponding to the length of the input.
 		case 2:
 			lines = u.readFile(u.BIGRAM_WORD_TEXT_PATH);
@@ -50,7 +50,7 @@ public class MultiLemmaAnalysis {
 		}
 		for (int i = 0; i < lines.length; i++) { // Iterates through the file, encoding each line in character index
 													// form.
-			int[][] encodedLGroup = p.encodePhrase(lines[i].toLowerCase().split(","));
+			String[] encodedLGroup = p.encodePhrase(lines[i].toLowerCase().split(","));
 			if (Arrays.deepEquals(encodedLGroup, encodedGroup)) { // If the two encodings are the same, a match is
 																	// returned.
 				possibleLemata.add(lines[i].replaceAll(",", " "));

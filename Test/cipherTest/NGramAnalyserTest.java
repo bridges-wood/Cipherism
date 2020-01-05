@@ -66,14 +66,4 @@ public class NGramAnalyserTest {
 		assertEquals(Math.log10(77534223d / 4274127909d), score, 0.0000000001);
 	}
 
-	@Test
-	public void testLoadNgramMap() {
-		TreeMap<String, Double> probabilities = tester.loadNgramMap(3);
-		assertTrue(probabilities.keySet().size() == 17556);
-		assertEquals(Math.pow(10, probabilities.get("the")) * 4274127909d, 77534223d, 0.077534223);
-		// Tests that it can resolve frequencies to order E-9 accuracy by
-		// performing the inverse of the done operation.
-		assertEquals(Math.pow(10, probabilities.get("gng")) * 4274127909d, 7610, 0.00000761);
-	}
-
 }

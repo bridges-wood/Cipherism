@@ -1,7 +1,6 @@
 package cipher;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PredictWords {
@@ -22,20 +21,16 @@ public class PredictWords {
 	 * @return A String array containing all the possible words the encrypted string
 	 *         could be.
 	 */
-	public String[] predictedWords(String word, boolean probable) {
+	public String[] predictedWords(String word) {
 		// TODO speed up this method by using a bucketed hashtable for each encoding.
-		int[] encodedForm = encodeWord(word);
+		String encodedForm = encodeWord(word);
 		List<String> possibleWords = new ArrayList<String>();
 		String[] lines;
-		if (probable) {
-			lines = u.readFile(u.MOST_PROBABLE_TEXT_PATH);
-		} else {
-			lines = u.readFile(u.DICTIONARY_TEXT_PATH);
-		}
+		lines = u.readFile(u.DICTIONARY_TEXT_PATH);
 		for (String line : lines) {
 			if (line.length() == word.length()) {// If the lengths match... (This is to thin the field examined and
 													// speed up access times).
-				if (Arrays.equals(encodedForm, encodeWord(line))) { // If the encoded forms match...
+				if (encodedForm.equals(encodeWord(line))) { // If the encoded forms match...
 					possibleWords.add(line);
 				}
 			}
@@ -47,10 +42,10 @@ public class PredictWords {
 	 * Encode a string in character index form.
 	 * 
 	 * @param word The string to be encoded with the character index system.
-	 * @return An integer array of the encoded string in character index form.
+	 * @return The encoded string in character index form.
 	 */
-	public int[] encodeWord(String word) {
-		int[] encodedText = new int[word.length()]; // Create output array.
+	public String encodeWord(String word) {
+		StringBuilder sb = new StringBuilder(); // Create output String.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.
 		for (int i = 0; i < word.length(); i++) {
@@ -58,31 +53,34 @@ public class PredictWords {
 			if (!seen.contains(letter)) { // If the letter has been seen before...
 				seen.add(letter);
 			}
-			encodedText[i] = seen.indexOf(letter); // Encode the letter in the output array.
+			sb.append(seen.indexOf(letter)); // Encode the letter in the output array.
 		}
-		return encodedText;
+		return sb.toString();
 	}
 
 	/**
 	 * Encode a phrase in character index form.
 	 * 
 	 * @param phrase The string to be encoded with the character index system.
-	 * @return An integer array of the encoded string in character index form.
+	 * @return the encoded string in character index form.
 	 */
-	public int[][] encodePhrase(String[] phrase) {
-		int[][] encodedText = new int[phrase.length][]; // Create output array.
+	public String[] encodePhrase(String[] phrase) {
+		String[] encodedPhrase = new String[phrase.length]; // Create output array.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.
-		for (int i = 0; i < phrase.length; i++) {
-			encodedText[i] = new int[phrase[i].length()]; // Set the size of the jagged array.
-			for (int j = 0; j < phrase[i].length(); j++) {
-				char letter = phrase[i].charAt(j);
+		for(int i = 0; i < phrase.length; i++) {
+			//For each word...
+			String word = phrase[i];
+			StringBuilder encoded = new StringBuilder();
+			for(int j = 0; j < word.length(); j++) {
+				char letter = word.charAt(j);
 				if (!seen.contains(letter)) { // If the letter has been seen before...
 					seen.add(letter);
 				}
-				encodedText[i][j] = seen.indexOf(letter); // Encode the letter in the output array.
+				encoded.append(seen.indexOf(letter));
 			}
+			encodedPhrase[i] = encoded.toString();
 		}
-		return encodedText;
+		return encodedPhrase;
 	}
 }

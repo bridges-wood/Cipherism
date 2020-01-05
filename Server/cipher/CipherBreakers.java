@@ -1,10 +1,5 @@
 package cipher;
 
-import java.util.Arrays;
-import java.util.Random;
-
-import cipher.Mapping.MappingPair;
-
 public class CipherBreakers {
 
 	private Utilities u;
@@ -41,28 +36,13 @@ public class CipherBreakers {
 	}
 
 	public String substitutionBreaker(String text) {
-		//TODO change this.
-		Mapping[] mappings = p.probableSubstitutionGenerator(n.NgramAnalysis(1, text, false));
-		Mapping m = new Mapping();
-		int counter = 0;
-		Random rng = new Random();
-		while (counter <= 1000) {
-			double score = n.computeScore(3, s.decrypt(text, mappings), false);
-			int a = rng.nextInt(26);
-			int b = rng.nextInt(26);
-			MappingPair pair = m.swap(mappings[a], mappings[b]);
-			Mapping[] child = mappings.clone();
-			child[a] = pair.getA();
-			child[b] = pair.getB();
-			if(n.computeScore(3, s.decrypt(text, child), false) > score) {
-				System.out.println(s.decrypt(text, mappings));
-				mappings = child;
-				counter = 0;
-			} else {
-				counter++;
-			}
-		}
-		return d.graphicalRespace(s.decrypt(text, mappings), 20);
+		/*
+		 * TODO Plan: Do one pass based on FA, using letters of high confidence. Using the
+		 * same graphical technique as previously, examine possible words using probable
+		 * substitutions, locking in the letter from FA. From there, generate a tree
+		 * using the possible encodings and use the path with the best score.
+		 */
+		return "";
 	}
 
 }

@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +32,11 @@ public class Utilities {
 	public final String TRIGRAM_TEXT_PATH = "src/main/resources/3l.txt";
 	public final String QUADGRAM_TEXT_PATH = "src/main/resources/4l.txt";
 	public final String PENTAGRAM_TEXT_PATH = "src/main/resources/5l.txt";
+	public final String MONOGRAM_MAP_PATH = "src/main/resources/1l.tmp";
+	public final String BIGRAM_MAP_PATH = "src/main/resources/2l.tmp";
+	public final String TRIGRAM_MAP_PATH = "src/main/resources/3l.tmp";
+	public final String QUADGRAM_MAP_PATH = "src/main/resources/4l.tmp";
+	public final String PENTAGRAM_MAP_PATH = "src/main/resources/5l.tmp";
 	public final String MOST_PROBABLE_TEXT_PATH = "src/main/resources/mostProbable.txt";
 	public final String LETTER_FREQUENCIES_TEXT_PATH = "src/main/resources/letterFrequencies.txt";
 	public final String LETTER_FREQUENCIES_MAP_PATH = "src/main/resources/letterFrequencies.tmp";
@@ -40,8 +45,9 @@ public class Utilities {
 	private final Kryo kyro = new Kryo();
 
 	public Utilities() {
-		kyro.register(new Hashtable<Long, String>().getClass()); // Registration is required for proper serialisation.
+		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
+		kyro.register(new TreeMap<String, Double>().getClass());
 	}
 
 	/**
@@ -96,16 +102,16 @@ public class Utilities {
 	}
 
 	/**
-	 * Creates a hashtable using FNV1-a and each line of a given file of type <Long,
+	 * Creates a hash-map using FNV1-a and each line of a given file of type <Long,
 	 * String>.
 	 * 
 	 * @param filename       The name of the file which lines are to be read from.
 	 * @param outputFilename The name of the file to which the hashtable is saved.
 	 */
-	public void generateHashTable(String filename, String outputFilename) {
+	public void generateHashMap(String filename, String outputFilename) {
 		File fromFile = new File(filename);
 		File toFile = new File(outputFilename);
-		Hashtable<Long, String> hashTable = new Hashtable<Long, String>();
+		HashMap<Long, String> hashTable = new HashMap<Long, String>();
 		try {
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(new FileInputStream(fromFile), StandardCharsets.US_ASCII));
@@ -129,17 +135,17 @@ public class Utilities {
 	}
 
 	/**
-	 * Returns the hash-table that was stored in a given file. 10x Faster than
+	 * Returns the has-hmap that was stored in a given file. 10x Faster than
 	 * previous method.
 	 * 
 	 * @param filename
-	 * @return Loaded hash-table.
+	 * @return Loaded hash-map.
 	 */
-	public Hashtable<Long, String> readHashTable(String filename) {
+	public HashMap<Long, String> readHashTable(String filename) {
 		File fromFile = new File(filename);
 		try {
 			Input in = new Input(new FileInputStream(fromFile));
-			return (Hashtable<Long, String>) kyro.readClassAndObject(in);
+			return (HashMap<Long, String>) kyro.readClassAndObject(in);
 		} catch (FileNotFoundException f) {
 			System.err.println("Hashtable to be read not found.");
 		}
@@ -189,7 +195,7 @@ public class Utilities {
 	 * 
 	 * @param filename The file name of the text file to be read.
 	 */
-	public void generateTreeMap(String filename, String outputFilename) {
+	public void generateLetterFrequencies(String filename, String outputFilename) {
 		File fromFile = new File(filename);
 		File toFile = new File(outputFilename);
 		Map<Character, Double> treeMap = new TreeMap<Character, Double>();
@@ -210,5 +216,94 @@ public class Utilities {
 		} catch (IOException i) {
 			System.err.println("Buffered reader failed to read file correctly.");
 		}
+	}
+
+	/**
+	 * Generates and saves a TreeMap from a file containing ngrams in English and
+	 * their relative appearances in Google's trillion word corpus.
+	 * 
+	 * @param size The number of letters to be examined for.
+	 */
+	public void generateNGramMap(int size, String outputFilename) {
+		File toFile = new File(outputFilename);
+		TreeMap<String, Double> chances = new TreeMap<String, Double>();
+		String[] lines = null;
+		switch (size) { // Load the file that we're interested in.
+		case 1:
+			lines = readFile(MONOGRAM_TEXT_PATH);
+			break;
+		case 2:
+			lines = readFile(BIGRAM_TEXT_PATH);
+			break;
+		case 3:
+			lines = readFile(TRIGRAM_TEXT_PATH);
+			break;
+		case 4:
+			lines = readFile(QUADGRAM_TEXT_PATH);
+			break;
+		case 5:
+			lines = readFile(PENTAGRAM_TEXT_PATH);
+			break;
+		}
+		double total = 0d;
+		for (String line : lines) {
+			String[] splitLine = line.split(",");
+			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
+			total += Double.valueOf(splitLine[1]);
+		}
+		System.out.println(total);
+		for (String key : chances.keySet()) {
+			Double toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
+																	// numerical underflow when operating
+																	// with such small probabilities.
+			chances.put(key, toInsert);
+		}
+		try {
+			Output out = new Output(new FileOutputStream(toFile));
+			kyro.writeClassAndObject(out, chances);
+			out.close();
+		} catch (FileNotFoundException f) {
+			System.err.println("Save location not found.");
+		}
+
+	}
+
+	/**
+	 * Loads a TreeMap from a file containing NGrams in English and their respective
+	 * log probabilities.
+	 * 
+	 * @param size The number of letters to be examined for.
+	 */
+	public TreeMap<String, Double> loadNgramMap(int size) {
+		File location = null;
+		switch (size) {
+		case 1:
+			location = new File(this.MONOGRAM_MAP_PATH);
+			break;
+		case 2:
+			location = new File(this.BIGRAM_MAP_PATH);
+			break;
+		case 3:
+			location = new File(this.TRIGRAM_MAP_PATH);
+			break;
+		case 4:
+			location = new File(this.QUADGRAM_MAP_PATH);
+			break;
+		case 5:
+			location = new File(this.PENTAGRAM_MAP_PATH);
+			break;
+		}
+		try {
+			Input in = new Input(new FileInputStream(location));
+			return (TreeMap<String, Double>) kyro.readClassAndObject(in);
+		} catch (FileNotFoundException e) {
+			System.err.println("Treemap to be read not found.");
+		}
+		return null;
+	}
+
+	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm(){
+		//TODO create saver and loader for character index form 
+		return null;
 	}
 }

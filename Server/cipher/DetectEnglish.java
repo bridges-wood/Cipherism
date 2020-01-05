@@ -2,13 +2,13 @@ package cipher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
 public class DetectEnglish {
 
-	private Hashtable<Long, String> dictionaryTable, twoGramsTable;
+	private HashMap<Long, String> dictionaryTable, twoGramsTable;
 	private final TreeMap<Character, Double> letterProbabilities;
 	private Utilities u;
 	private NGramAnalyser n;

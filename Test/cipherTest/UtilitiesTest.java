@@ -27,12 +27,12 @@ public class UtilitiesTest {
 
 	@Test
 	public void testGenerateHashTable() {
-		tester.generateHashTable("TestResources/readTest.txt", "TestResources/hashTable.htb");
+		tester.generateHashMap("TestResources/readTest.txt", "TestResources/hashTable.htb");
 	}
 
 	@Test
 	public void testReadHashTable() {
-		tester.generateHashTable("TestResources/readTest.txt", "TestResources/hashTable.htb");
+		tester.generateHashMap("TestResources/readTest.txt", "TestResources/hashTable.htb");
 		String[] expected = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
 				"tenth" };
 		Hashtable<Long, String> table = new Hashtable<Long, String>();
@@ -53,8 +53,8 @@ public class UtilitiesTest {
 	}
 
 	@Test
-	public void testGenerateTreeMap() {
-		tester.generateTreeMap("TestResources/letterFrequencies.txt", "TestResources/letterFrequencies.tmp");
+	public void testGenerateLetterFrequencies() {
+		tester.generateLetterFrequencies("TestResources/letterFrequencies.txt", "TestResources/letterFrequencies.tmp");
 	}
 
 	@Test
@@ -63,6 +63,16 @@ public class UtilitiesTest {
 		frequencies.put('e', 0.227d);
 		assertEquals(tester.readLetterFrequencies("TestResources/letterFrequencies.tmp").entrySet(),
 				frequencies.entrySet());
+	}
+	
+	@Test
+	public void testLoadNgramMap() {
+		TreeMap<String, Double> probabilities = tester.loadNgramMap(3);
+		assertTrue(probabilities.keySet().size() == 17556);
+		assertEquals(Math.pow(10, probabilities.get("the")) * 4274127909d, 77534223d, 0.077534223);
+		// Tests that it can resolve frequencies to order E-9 accuracy by
+		// performing the inverse of the done operation.
+		assertEquals(Math.pow(10, probabilities.get("gng")) * 4274127909d, 7610, 0.00000761);
 	}
 
 }
