@@ -17,7 +17,7 @@ public class UtilitiesTest {
 	public void testReadFile() {
 		String[] expected = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
 				"tenth" };
-		assertArrayEquals(tester.readFile("TestResources\\readTest.txt"), expected);
+		assertArrayEquals(tester.readFile("TestResources/readTest.txt"), expected);
 	}
 
 	@Test
@@ -27,19 +27,19 @@ public class UtilitiesTest {
 
 	@Test
 	public void testGenerateHashTable() {
-		tester.generateHashTable("TestResources\\readTest.txt", "TestResources\\hashTable.htb");
+		tester.generateHashTable("TestResources/readTest.txt", "TestResources/hashTable.htb");
 	}
 
 	@Test
 	public void testReadHashTable() {
-		tester.generateHashTable("TestResources\\readTest.txt", "TestResources\\hashTable.htb");
+		tester.generateHashTable("TestResources/readTest.txt", "TestResources/hashTable.htb");
 		String[] expected = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
 				"tenth" };
 		Hashtable<Long, String> table = new Hashtable<Long, String>();
 		for (String line : expected) {
 			table.put(tester.hash64(line), line);
 		}
-		assertEquals(tester.readHashTable("TestResources\\hashTable.htb").entrySet(), table.entrySet());
+		assertEquals(tester.readHashTable("TestResources/hashTable.htb").entrySet(), table.entrySet());
 	}
 
 	@Test
@@ -54,14 +54,14 @@ public class UtilitiesTest {
 
 	@Test
 	public void testGenerateTreeMap() {
-		tester.generateTreeMap("TestResources\\letterFrequencies.txt", "TestResources\\letterFrequencies.tmp");
+		tester.generateTreeMap("TestResources/letterFrequencies.txt", "TestResources/letterFrequencies.tmp");
 	}
 
 	@Test
 	public void testReadLetterFrequencies() {
 		TreeMap<Character, Double> frequencies = new TreeMap<Character, Double>();
 		frequencies.put('e', 0.227d);
-		assertEquals(tester.readLetterFrequencies("TestResources\\letterFrequencies.tmp").entrySet(),
+		assertEquals(tester.readLetterFrequencies("TestResources/letterFrequencies.tmp").entrySet(),
 				frequencies.entrySet());
 	}
 

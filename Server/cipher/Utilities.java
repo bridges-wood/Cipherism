@@ -20,21 +20,21 @@ import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {
 
-	public final String DICTIONARY_HASH_PATH = "src\\main\\resources\\dictionary.htb";
-	public final String DICTIONARY_TEXT_PATH = "src\\main\\resources\\dictionary.txt";
-	public final String BIGRAM_WORD_HASH_PATH = "src\\main\\resources\\2grams.htb";
-	public final String BIGRAM_WORD_TEXT_PATH = "src\\main\\resources\\2grams.txt";
-	public final String TRIGRAM_WORD_TEXT_PATH = "src\\main\\resources\\3grams.txt";
-	public final String QUADGRAM_WORD_TEXT_PATH = "src\\main\\resources\\4grams.txt";
-	public final String PENTAGRAM_WORD_TEXT_PATH = "src\\main\\resources\\5grams.txt";
-	public final String MONOGRAM_TEXT_PATH = "src\\main\\resources\\1l.txt";
-	public final String BIGRAM_TEXT_PATH = "src\\main\\resources\\2l.txt";
-	public final String TRIGRAM_TEXT_PATH = "src\\main\\resources\\3l.txt";
-	public final String QUADGRAM_TEXT_PATH = "src\\main\\resources\\4l.txt";
-	public final String PENTAGRAM_TEXT_PATH = "src\\main\\resources\\5l.txt";
-	public final String MOST_PROBABLE_TEXT_PATH = "src\\main\\resources\\mostProbable.txt";
-	public final String LETTER_FREQUENCIES_TEXT_PATH = "src\\main\\resources\\letterFrequencies.txt";
-	public final String LETTER_FREQUENCIES_MAP_PATH = "src\\main\\resources\\letterFrequencies.tmp";
+	public final String DICTIONARY_HASH_PATH = "src/main/resources/dictionary.htb";
+	public final String DICTIONARY_TEXT_PATH = "src/main/resources/dictionary.txt";
+	public final String BIGRAM_WORD_HASH_PATH = "src/main/resources/2grams.htb";
+	public final String BIGRAM_WORD_TEXT_PATH = "src/main/resources/2grams.txt";
+	public final String TRIGRAM_WORD_TEXT_PATH = "src/main/resources/3grams.txt";
+	public final String QUADGRAM_WORD_TEXT_PATH = "src/main/resources/4grams.txt";
+	public final String PENTAGRAM_WORD_TEXT_PATH = "src/main/resources/5grams.txt";
+	public final String MONOGRAM_TEXT_PATH = "src/main/resources/1l.txt";
+	public final String BIGRAM_TEXT_PATH = "src/main/resources/2l.txt";
+	public final String TRIGRAM_TEXT_PATH = "src/main/resources/3l.txt";
+	public final String QUADGRAM_TEXT_PATH = "src/main/resources/4l.txt";
+	public final String PENTAGRAM_TEXT_PATH = "src/main/resources/5l.txt";
+	public final String MOST_PROBABLE_TEXT_PATH = "src/main/resources/mostProbable.txt";
+	public final String LETTER_FREQUENCIES_TEXT_PATH = "src/main/resources/letterFrequencies.txt";
+	public final String LETTER_FREQUENCIES_MAP_PATH = "src/main/resources/letterFrequencies.tmp";
 	private final long FNV1_64_INIT = 0xcbf29ce484222325L;
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();

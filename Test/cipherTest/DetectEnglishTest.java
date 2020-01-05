@@ -17,8 +17,8 @@ public class DetectEnglishTest {
 	public void testDetectEnglish() {
 		assertTrue(tester.detectEnglish("this is a test string") == 1); // Testing spaced text.
 		assertTrue(tester.detectEnglish("thisisateststring") == 1); // Testing unspaced text.
-		assertTrue(tester.detectEnglish("étoile") == 0); // Testing non-english text.
-		assertTrue(tester.detectEnglish("test étoile") == 0.5); // Testing a combination of english and non-english.
+		assertTrue(tester.detectEnglish("Ã©toile") == 0); // Testing non-english text.
+		assertTrue(tester.detectEnglish("test Ã©toile") == 0.5); // Testing a combination of english and non-english.
 	}
 
 	@Test
