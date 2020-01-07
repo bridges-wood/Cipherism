@@ -67,7 +67,7 @@ public class UtilitiesTest {
 	
 	@Test
 	public void testLoadNgramMap() {
-		TreeMap<String, Double> probabilities = tester.loadNgramMap(3);
+		TreeMap<String, Double> probabilities = tester.loadNgramMap(tester.TRIGRAM_MAP_PATH);
 		assertTrue(probabilities.keySet().size() == 17556);
 		assertEquals(Math.pow(10, probabilities.get("the")) * 4274127909d, 77534223d, 0.077534223);
 		// Tests that it can resolve frequencies to order E-9 accuracy by

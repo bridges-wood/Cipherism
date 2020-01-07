@@ -9,11 +9,11 @@ static Utilities u = new Utilities();
 		u.generateHashMap(u.DICTIONARY_TEXT_PATH, u.DICTIONARY_HASH_PATH);
 		u.generateHashMap(u.BIGRAM_WORD_TEXT_PATH, u.BIGRAM_WORD_HASH_PATH);
 		u.generateLetterFrequencies(u.LETTER_FREQUENCIES_TEXT_PATH, u.LETTER_FREQUENCIES_MAP_PATH);
-		u.generateNGramMap(1, u.MONOGRAM_MAP_PATH);
-		u.generateNGramMap(2, u.BIGRAM_MAP_PATH);
-		u.generateNGramMap(3, u.TRIGRAM_MAP_PATH);
-		u.generateNGramMap(4, u.QUADGRAM_MAP_PATH);
-		u.generateNGramMap(4, u.PENTAGRAM_MAP_PATH);
+		u.generateNGramMap(u.MONOGRAM_TEXT_PATH, u.MONOGRAM_MAP_PATH, false);
+		u.generateNGramMap(u.BIGRAM_TEXT_PATH, u.BIGRAM_MAP_PATH, false);
+		u.generateNGramMap(u.TRIGRAM_TEXT_PATH, u.TRIGRAM_MAP_PATH, false);
+		u.generateNGramMap(u.QUADGRAM_TEXT_PATH, u.QUADGRAM_MAP_PATH, false);
+		u.generateNGramMap(u.PENTAGRAM_TEXT_PATH, u.PENTAGRAM_MAP_PATH, false);
 		//u.generateHashTable(filename, outputFilename);
 	}
 

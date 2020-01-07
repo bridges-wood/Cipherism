@@ -11,16 +11,14 @@ public class NGramAnalyser {
 	private final TreeMap<String, Double> TRIGRAMS;
 	private final TreeMap<String, Double> QUADGRAMS;
 	private final TreeMap<String, Double> PENTAGRAMS;
-	private Utilities u;
 
 	public NGramAnalyser(Utilities u) {
 		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
-		this.u = u;
-		this.MONOGRAMS = u.loadNgramMap(1);
-		this.BIGRAMS = u.loadNgramMap(2);
-		this.TRIGRAMS = u.loadNgramMap(3);
-		this.QUADGRAMS = u.loadNgramMap(4);
-		this.PENTAGRAMS = u.loadNgramMap(5);
+		this.MONOGRAMS = u.loadNgramMap(u.MONOGRAM_MAP_PATH);
+		this.BIGRAMS = u.loadNgramMap(u.BIGRAM_MAP_PATH);
+		this.TRIGRAMS = u.loadNgramMap(u.TRIGRAM_MAP_PATH);
+		this.QUADGRAMS = u.loadNgramMap(u.QUADGRAM_MAP_PATH);
+		this.PENTAGRAMS = u.loadNgramMap(u.PENTAGRAM_MAP_PATH);
 	}
 
 	/**
@@ -150,7 +148,26 @@ public class NGramAnalyser {
 	 */
 	public double computeScore(int n, String text, boolean perGram) {
 		double score = 0;
-		TreeMap<String, Double> ngrams = u.loadNgramMap(n);
+		TreeMap<String, Double> ngrams = new TreeMap<String, Double>();
+		switch (n) {
+		case 1:
+			ngrams = this.getMONOGRAMS();
+			break;
+		case 2:
+			ngrams = this.getBIGRAMS();
+			break;
+		case 3:
+			ngrams = this.getTRIGRAMS();
+			break;
+		case 4:
+			ngrams = this.getQUADGRAMS();
+			break;
+		case 5:
+			ngrams = this.getPENTAGRAMS();
+			break;
+		default:
+			throw new IllegalArgumentException("Improper value of n.");
+		}
 		char[] letters = text.toCharArray();
 		for (int i = 0; i <= letters.length - n; i++) {// Assures we can get the most number of ngrams without
 														// overflow.

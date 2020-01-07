@@ -224,27 +224,10 @@ public class Utilities {
 	 * 
 	 * @param size The number of letters to be examined for.
 	 */
-	public void generateNGramMap(int size, String outputFilename) {
+	public void generateNGramMap(String filename, String outputFilename, boolean characters) {
 		File toFile = new File(outputFilename);
 		TreeMap<String, Double> chances = new TreeMap<String, Double>();
-		String[] lines = null;
-		switch (size) { // Load the file that we're interested in.
-		case 1:
-			lines = readFile(MONOGRAM_TEXT_PATH);
-			break;
-		case 2:
-			lines = readFile(BIGRAM_TEXT_PATH);
-			break;
-		case 3:
-			lines = readFile(TRIGRAM_TEXT_PATH);
-			break;
-		case 4:
-			lines = readFile(QUADGRAM_TEXT_PATH);
-			break;
-		case 5:
-			lines = readFile(PENTAGRAM_TEXT_PATH);
-			break;
-		}
+		String[] lines = this.readFile(filename);
 		double total = 0d;
 		for (String line : lines) {
 			String[] splitLine = line.split(",");
@@ -253,9 +236,14 @@ public class Utilities {
 		}
 		System.out.println(total);
 		for (String key : chances.keySet()) {
-			Double toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
-																	// numerical underflow when operating
-																	// with such small probabilities.
+			Double toInsert = 0d;
+			if (characters) {
+				toInsert = chances.get(key) / total;
+			} else {
+				toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
+																		// numerical underflow when operating
+																		// with such small probabilities.
+			}
 			chances.put(key, toInsert);
 		}
 		try {
@@ -274,25 +262,8 @@ public class Utilities {
 	 * 
 	 * @param size The number of letters to be examined for.
 	 */
-	public TreeMap<String, Double> loadNgramMap(int size) {
-		File location = null;
-		switch (size) {
-		case 1:
-			location = new File(this.MONOGRAM_MAP_PATH);
-			break;
-		case 2:
-			location = new File(this.BIGRAM_MAP_PATH);
-			break;
-		case 3:
-			location = new File(this.TRIGRAM_MAP_PATH);
-			break;
-		case 4:
-			location = new File(this.QUADGRAM_MAP_PATH);
-			break;
-		case 5:
-			location = new File(this.PENTAGRAM_MAP_PATH);
-			break;
-		}
+	public TreeMap<String, Double> loadNgramMap(String filename) {
+		File location = new File(filename);
 		try {
 			Input in = new Input(new FileInputStream(location));
 			return (TreeMap<String, Double>) kyro.readClassAndObject(in);
@@ -302,8 +273,8 @@ public class Utilities {
 		return null;
 	}
 
-	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm(){
-		//TODO create saver and loader for character index form 
+	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm() {
+		// TODO create saver and loader for character index form
 		return null;
 	}
 }

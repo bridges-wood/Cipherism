@@ -8,7 +8,7 @@ public class CipherBreakers {
 	private Vigenere v;
 	private ProbableSubstitutions p;
 	private NGramAnalyser n;
-	private Substitution s;
+	private Substitution s; 
 
 	public CipherBreakers(Utilities u, KasiskiExamination k, DetectEnglish d, ProbableSubstitutions p,
 			NGramAnalyser n) {
