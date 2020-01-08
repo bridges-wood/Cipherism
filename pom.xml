@@ -38,5 +38,6 @@
 			<artifactId>kryo</artifactId>
 			<version>5.0.0-RC4</version>
 		</dependency>
+
 	</dependencies>
 </project>
