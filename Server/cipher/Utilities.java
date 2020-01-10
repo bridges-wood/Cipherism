@@ -231,8 +231,19 @@ public class Utilities {
 		double total = 0d;
 		for (String line : lines) {
 			String[] splitLine = line.split(",");
+			if(characters) {
 			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
 			total += Double.valueOf(splitLine[1]);
+			} else {
+				StringBuilder nGram = new StringBuilder();
+				for(int i = 0; i < splitLine.length - 1; i++) {
+					nGram.append(splitLine[i] + ",");
+				}
+				nGram.deleteCharAt(nGram.length() - 1);
+				double toInsert = Double.valueOf(lines[lines.length - 1]);
+				chances.put(nGram.toString(), Double.valueOf(toInsert));
+				total += toInsert;
+			}
 		}
 		System.out.println(total);
 		for (String key : chances.keySet()) {
