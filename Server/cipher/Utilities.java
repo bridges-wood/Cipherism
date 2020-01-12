@@ -20,26 +20,52 @@ import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {
 
+	// TODO insure generation and paths of nGram maps are stored.
+
+	// Hashed dictionary and bi-gram files.
 	public final String DICTIONARY_HASH_PATH = "src/main/resources/dictionary.htb";
 	public final String DICTIONARY_TEXT_PATH = "src/main/resources/dictionary.txt";
 	public final String BIGRAM_WORD_HASH_PATH = "src/main/resources/2grams.htb";
 	public final String BIGRAM_WORD_TEXT_PATH = "src/main/resources/2grams.txt";
+
+	// Words in frequency order but with no occurrences.
 	public final String TRIGRAM_WORD_TEXT_PATH = "src/main/resources/3grams.txt";
 	public final String QUADGRAM_WORD_TEXT_PATH = "src/main/resources/4grams.txt";
 	public final String PENTAGRAM_WORD_TEXT_PATH = "src/main/resources/5grams.txt";
+
+	// Words in frequency order with occurrences.
+	public final String MONOGRAM_COUNTS_PATH = "src/main/resources/1gramsFrequencies.txt";
+	public final String BIGRAM_COUNTS_PATH = "src/main/resources/2gramsFrequencies.txt";
+	public final String TRIGRAM_COUNTS_PATH = "src/main/resources/3gramsFrequencies.txt";
+	public final String QUADGRAM_COUNTS_PATH = "src/main/resources/4gramsFrequencies.txt";
+	public final String PENTAGRAM_COUNTS_PATH = "src/main/resources/5gramsFrequencies.txt";
+
+	// Maps corresponding to above files.
+	public final String MONOGRAM_COUNTS_MAP_PATH = "src/main/resources/1gramsFrequencies.tmp";
+	public final String BIGRAM_COUNTS_MAP_PATH = "src/main/resources/2gramsFrequencies.tmp";
+	public final String TRIGRAM_COUNTS_MAP_PATH = "src/main/resources/3gramsFrequencies.tmp";
+	public final String QUADGRAM_COUNTS_MAP_PATH = "src/main/resources/4gramsFrequencies.tmp";
+	public final String PENTAGRAM_COUNTS_MAP_PATH = "src/main/resources/5gramsFrequencies.tmp";
+
+	// Characters in frequency order with occurrences.
 	public final String MONOGRAM_TEXT_PATH = "src/main/resources/1l.txt";
 	public final String BIGRAM_TEXT_PATH = "src/main/resources/2l.txt";
 	public final String TRIGRAM_TEXT_PATH = "src/main/resources/3l.txt";
 	public final String QUADGRAM_TEXT_PATH = "src/main/resources/4l.txt";
 	public final String PENTAGRAM_TEXT_PATH = "src/main/resources/5l.txt";
+
+	// Maps corresponding to above files.
 	public final String MONOGRAM_MAP_PATH = "src/main/resources/1l.tmp";
 	public final String BIGRAM_MAP_PATH = "src/main/resources/2l.tmp";
 	public final String TRIGRAM_MAP_PATH = "src/main/resources/3l.tmp";
 	public final String QUADGRAM_MAP_PATH = "src/main/resources/4l.tmp";
 	public final String PENTAGRAM_MAP_PATH = "src/main/resources/5l.tmp";
+
+	// Other relevant files.
 	public final String MOST_PROBABLE_TEXT_PATH = "src/main/resources/mostProbable.txt";
 	public final String LETTER_FREQUENCIES_TEXT_PATH = "src/main/resources/letterFrequencies.txt";
 	public final String LETTER_FREQUENCIES_MAP_PATH = "src/main/resources/letterFrequencies.tmp";
+
 	private final long FNV1_64_INIT = 0xcbf29ce484222325L;
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();
@@ -57,7 +83,7 @@ public class Utilities {
 	 * @return A string array of each line in the file.
 	 */
 	public String[] readFile(String filename) {
-		List<String> words = new LinkedList<String>();
+		List<String> lines = new LinkedList<String>();
 		File file = new File(filename);
 		try {
 			BufferedReader br = new BufferedReader(
@@ -68,7 +94,7 @@ public class Utilities {
 				 * Avoids having a NullPointerException as we automatically detect once the end
 				 * of the file has been reached.
 				 */
-				words.add(line);
+				lines.add(line);
 			}
 			br.close();
 		} catch (FileNotFoundException f) {
@@ -76,7 +102,7 @@ public class Utilities {
 		} catch (IOException e) {
 			System.err.println("Buffered reader failed to read file correctly.");
 		}
-		return words.parallelStream().toArray(String[]::new); // Fastest possible encoding to array.
+		return lines.parallelStream().toArray(String[]::new); // Fastest possible encoding to array.
 	}
 
 	/**
@@ -224,23 +250,25 @@ public class Utilities {
 	 * 
 	 * @param size The number of letters to be examined for.
 	 */
-	public void generateNGramMap(String filename, String outputFilename, boolean characters) {
+	public void generateNGramMap(String filename, String outputFilename, boolean characters, boolean log) {
 		File toFile = new File(outputFilename);
 		TreeMap<String, Double> chances = new TreeMap<String, Double>();
 		String[] lines = this.readFile(filename);
 		double total = 0d;
 		for (String line : lines) {
 			String[] splitLine = line.split(",");
-			if(characters) {
-			chances.put(splitLine[0], Double.valueOf(splitLine[1]));
-			total += Double.valueOf(splitLine[1]);
+			if (characters) {
+				chances.put(splitLine[0], Double.valueOf(splitLine[1]));
+				total += Double.valueOf(splitLine[1]);
 			} else {
 				StringBuilder nGram = new StringBuilder();
-				for(int i = 0; i < splitLine.length - 1; i++) {
+				for (int i = 0; i < splitLine.length - 1; i++) {
 					nGram.append(splitLine[i] + ",");
 				}
 				nGram.deleteCharAt(nGram.length() - 1);
-				double toInsert = Double.valueOf(lines[lines.length - 1]);
+				System.out.println(nGram.toString());
+				System.out.println(splitLine[splitLine.length - 1]);
+				double toInsert = Double.valueOf(splitLine[splitLine.length - 1]);
 				chances.put(nGram.toString(), Double.valueOf(toInsert));
 				total += toInsert;
 			}
@@ -248,12 +276,12 @@ public class Utilities {
 		System.out.println(total);
 		for (String key : chances.keySet()) {
 			Double toInsert = 0d;
-			if (characters) {
+			if (!log) {
 				toInsert = chances.get(key) / total;
 			} else {
 				toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
-																		// numerical underflow when operating
-																		// with such small probabilities.
+																	// numerical underflow when operating
+																	// with such small probabilities.
 			}
 			chances.put(key, toInsert);
 		}

@@ -23,8 +23,14 @@ public class SubstitutionTreeSearch {
 
 	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey) {
 		this.s = s;
+		Utilities u = new Utilities();
 		this.ORIGIN = new SearchNode(0, initialKey, null);
-		// TODO load in all maps.
+		C1 = u.loadNgramMap();
+		C2 = u.loadNgramMap();
+		C3 = u.loadNgramMap();
+		W1 = u.loadNgramMap();
+		W2 = u.loadNgramMap();
+		W3 = u.loadNgramMap();
 		generateCLambdas();
 		generateWLambdas();
 	}
