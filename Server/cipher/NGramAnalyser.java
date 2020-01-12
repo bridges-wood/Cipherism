@@ -14,11 +14,11 @@ public class NGramAnalyser {
 
 	public NGramAnalyser(Utilities u) {
 		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
-		this.MONOGRAMS = u.loadNgramMap(u.MONOGRAM_MAP_PATH);
-		this.BIGRAMS = u.loadNgramMap(u.BIGRAM_MAP_PATH);
-		this.TRIGRAMS = u.loadNgramMap(u.TRIGRAM_MAP_PATH);
-		this.QUADGRAMS = u.loadNgramMap(u.QUADGRAM_MAP_PATH);
-		this.PENTAGRAMS = u.loadNgramMap(u.PENTAGRAM_MAP_PATH);
+		this.MONOGRAMS = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
+		this.BIGRAMS = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
+		this.TRIGRAMS = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
+		this.QUADGRAMS = u.loadNgramMap(u.QUADGRAM_LOG_MAP_PATH);
+		this.PENTAGRAMS = u.loadNgramMap(u.PENTAGRAM_LOG_MAP_PATH);
 	}
 
 	/**

@@ -25,12 +25,14 @@ public class SubstitutionTreeSearch {
 		this.s = s;
 		Utilities u = new Utilities();
 		this.ORIGIN = new SearchNode(0, initialKey, null);
-		C1 = u.loadNgramMap();
-		C2 = u.loadNgramMap();
-		C3 = u.loadNgramMap();
-		W1 = u.loadNgramMap();
-		W2 = u.loadNgramMap();
-		W3 = u.loadNgramMap();
+		C1 = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
+		C2 = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
+		C3 = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
+		W1 = u.loadNgramMap(u.MONOGRAM_COUNTS_MAP_PATH);
+		W2 = u.loadNgramMap(u.BIGRAM_COUNTS_MAP_PATH);
+		W3 = u.loadNgramMap(u.TRIGRAM_COUNTS_PATH);
+		Nc = 4.374127904E9;
+		Nw = 5.80296995127E11;
 		generateCLambdas();
 		generateWLambdas();
 	}

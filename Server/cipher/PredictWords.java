@@ -1,6 +1,7 @@
 package cipher;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PredictWords {
@@ -23,7 +24,7 @@ public class PredictWords {
 	 */
 	public String[] predictedWords(String word) {
 		// TODO speed up this method by using a bucketed hashtable for each encoding.
-		String encodedForm = encodeWord(word);
+		Integer[] encodedForm = encodeWord(word);
 		List<String> possibleWords = new ArrayList<String>();
 		String[] lines;
 		lines = u.readFile(u.DICTIONARY_TEXT_PATH);
@@ -44,8 +45,8 @@ public class PredictWords {
 	 * @param word The string to be encoded with the character index system.
 	 * @return The encoded string in character index form.
 	 */
-	public String encodeWord(String word) {
-		StringBuilder sb = new StringBuilder(); // Create output String.
+	public Integer[] encodeWord(String word) {
+		List<Integer> encoding = new LinkedList<Integer>(); // Create output array.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.
 		for (int i = 0; i < word.length(); i++) {
@@ -53,9 +54,9 @@ public class PredictWords {
 			if (!seen.contains(letter)) { // If the letter has been seen before...
 				seen.add(letter);
 			}
-			sb.append(seen.indexOf(letter)); // Encode the letter in the output array.
+			encoding.add(seen.indexOf(letter)); // Encode the letter in the output array.
 		}
-		return sb.toString();
+		return encoding.toArray(new Integer[encoding.size()]);
 	}
 
 	/**
@@ -64,23 +65,61 @@ public class PredictWords {
 	 * @param phrase The string to be encoded with the character index system.
 	 * @return the encoded string in character index form.
 	 */
-	public String[] encodePhrase(String[] phrase) {
-		String[] encodedPhrase = new String[phrase.length]; // Create output array.
+	public Integer[][] encodePhrase(String[] phrase) {
+		Integer[][] encodedPhrase = new Integer[phrase.length][]; // Create output array.
 		ArrayList<Character> seen = new ArrayList<Character>(); // Create a list to determine which characters have been
 																// seen before to avoid mis-encoding.
-		for(int i = 0; i < phrase.length; i++) {
-			//For each word...
+		for (int i = 0; i < phrase.length; i++) {
+			// For each word...
 			String word = phrase[i];
-			StringBuilder encoded = new StringBuilder();
-			for(int j = 0; j < word.length(); j++) {
+			List<Integer> encoding = new LinkedList<Integer>();
+			for (int j = 0; j < word.length(); j++) {
 				char letter = word.charAt(j);
 				if (!seen.contains(letter)) { // If the letter has been seen before...
 					seen.add(letter);
 				}
-				encoded.append(seen.indexOf(letter));
+				encoding.add(seen.indexOf(letter));
 			}
-			encodedPhrase[i] = encoded.toString();
+			encodedPhrase[i] = encoding.toArray(new Integer[encoding.size()]);
 		}
 		return encodedPhrase;
+	}
+
+	/**
+	 * Encodes a phrase in character-index-form to a single int array.
+	 * 
+	 * @param integers A phrase encoded in character index form.
+	 * @return An int array describing the square array.
+	 */
+	public Integer[] toLinear(Integer[][] integers) {
+		List<Integer> linear = new LinkedList<Integer>();
+		for (Integer[] arr : integers) {
+			for (int val : arr) {
+				linear.add(val);
+			}
+			linear.add(-1);
+		}
+		return linear.toArray(new Integer[linear.size()]);
+	}
+
+	/**
+	 * Decodes a character-index-form linear array to a 2D array.
+	 * 
+	 * @param linear The linear array to be turned into a 2D array.
+	 * @return A 2D array representing the encoded phrase.
+	 */
+	public Integer[][] toSquare(Integer[] linear) {
+		List<LinkedList<Integer>> square = new LinkedList<LinkedList<Integer>>();
+		LinkedList<Integer> row = new LinkedList<Integer>();
+		for (int val : linear) {
+			if (val != -1) {
+				row.add(val);
+			} else {
+				square.add(row);
+				row.clear();
+				continue;
+			}
+		}
+		return square.parallelStream().map(value -> new Integer[0]).toArray(Integer[][]::new);
 	}
 }

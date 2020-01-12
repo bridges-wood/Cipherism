@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +34,13 @@ public class Utilities {
 	public final String QUADGRAM_WORD_TEXT_PATH = "src/main/resources/4grams.txt";
 	public final String PENTAGRAM_WORD_TEXT_PATH = "src/main/resources/5grams.txt";
 
+	// Character-index-form maps.
+	public final String MONOGRAM_CIF_PATH = "src/main/resources/1gramsMap.cif";
+	public final String BIGRAM_CIF_PATH = "src/main/resources/2gramsMap.cif";
+	public final String TRIGRAM_CIF_PATH = "src/main/resources/3gramsMap.cif";
+	public final String QUADGRAM_CIF_PATH = "src/main/resources/4gramsMap.cif";
+	public final String PENTAGRAM_CIF_PATH = "src/main/resources/5gramsMap.cif";
+
 	// Words in frequency order with occurrences.
 	public final String MONOGRAM_COUNTS_PATH = "src/main/resources/1gramsFrequencies.txt";
 	public final String BIGRAM_COUNTS_PATH = "src/main/resources/2gramsFrequencies.txt";
@@ -54,7 +62,14 @@ public class Utilities {
 	public final String QUADGRAM_TEXT_PATH = "src/main/resources/4l.txt";
 	public final String PENTAGRAM_TEXT_PATH = "src/main/resources/5l.txt";
 
-	// Maps corresponding to above files.
+	// Maps corresponding to above files with log probabilities.
+	public final String MONOGRAM_LOG_MAP_PATH = "src/main/resources/1l.ltmp";
+	public final String BIGRAM_LOG_MAP_PATH = "src/main/resources/2l.ltmp";
+	public final String TRIGRAM_LOG_MAP_PATH = "src/main/resources/3l.ltmp";
+	public final String QUADGRAM_LOG_MAP_PATH = "src/main/resources/4l.ltmp";
+	public final String PENTAGRAM_LOG_MAP_PATH = "src/main/resources/5l.ltmp";
+
+	// Maps corresponding to above files with direct probabilities.
 	public final String MONOGRAM_MAP_PATH = "src/main/resources/1l.tmp";
 	public final String BIGRAM_MAP_PATH = "src/main/resources/2l.tmp";
 	public final String TRIGRAM_MAP_PATH = "src/main/resources/3l.tmp";
@@ -74,6 +89,7 @@ public class Utilities {
 		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
 		kyro.register(new TreeMap<String, Double>().getClass());
+		kyro.register(new TreeMap<List<Integer>, LinkedList<String>>().getClass());
 	}
 
 	/**
@@ -87,7 +103,7 @@ public class Utilities {
 		File file = new File(filename);
 		try {
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(new FileInputStream(file), StandardCharsets.US_ASCII));
+					new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 			String line;
 			while ((line = br.readLine()) != null) {
 				/*
@@ -266,14 +282,11 @@ public class Utilities {
 					nGram.append(splitLine[i] + ",");
 				}
 				nGram.deleteCharAt(nGram.length() - 1);
-				System.out.println(nGram.toString());
-				System.out.println(splitLine[splitLine.length - 1]);
 				double toInsert = Double.valueOf(splitLine[splitLine.length - 1]);
 				chances.put(nGram.toString(), Double.valueOf(toInsert));
 				total += toInsert;
 			}
 		}
-		System.out.println(total);
 		for (String key : chances.keySet()) {
 			Double toInsert = 0d;
 			if (!log) {
@@ -312,8 +325,46 @@ public class Utilities {
 		return null;
 	}
 
-	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm() {
-		// TODO create saver and loader for character index form
+	public TreeMap<List<Integer>, LinkedList<String>> loadCharacterIndexForm(String filename) {
+		File inFile = new File(filename);
+		try {
+			Input in = new Input(new FileInputStream(inFile));
+			return (TreeMap<List<Integer>, LinkedList<String>>) kyro.readClassAndObject(in);
+		} catch (FileNotFoundException e) {
+			System.err.println("Character-Index-Form Map to be loaded not found.");
+		}
 		return null;
 	}
+
+	public void generateCharacterIndexFormMap(String filename, String outputFilename) {
+
+		// TODO encode int[] as a string in a decodeable way..
+		TreeMap<List<Integer>, LinkedList<String>> map = new TreeMap<List<Integer>, LinkedList<String>>();
+		File toFile = new File(outputFilename);
+		PredictWords p = new PredictWords(this);
+		String[] lines = this.readFile(filename);
+		for (String line : lines) {
+			List<Integer> key;
+			if (line.contains(",")) {
+				key = Arrays.asList(p.toLinear(p.encodePhrase(line.split("s"))));
+			} else {
+				key = Arrays.asList(p.encodeWord(line));
+			}
+			if (map.containsKey(Arrays.asList(key))) {
+				map.get(key).add(line);
+			} else {
+				LinkedList<String> toPut = new LinkedList<String>();
+				toPut.add(line);
+				map.put(key, toPut);
+			}
+		}
+		try {
+			Output out = new Output(new FileOutputStream(toFile));
+			kyro.writeClassAndObject(out, map);
+			out.close();
+		} catch (FileNotFoundException f) {
+			System.err.println("Location for Character-Index-Form Map to stored could nto be reached.");
+		}
+	}
+
 }
