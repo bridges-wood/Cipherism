@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +88,7 @@ public class Utilities {
 		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
 		kyro.register(new TreeMap<String, Double>().getClass());
-		kyro.register(new TreeMap<List<Integer>, LinkedList<String>>().getClass());
+		kyro.register(new TreeMap<String, LinkedList<String>>().getClass());
 	}
 
 	/**
@@ -337,25 +336,24 @@ public class Utilities {
 	}
 
 	public void generateCharacterIndexFormMap(String filename, String outputFilename) {
-
-		// TODO encode int[] as a string in a decodeable way..
-		TreeMap<List<Integer>, LinkedList<String>> map = new TreeMap<List<Integer>, LinkedList<String>>();
+		TreeMap<String, LinkedList<String>> map = new TreeMap<String, LinkedList<String>>();
 		File toFile = new File(outputFilename);
 		PredictWords p = new PredictWords(this);
 		String[] lines = this.readFile(filename);
 		for (String line : lines) {
-			List<Integer> key;
+			Integer[] key;
 			if (line.contains(",")) {
-				key = Arrays.asList(p.toLinear(p.encodePhrase(line.split("s"))));
+				key = p.toLinear(p.encodePhrase(line.split("s")));
 			} else {
-				key = Arrays.asList(p.encodeWord(line));
+				key = p.encodeWord(line);
 			}
-			if (map.containsKey(Arrays.asList(key))) {
-				map.get(key).add(line);
+			String keyS = p.toString(key);
+			if (map.containsKey(keyS)) {
+				map.get(keyS).add(line);
 			} else {
 				LinkedList<String> toPut = new LinkedList<String>();
 				toPut.add(line);
-				map.put(key, toPut);
+				map.put(p.toString(key), toPut);
 			}
 		}
 		try {

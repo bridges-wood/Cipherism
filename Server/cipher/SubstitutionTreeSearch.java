@@ -1,5 +1,9 @@
 package cipher;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 
 public class SubstitutionTreeSearch {
@@ -172,5 +176,60 @@ public class SubstitutionTreeSearch {
 			}
 		}
 		return score;
+	}
+
+	public List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
+		int counter = 0;
+		int k = 8;
+		while (counter < k) {
+
+		}
+		return null;
+	}
+
+	public LinkedList<String> bestPEquivalentNGrams(String cipherText, int n) {
+		String[] words = cipherText.split(" ");
+		LinkedList<String> nGrams = new LinkedList<String>();
+		for(int i = n - 1; i < words.length; i++) {
+			StringBuilder nGram = new StringBuilder();
+			for(int j = i - (n-1); j < i; j++) {
+				nGram.append(words[j] + " ");
+			}
+			nGrams.add(nGram.toString().substring(0, nGram.length() - 2));
+		}
+		// TODO For each nGram generated, generate a list of p equivalent n grams.
+		// Assess those subject to score.
+		return null;
+	}
+
+	public int HammingDistance(Mapping[] a, Mapping[] b) {
+		ArrayList<Mapping> aList = (ArrayList<Mapping>) Arrays.asList(a);
+		ArrayList<Mapping> bList = (ArrayList<Mapping>) Arrays.asList(b);
+		int distance = 0;
+		for (int i = 0; i < 26; i++) {
+			Mapping aM = aList.get(i);
+			if (!bList.contains(aM)) {
+				distance++;
+			}
+		}
+		return distance;
+	}
+
+	private class scoredNgram {
+		private final String nGram;
+		private final double score;
+
+		public scoredNgram(String nGram, double score) {
+			this.nGram = nGram;
+			this.score = score;
+		}
+
+		public String getnGram() {
+			return nGram;
+		}
+
+		public double getScore() {
+			return score;
+		}
 	}
 }

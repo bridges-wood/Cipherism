@@ -1,8 +1,10 @@
 package cipher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PredictWords {
 
@@ -121,5 +123,20 @@ public class PredictWords {
 			}
 		}
 		return square.parallelStream().map(value -> new Integer[0]).toArray(Integer[][]::new);
+	}
+	
+	public String toString(Integer[] arr) {
+		StringBuilder sb = new StringBuilder();
+		for(Integer val : arr) {
+			sb.append(String.valueOf(val) + ",");
+		}
+		String out = sb.toString();
+		out.substring(0, out.length() - 2);
+		return out;
+	}
+	
+	public Integer[] toArr(String str) {
+		int[] intermediate = Stream.of(str.split(",")).mapToInt(Integer::valueOf).toArray();
+		return Arrays.stream(intermediate).boxed().toArray(Integer[]::new);
 	}
 }
