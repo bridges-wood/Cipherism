@@ -16,7 +16,7 @@ import cipher.Utilities;
 public class MultiLemmaAnalysisTest {
 
 	private Utilities u = new Utilities();
-	private PredictWords p = new PredictWords(u);
+	private PredictWords p = new PredictWords();
 	private MultiLemmaAnalysis tester = new MultiLemmaAnalysis(u, p);
 	private Substitution s = new Substitution();
 	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");

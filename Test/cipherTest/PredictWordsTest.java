@@ -10,12 +10,10 @@ import org.junit.Test;
 import cipher.Mapping;
 import cipher.PredictWords;
 import cipher.Substitution;
-import cipher.Utilities;
 
 public class PredictWordsTest {
 
-	private Utilities u = new Utilities();
-	private PredictWords tester = new PredictWords(u);
+	private PredictWords tester = new PredictWords();
 	private Substitution s = new Substitution();
 	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
 
@@ -36,7 +34,7 @@ public class PredictWordsTest {
 
 	@Test
 	public void testEncodePhrase() {
-		assertArrayEquals(new String[] {"0120", "3421"}, tester.encodePhrase("test case".split(" ")));
+		assertArrayEquals(new String[] { "0120", "3421" }, tester.encodePhrase("test case".split(" ")));
 	}
 
 }

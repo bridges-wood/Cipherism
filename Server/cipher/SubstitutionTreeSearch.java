@@ -16,11 +16,13 @@ public class SubstitutionTreeSearch {
 	private final TreeMap<String, LinkedList<String>> words1, words2, words3;
 	private double Nc; // Number of letters in the corpus.
 	private double Nw; // Number of words in the corpus.
+	private final int POOL_SIZE = 8;
+	private final int K = 5;
 
 	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey) {
 		this.s = s;
 		Utilities u = new Utilities();
-		this.p = new PredictWords(u);
+		this.p = new PredictWords();
 		this.ORIGIN = new SearchNode(0, initialKey, null);
 		C1 = u.loadNgramMap(u.MONOGRAM_MAP_PATH);
 		C2 = u.loadNgramMap(u.BIGRAM_MAP_PATH);
@@ -200,13 +202,17 @@ public class SubstitutionTreeSearch {
 	 * @param parentKey  The key on which the mutations are based on. This provides
 	 *                   some categorisation within the search tree,
 	 * @return A list of mutated keys.
+	 * @throws Exception
 	 */
 	public List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
-		int counter = 0;
-		int k = 8;
-		while (counter < k) {
-
+		scoredNgram[] bestNgrams = new scoredNgram[POOL_SIZE];
+		for (int i = 1; i < 4; i++) {
+			scoredNgram[] subGrams = bestPEquivalentNGrams(cipherText, i, POOL_SIZE);
+			for (scoredNgram NGram : subGrams) {
+				bestNgrams = replaceIfBetter(bestNgrams, NGram);
+			}
 		}
+
 		return null;
 	}
 
@@ -247,7 +253,7 @@ public class SubstitutionTreeSearch {
 				break;
 			}
 			for (String pEquivalent : pEquivalents) {
-				replaceIfBetter(bestnGrams, new scoredNgram(pEquivalent, wordScore(pEquivalent)));
+				replaceIfBetter(bestnGrams, new scoredNgram(toSearch, pEquivalent, wordScore(pEquivalent)));
 			}
 		}
 		return bestnGrams;
@@ -283,11 +289,16 @@ public class SubstitutionTreeSearch {
 	 * @return The array of the best scored nGrams, with or without replacement.
 	 */
 	public scoredNgram[] replaceIfBetter(scoredNgram[] bestNgrams, scoredNgram toTest) {
-		// TODO optimise this in order.
+		boolean greaterThanLast = false;
 		for (int i = 0; i < bestNgrams.length; i++) {
+			if (greaterThanLast) {
+				if (toTest.score < bestNgrams[i].getScore()) {
+					bestNgrams[i - 1] = toTest;
+					break;
+				}
+			}
 			if (toTest.score > bestNgrams[i].getScore()) {
-				bestNgrams[i] = toTest;
-				break;
+				greaterThanLast = true;
 			}
 		}
 		return bestNgrams;
@@ -309,18 +320,24 @@ public class SubstitutionTreeSearch {
 	}
 
 	/**
+	 * A class to contain an nGram and its score in the same place to facilitate
+	 * easy comparison.
+	 * 
 	 * @author woodmb
-	 *
-	 *         A class to contain an nGram and its score in the same place to
-	 *         facilitate easy comparison.
 	 */
 	private class scoredNgram {
+		private final String textSource;
 		private final String nGram;
 		private final double score;
 
-		public scoredNgram(String nGram, double score) {
+		public scoredNgram(String textSource, String nGram, double score) {
+			this.textSource = textSource;
 			this.nGram = nGram;
 			this.score = score;
+		}
+
+		public String getTextSource() {
+			return textSource;
 		}
 
 		public String getnGram() {

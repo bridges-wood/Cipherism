@@ -20,8 +20,6 @@ import com.esotericsoftware.kryo.io.Output;
 
 public class Utilities {
 
-	// TODO insure generation and paths of nGram maps are stored.
-
 	// Hashed dictionary and bi-gram files.
 	public final String DICTIONARY_HASH_PATH = "src/main/resources/dictionary.htb";
 	public final String DICTIONARY_TEXT_PATH = "src/main/resources/dictionary.txt";
@@ -83,6 +81,7 @@ public class Utilities {
 	private final long FNV1_64_INIT = 0xcbf29ce484222325L;
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();
+
 	public Utilities() {
 		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
@@ -337,7 +336,7 @@ public class Utilities {
 	public void generateCharacterIndexFormMap(String filename, String outputFilename) {
 		TreeMap<String, LinkedList<String>> map = new TreeMap<String, LinkedList<String>>();
 		File toFile = new File(outputFilename);
-		PredictWords p = new PredictWords(this);
+		PredictWords p = new PredictWords();
 		String[] lines = this.readFile(filename);
 		for (String line : lines) {
 			Integer[] key;

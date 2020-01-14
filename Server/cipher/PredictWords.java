@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class PredictWords {
 
-	private Utilities u;
+	private final TreeMap<String, LinkedList<String>> words;
 
-	public PredictWords(Utilities u) {
-		this.u = u;
+	public PredictWords() {
+		Utilities u = new Utilities();
+		words = u.loadCharacterIndexForm(u.MONOGRAM_CIF_PATH);
 	}
 
 	/**
@@ -25,18 +27,10 @@ public class PredictWords {
 	 *         could be.
 	 */
 	public String[] predictedWords(String word) {
-		// TODO speed up this method by using a bucketed hashtable for each encoding.
 		Integer[] encodedForm = encodeWord(word);
-		List<String> possibleWords = new ArrayList<String>();
-		String[] lines;
-		lines = u.readFile(u.DICTIONARY_TEXT_PATH);
-		for (String line : lines) {
-			if (line.length() == word.length()) {// If the lengths match... (This is to thin the field examined and
-													// speed up access times).
-				if (encodedForm.equals(encodeWord(line))) { // If the encoded forms match...
-					possibleWords.add(line);
-				}
-			}
+		List<String> possibleWords = new LinkedList<String>();
+		if (words.containsKey(toString(encodedForm))) {
+			possibleWords = words.get(toString(encodedForm));
 		}
 		return possibleWords.toArray(new String[0]);
 	}
@@ -124,17 +118,17 @@ public class PredictWords {
 		}
 		return square.parallelStream().map(value -> new Integer[0]).toArray(Integer[][]::new);
 	}
-	
+
 	public String toString(Integer[] arr) {
 		StringBuilder sb = new StringBuilder();
-		for(Integer val : arr) {
+		for (Integer val : arr) {
 			sb.append(String.valueOf(val) + ",");
 		}
 		String out = sb.toString();
 		out.substring(0, out.length() - 2);
 		return out;
 	}
-	
+
 	public Integer[] toArr(String str) {
 		int[] intermediate = Stream.of(str.split(",")).mapToInt(Integer::valueOf).toArray();
 		return Arrays.stream(intermediate).boxed().toArray(Integer[]::new);
