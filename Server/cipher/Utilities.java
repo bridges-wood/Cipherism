@@ -83,11 +83,11 @@ public class Utilities {
 	private final long FNV1_64_INIT = 0xcbf29ce484222325L;
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();
-
 	public Utilities() {
 		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
 		kyro.register(new TreeMap<String, Double>().getClass());
+		kyro.register(new LinkedList<String>().getClass());
 		kyro.register(new TreeMap<String, LinkedList<String>>().getClass());
 	}
 
@@ -138,7 +138,6 @@ public class Utilities {
 			hash ^= (data[i] & 0xff); // XOR
 			hash *= FNV1_PRIME_64; // Multiply
 		}
-
 		return hash;
 	}
 
@@ -324,11 +323,11 @@ public class Utilities {
 		return null;
 	}
 
-	public TreeMap<List<Integer>, LinkedList<String>> loadCharacterIndexForm(String filename) {
+	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm(String filename) {
 		File inFile = new File(filename);
 		try {
 			Input in = new Input(new FileInputStream(inFile));
-			return (TreeMap<List<Integer>, LinkedList<String>>) kyro.readClassAndObject(in);
+			return (TreeMap<String, LinkedList<String>>) kyro.readClassAndObject(in);
 		} catch (FileNotFoundException e) {
 			System.err.println("Character-Index-Form Map to be loaded not found.");
 		}

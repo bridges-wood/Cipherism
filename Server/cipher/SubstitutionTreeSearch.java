@@ -9,32 +9,28 @@ import java.util.TreeMap;
 public class SubstitutionTreeSearch {
 
 	private Substitution s;
+	private PredictWords p;
 	private final SearchNode ORIGIN;
-	private double cLambda1;
-	private double cLambda2;
-	private double cLambda3;
-	private double wLambda1;
-	private double wLambda2;
-	private double wLambda3;
-	private final TreeMap<String, Double> C1; // In character tables, we need frequency of letters with spaces.
-	private final TreeMap<String, Double> C2;
-	private final TreeMap<String, Double> C3;
-	private final TreeMap<String, Double> W1;
-	private final TreeMap<String, Double> W2;
-	private final TreeMap<String, Double> W3;
+	private double cLambda1, cLambda2, cLambda3, wLambda1, wLambda2, wLambda3;
+	private final TreeMap<String, Double> C1, C2, C3, W1, W2, W3;
+	private final TreeMap<String, LinkedList<String>> words1, words2, words3;
 	private double Nc; // Number of letters in the corpus.
 	private double Nw; // Number of words in the corpus.
 
 	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey) {
 		this.s = s;
 		Utilities u = new Utilities();
+		this.p = new PredictWords(u);
 		this.ORIGIN = new SearchNode(0, initialKey, null);
-		C1 = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
-		C2 = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
-		C3 = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
+		C1 = u.loadNgramMap(u.MONOGRAM_MAP_PATH);
+		C2 = u.loadNgramMap(u.BIGRAM_MAP_PATH);
+		C3 = u.loadNgramMap(u.TRIGRAM_MAP_PATH);
 		W1 = u.loadNgramMap(u.MONOGRAM_COUNTS_MAP_PATH);
 		W2 = u.loadNgramMap(u.BIGRAM_COUNTS_MAP_PATH);
 		W3 = u.loadNgramMap(u.TRIGRAM_COUNTS_PATH);
+		words1 = u.loadCharacterIndexForm(u.MONOGRAM_CIF_PATH);
+		words2 = u.loadCharacterIndexForm(u.BIGRAM_CIF_PATH);
+		words3 = u.loadCharacterIndexForm(u.TRIGRAM_CIF_PATH);
 		Nc = 4.374127904E9;
 		Nw = 5.80296995127E11;
 		generateCLambdas();
@@ -44,10 +40,13 @@ public class SubstitutionTreeSearch {
 	public Mapping[] run(Mapping[] initial, String text, boolean spaced) {
 		// TODO add key mutation.
 		// TODO add tree traversal.
-		// TODO add node class.
 		return initial;
 	}
 
+	/**
+	 * Generates the character lambda coefficients for determining the score of a
+	 * decrypted text.
+	 */
 	private void generateCLambdas() {
 		for (String key : C3.keySet()) {
 			String[] letters = key.split("");
@@ -66,6 +65,11 @@ public class SubstitutionTreeSearch {
 				cLambda1 += C3.get(key);
 				break;
 			}
+			/*
+			 * Each of the lambdas is changed based on the most likely occurrence of either
+			 * the character, the character and the previous character, or the character and
+			 * its 2 previous characters.
+			 */
 		}
 		// Normalisation.
 		double sum = cLambda1 + cLambda2 + cLambda3;
@@ -74,6 +78,10 @@ public class SubstitutionTreeSearch {
 		cLambda3 = sum / cLambda3;
 	}
 
+	/**
+	 * Generates the word lambda coefficients for determining the score of a
+	 * decrypted cipher text.
+	 */
 	private void generateWLambdas() {
 		for (String key : W3.keySet()) {
 			String[] words = key.split(",");
@@ -128,6 +136,12 @@ public class SubstitutionTreeSearch {
 		}
 	}
 
+	/**
+	 * Scores a given nGram based on the probability of its existence.
+	 * 
+	 * @param toAnalyse The nGram to be scored.
+	 * @return The score of the sum of the probabilities of its constituent parts.
+	 */
 	private double wordScore(String toAnalyse) {
 		String[] words = toAnalyse.split(" ");
 		double score = 0;
@@ -178,6 +192,15 @@ public class SubstitutionTreeSearch {
 		return score;
 	}
 
+	/**
+	 * Generates a list of mutated keys based on the occurrence of probable
+	 * character-index-form representations in the cipher text.
+	 * 
+	 * @param cipherText The text from which the mutations are to be derived from.
+	 * @param parentKey  The key on which the mutations are based on. This provides
+	 *                   some categorisation within the search tree,
+	 * @return A list of mutated keys.
+	 */
 	public List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
 		int counter = 0;
 		int k = 8;
@@ -187,21 +210,56 @@ public class SubstitutionTreeSearch {
 		return null;
 	}
 
-	public LinkedList<String> bestPEquivalentNGrams(String cipherText, int n) {
+	/**
+	 * Generates the best k p-equivalent nGrams of size n from the target text.
+	 * 
+	 * @param cipherText The text from which the nGrams are to be derived.
+	 * @param n          The length of the nGrams to be searched for.
+	 * @param k          The number of nGrams to be examined.
+	 * @return An array of the best k scored nGrams.
+	 */
+	public scoredNgram[] bestPEquivalentNGrams(String cipherText, int n, int k) {
 		String[] words = cipherText.split(" ");
-		LinkedList<String> nGrams = new LinkedList<String>();
-		for(int i = n - 1; i < words.length; i++) {
+		scoredNgram[] bestnGrams = new scoredNgram[k];
+		for (int i = n - 1; i < words.length; i++) {
 			StringBuilder nGram = new StringBuilder();
-			for(int j = i - (n-1); j < i; j++) {
+			for (int j = i - (n - 1); j < i; j++) {
 				nGram.append(words[j] + " ");
 			}
-			nGrams.add(nGram.toString().substring(0, nGram.length() - 2));
+			String toSearch = nGram.toString().substring(0, nGram.length() - 1);
+			String searchable = p.toString(p.encodeWord(toSearch));
+			LinkedList<String> pEquivalents = new LinkedList<String>();
+			switch (n) {
+			case 1:
+				if (words1.containsKey(searchable)) {
+					pEquivalents = words1.get(searchable);
+				}
+				break;
+			case 2:
+				if (words2.containsKey(searchable)) {
+					pEquivalents = words2.get(searchable);
+				}
+				break;
+			case 3:
+				if (words3.containsKey(searchable)) {
+					pEquivalents = words3.get(searchable);
+				}
+				break;
+			}
+			for (String pEquivalent : pEquivalents) {
+				replaceIfBetter(bestnGrams, new scoredNgram(pEquivalent, wordScore(pEquivalent)));
+			}
 		}
-		// TODO For each nGram generated, generate a list of p equivalent n grams.
-		// Assess those subject to score.
-		return null;
+		return bestnGrams;
 	}
 
+	/**
+	 * Calculates the Hamming Distance between 2 keys.
+	 * 
+	 * @param a The first key to be examined.
+	 * @param b The second key to be examined.
+	 * @return An int representing the Hamming distance between the 2 keys.
+	 */
 	public int HammingDistance(Mapping[] a, Mapping[] b) {
 		ArrayList<Mapping> aList = (ArrayList<Mapping>) Arrays.asList(a);
 		ArrayList<Mapping> bList = (ArrayList<Mapping>) Arrays.asList(b);
@@ -215,6 +273,47 @@ public class SubstitutionTreeSearch {
 		return distance;
 	}
 
+	/**
+	 * Searches an array of scoredNGrams and replaces the first nGram whose score
+	 * does not exceed that of the nGram to be entered.
+	 * 
+	 * @param bestNgrams The array to searched.
+	 * @param toTest     The scored nGram to be inserted if it has a sufficiently
+	 *                   high score.
+	 * @return The array of the best scored nGrams, with or without replacement.
+	 */
+	public scoredNgram[] replaceIfBetter(scoredNgram[] bestNgrams, scoredNgram toTest) {
+		// TODO optimise this in order.
+		for (int i = 0; i < bestNgrams.length; i++) {
+			if (toTest.score > bestNgrams[i].getScore()) {
+				bestNgrams[i] = toTest;
+				break;
+			}
+		}
+		return bestNgrams;
+	}
+
+	/**
+	 * Converts an array of scored nGrams to a String[] representing the nGrams that
+	 * they contain.
+	 * 
+	 * @param nGrams The array to be converted to a String[].
+	 * @return The String[] of nGrams contained by the nGram array.
+	 */
+	public String[] nGramsToString(scoredNgram[] nGrams) {
+		String[] out = new String[nGrams.length];
+		for (int i = 0; i < out.length; i++) {
+			out[i] = nGrams[i].getnGram();
+		}
+		return out;
+	}
+
+	/**
+	 * @author woodmb
+	 *
+	 *         A class to contain an nGram and its score in the same place to
+	 *         facilitate easy comparison.
+	 */
 	private class scoredNgram {
 		private final String nGram;
 		private final double score;
@@ -231,5 +330,6 @@ public class SubstitutionTreeSearch {
 		public double getScore() {
 			return score;
 		}
+
 	}
 }
