@@ -57,11 +57,6 @@ public class Mapping {
 		a.setPlainChar(temp);
 		return new MappingPair(a, b);
 	}
-
-	public class AlphabetiseMappings implements Comparator<Mapping> {
-
-		@Override
-		
 	
 	public class MappingPair {
 		private Mapping a;
