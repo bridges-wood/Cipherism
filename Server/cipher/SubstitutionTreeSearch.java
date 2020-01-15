@@ -2,6 +2,8 @@ package cipher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -10,19 +12,25 @@ public class SubstitutionTreeSearch {
 
 	private Substitution s;
 	private PredictWords p;
+	private DetectEnglish d;
+	private Utilities u;
 	private final SearchNode ORIGIN;
 	private double cLambda1, cLambda2, cLambda3, wLambda1, wLambda2, wLambda3;
 	private final TreeMap<String, Double> C1, C2, C3, W1, W2, W3;
 	private final TreeMap<String, LinkedList<String>> words1, words2, words3;
+	private HashMap<Long, Mapping[]> mappings = new HashMap<Long, Mapping[]>();
 	private double Nc; // Number of letters in the corpus.
 	private double Nw; // Number of words in the corpus.
 	private final int POOL_SIZE = 8;
 	private final int K = 5;
+	private final double C = 1;
+	private LinkedList<SearchNode> path = new LinkedList<SearchNode>();
 
-	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey) {
+	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, Utilities u, PredictWords p, DetectEnglish d) {
 		this.s = s;
-		Utilities u = new Utilities();
-		this.p = new PredictWords();
+		this.u = u;
+		this.p = p;
+		this.d = d;
 		this.ORIGIN = new SearchNode(0, initialKey, null);
 		C1 = u.loadNgramMap(u.MONOGRAM_MAP_PATH);
 		C2 = u.loadNgramMap(u.BIGRAM_MAP_PATH);
@@ -40,9 +48,82 @@ public class SubstitutionTreeSearch {
 	}
 
 	public Mapping[] run(Mapping[] initial, String text, boolean spaced) {
-		// TODO add key mutation.
-		// TODO add tree traversal.
+		String decrypted = s.decrypt(text, initial);
+		while (u.deSpace(d.graphicalRespace(decrypted, 20)).length() < 0.5 * text.length()) {
+			SearchNode leaf = findLeaf(ORIGIN);
+			SearchNode bestChild = expand(leaf, text);
+			// TODO complete tree search.
+		}
 		return initial;
+	}
+
+	private SearchNode expand(SearchNode leaf, String text) {
+		List<Mapping[]> leaves = generateKeyMutations(text, leaf.getKEY());
+		double bestScore = Double.MIN_VALUE;
+		SearchNode best = null;
+		for (Mapping[] key : leaves) {
+			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
+				double score = keyScore(text, key, true);
+				SearchNode child = new SearchNode(score, key, leaf);
+				leaf.addChild(child);
+				addToHashMap(key);
+				if (score > bestScore) {
+					bestScore = score;
+					best = child;
+				}
+			}
+			addToHashMap(orderKey(key));
+		}
+		return best;
+	}
+
+	private String MappingArrayToString(Mapping[] key) {
+		StringBuilder representation = new StringBuilder();
+		for (Mapping m : key) {
+			representation.append(m.toString());
+		}
+		return representation.toString();
+	}
+
+	private void addToHashMap(Mapping[] key) {
+		mappings.put(u.hash64(MappingArrayToString(key)), key);
+	}
+
+	private Mapping[] orderKey(Mapping[] key) {
+		Arrays.sort(key, new Comparator<Mapping>() {
+			public int compare(Mapping o1, Mapping o2) {
+				Character c1 = Character.valueOf(o1.getCipherChar());
+				Character c2 = Character.valueOf(o2.getCipherChar());
+				return c1.compareTo(c2);
+			}
+		});
+		return key;
+	}
+
+	/**
+	 * Recursively selects the optimal path from the root node to the best leaf of
+	 * the search-tree.
+	 * 
+	 * @param current The node currently being evaluated.
+	 * @return The leaf node.
+	 */
+	private SearchNode findLeaf(SearchNode current) {
+		current.incrementVisited();
+		path.add(current);
+		if (current.getChildren().isEmpty()) {
+			return current;
+		} else {
+			double hiScore = Double.MIN_VALUE;
+			SearchNode best = null;
+			for (SearchNode node : current.getChildren()) {
+				double score = node.UCB(C);
+				if (score > hiScore) {
+					hiScore = score;
+					best = node;
+				}
+			}
+			return findLeaf(best);
+		}
 	}
 
 	/**
@@ -204,16 +285,39 @@ public class SubstitutionTreeSearch {
 	 * @return A list of mutated keys.
 	 * @throws Exception
 	 */
-	public List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
+	private List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
 		scoredNgram[] bestNgrams = new scoredNgram[POOL_SIZE];
+		List<Mapping[]> childKeys = new LinkedList<Mapping[]>();
 		for (int i = 1; i < 4; i++) {
 			scoredNgram[] subGrams = bestPEquivalentNGrams(cipherText, i, POOL_SIZE);
 			for (scoredNgram NGram : subGrams) {
 				bestNgrams = replaceIfBetter(bestNgrams, NGram);
 			}
 		}
+		for (int i = POOL_SIZE - 1; i >= 0; i--) {
+			childKeys.add(mutateKey(parentKey, bestNgrams[i]));
+		}
+		return childKeys;
+	}
 
-		return null;
+	private Mapping[] mutateKey(Mapping[] parentKey, scoredNgram scoredNgram) {
+		LinkedList<Character> seen = new LinkedList<Character>();
+		Mapping[] mutatedKey = parentKey.clone();
+		for (int i = 0; i < scoredNgram.getnGram().length(); i++) {
+			char from = scoredNgram.getTextSource().charAt(i);
+			char to = scoredNgram.getnGram().charAt(i);
+			if (seen.contains(from)) {
+				continue;
+			} else
+				seen.add(from);
+			for (Mapping mapping : parentKey) {
+				if (mapping.getCipherChar() == from) {
+					mapping.setPlainChar(to);
+					break;
+				}
+			}
+		}
+		return mutatedKey;
 	}
 
 	/**
@@ -224,7 +328,7 @@ public class SubstitutionTreeSearch {
 	 * @param k          The number of nGrams to be examined.
 	 * @return An array of the best k scored nGrams.
 	 */
-	public scoredNgram[] bestPEquivalentNGrams(String cipherText, int n, int k) {
+	private scoredNgram[] bestPEquivalentNGrams(String cipherText, int n, int k) {
 		String[] words = cipherText.split(" ");
 		scoredNgram[] bestnGrams = new scoredNgram[k];
 		for (int i = n - 1; i < words.length; i++) {
@@ -260,26 +364,6 @@ public class SubstitutionTreeSearch {
 	}
 
 	/**
-	 * Calculates the Hamming Distance between 2 keys.
-	 * 
-	 * @param a The first key to be examined.
-	 * @param b The second key to be examined.
-	 * @return An int representing the Hamming distance between the 2 keys.
-	 */
-	public int HammingDistance(Mapping[] a, Mapping[] b) {
-		ArrayList<Mapping> aList = (ArrayList<Mapping>) Arrays.asList(a);
-		ArrayList<Mapping> bList = (ArrayList<Mapping>) Arrays.asList(b);
-		int distance = 0;
-		for (int i = 0; i < 26; i++) {
-			Mapping aM = aList.get(i);
-			if (!bList.contains(aM)) {
-				distance++;
-			}
-		}
-		return distance;
-	}
-
-	/**
 	 * Searches an array of scoredNGrams and replaces the first nGram whose score
 	 * does not exceed that of the nGram to be entered.
 	 * 
@@ -288,17 +372,20 @@ public class SubstitutionTreeSearch {
 	 *                   high score.
 	 * @return The array of the best scored nGrams, with or without replacement.
 	 */
-	public scoredNgram[] replaceIfBetter(scoredNgram[] bestNgrams, scoredNgram toTest) {
-		boolean greaterThanLast = false;
+	private scoredNgram[] replaceIfBetter(scoredNgram[] bestNgrams, scoredNgram toTest) {
 		for (int i = 0; i < bestNgrams.length; i++) {
-			if (greaterThanLast) {
-				if (toTest.score < bestNgrams[i].getScore()) {
-					bestNgrams[i - 1] = toTest;
+			if (toTest.score < bestNgrams[i].getScore() && i > 0) {
+				bestNgrams[i - 1] = toTest;
+				break;
+			} else if (toTest.score == bestNgrams[i].getScore()) {
+				if (toTest.HammingDistance() < bestNgrams[i].HammingDistance()) {
+					bestNgrams[i] = toTest;
 					break;
 				}
-			}
-			if (toTest.score > bestNgrams[i].getScore()) {
-				greaterThanLast = true;
+			} else if (toTest.score > bestNgrams[i].getScore()) {
+				continue;
+			} else {
+				break;
 			}
 		}
 		return bestNgrams;
@@ -311,7 +398,7 @@ public class SubstitutionTreeSearch {
 	 * @param nGrams The array to be converted to a String[].
 	 * @return The String[] of nGrams contained by the nGram array.
 	 */
-	public String[] nGramsToString(scoredNgram[] nGrams) {
+	private String[] nGramsToString(scoredNgram[] nGrams) {
 		String[] out = new String[nGrams.length];
 		for (int i = 0; i < out.length; i++) {
 			out[i] = nGrams[i].getnGram();
@@ -328,7 +415,7 @@ public class SubstitutionTreeSearch {
 	private class scoredNgram {
 		private final String textSource;
 		private final String nGram;
-		private final double score;
+		private final Double score;
 
 		public scoredNgram(String textSource, String nGram, double score) {
 			this.textSource = textSource;
@@ -344,9 +431,23 @@ public class SubstitutionTreeSearch {
 			return nGram;
 		}
 
-		public double getScore() {
+		public Double getScore() {
 			return score;
 		}
 
+		/**
+		 * Calculates the Hamming Distance between a p equivalent nGram and its current
+		 * decryption.
+		 * 
+		 * @return An int representing the Hamming distance between the 2 strings.
+		 */
+		public int HammingDistance() {
+			int distance = 0;
+			for (int i = 0; i < this.getnGram().length(); i++) {
+				if (this.getnGram().charAt(i) != this.getTextSource().charAt(i))
+					distance++;
+			}
+			return distance;
+		}
 	}
 }

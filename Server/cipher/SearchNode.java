@@ -16,7 +16,7 @@ public class SearchNode {
 		this.parent = parent;
 		this.children = new LinkedList<SearchNode>();
 	}
-	
+
 	public void incrementVisited() {
 		this.visited += 1;
 	}
@@ -49,7 +49,17 @@ public class SearchNode {
 		return children;
 	}
 
-	public void setChildren(LinkedList<SearchNode> children) {
-		this.children = children;
+	public void addChild(SearchNode newChild) {
+		this.children.add(newChild);
+	}
+
+	/**
+	 * Returns a value that results a visits-adjusted score for the given node.
+	 * 
+	 * @param node The node to be examined.
+	 * @return The score of the node.
+	 */
+	public double UCB(double Constant) {
+		return this.getScore() + Constant * Math.sqrt(Math.log(this.getParent().getVisited()) / this.getVisited());
 	}
 }

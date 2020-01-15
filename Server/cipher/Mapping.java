@@ -1,15 +1,16 @@
 package cipher;
 
+import java.util.Comparator;
+
 public class Mapping {
 
-	private boolean isDefinite;
 	private char cipherChar;
 	private char plainChar;
 
 	public Mapping() {
-		
+
 	}
-	
+
 	/**
 	 * @param isDefinite Whether or not the relationship is definite in the text.
 	 * @param fromChar   The enciphered character.
@@ -17,17 +18,8 @@ public class Mapping {
 	 *                   represents.
 	 */
 	public Mapping(char fromChar, char toChar) {
-		this.isDefinite = false;
 		this.cipherChar = fromChar;
 		this.plainChar = toChar;
-	}
-
-	public boolean isDefinite() {
-		return isDefinite;
-	}
-
-	public void setDefinite(boolean isDefinite) {
-		this.isDefinite = isDefinite;
 	}
 
 	public char getCipherChar() {
@@ -46,6 +38,14 @@ public class Mapping {
 		this.plainChar = plainChar;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder out = new StringBuilder();
+		out.append(cipherChar);
+		out.append(plainChar);
+		return out.toString();
+	}
+
 	/**
 	 * Swaps the plain char encodings of mappings a and b.
 	 * 
@@ -58,6 +58,11 @@ public class Mapping {
 		return new MappingPair(a, b);
 	}
 
+	public class AlphabetiseMappings implements Comparator<Mapping> {
+
+		@Override
+		
+	
 	public class MappingPair {
 		private Mapping a;
 		private Mapping b;
