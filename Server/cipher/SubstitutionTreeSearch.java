@@ -1,6 +1,5 @@
 package cipher;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,11 +21,10 @@ public class SubstitutionTreeSearch {
 	private double Nc; // Number of letters in the corpus.
 	private double Nw; // Number of words in the corpus.
 	private final int POOL_SIZE = 8;
-	private final int K = 5;
 	private final double C = 1;
 	private LinkedList<SearchNode> path = new LinkedList<SearchNode>();
 
-	SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, Utilities u, PredictWords p, DetectEnglish d) {
+	public SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, Utilities u, PredictWords p, DetectEnglish d) {
 		this.s = s;
 		this.u = u;
 		this.p = p;
@@ -47,19 +45,34 @@ public class SubstitutionTreeSearch {
 		generateWLambdas();
 	}
 
-	public Mapping[] run(Mapping[] initial, String text, boolean spaced) {
-		String decrypted = s.decrypt(text, initial);
+	public Mapping[] run(String text, boolean spaced) {
+		String decrypted = s.decrypt(text, ORIGIN.getKEY());
 		while (u.deSpace(d.graphicalRespace(decrypted, 20)).length() < 0.5 * text.length()) {
+			path.clear();
 			SearchNode leaf = findLeaf(ORIGIN);
 			SearchNode bestChild = expand(leaf, text);
-			// TODO complete tree search.
+			path.add(bestChild);
+			scorePath();
+			decrypted = s.decrypt(text, bestChild.getKEY());
 		}
-		return initial;
+		return ORIGIN.getKEY();
+	}
+
+	private void scorePath() {
+		double hiScore = Double.MIN_VALUE;
+		for (SearchNode node : path) {
+			double nodeScore = node.getScore();
+			if (nodeScore > hiScore)
+				hiScore = nodeScore;
+		}
+		for (SearchNode node : path) {
+			node.setScore(hiScore);
+		}
 	}
 
 	private SearchNode expand(SearchNode leaf, String text) {
 		List<Mapping[]> leaves = generateKeyMutations(text, leaf.getKEY());
-		double bestScore = Double.MIN_VALUE;
+		double hiScore = Double.MIN_VALUE;
 		SearchNode best = null;
 		for (Mapping[] key : leaves) {
 			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
@@ -67,8 +80,8 @@ public class SubstitutionTreeSearch {
 				SearchNode child = new SearchNode(score, key, leaf);
 				leaf.addChild(child);
 				addToHashMap(key);
-				if (score > bestScore) {
-					bestScore = score;
+				if (score > hiScore) {
+					hiScore = score;
 					best = child;
 				}
 			}
@@ -389,21 +402,6 @@ public class SubstitutionTreeSearch {
 			}
 		}
 		return bestNgrams;
-	}
-
-	/**
-	 * Converts an array of scored nGrams to a String[] representing the nGrams that
-	 * they contain.
-	 * 
-	 * @param nGrams The array to be converted to a String[].
-	 * @return The String[] of nGrams contained by the nGram array.
-	 */
-	private String[] nGramsToString(scoredNgram[] nGrams) {
-		String[] out = new String[nGrams.length];
-		for (int i = 0; i < out.length; i++) {
-			out[i] = nGrams[i].getnGram();
-		}
-		return out;
 	}
 
 	/**
