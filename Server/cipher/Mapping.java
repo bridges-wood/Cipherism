@@ -1,7 +1,5 @@
 package cipher;
 
-import java.util.Comparator;
-
 public class Mapping {
 
 	private char cipherChar;

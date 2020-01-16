@@ -35,7 +35,7 @@ public class SubstitutionTreeSearch {
 		C3 = u.loadNgramMap(u.TRIGRAM_MAP_PATH);
 		W1 = u.loadNgramMap(u.MONOGRAM_COUNTS_MAP_PATH);
 		W2 = u.loadNgramMap(u.BIGRAM_COUNTS_MAP_PATH);
-		W3 = u.loadNgramMap(u.TRIGRAM_COUNTS_PATH);
+		W3 = u.loadNgramMap(u.TRIGRAM_COUNTS_MAP_PATH);
 		words1 = u.loadCharacterIndexForm(u.MONOGRAM_CIF_PATH);
 		words2 = u.loadCharacterIndexForm(u.BIGRAM_CIF_PATH);
 		words3 = u.loadCharacterIndexForm(u.TRIGRAM_CIF_PATH);
