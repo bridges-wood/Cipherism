@@ -1,6 +1,6 @@
 language: java
 jdk: oraclejdk13
-sudo: false
+os: windows
 before_install:
 - echo -e "machine github.com\n" login 6e8eb299c83f468e182ec7a817684879d8eecbf3 > ~/.netrc
 - git lfs pull
