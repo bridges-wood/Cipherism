@@ -29,12 +29,14 @@ public class PredictWordsTest {
 
 	@Test
 	public void testEncodeWord() {
-		assertEquals("012", tester.encodeWord("the"));
+		Integer[] encoding = { 0, 1, 2 };
+		assertArrayEquals(encoding, tester.encodeWord("the"));
 	}
 
 	@Test
 	public void testEncodePhrase() {
-		assertArrayEquals(new String[] { "0120", "3421" }, tester.encodePhrase("test case".split(" ")));
+		Integer[][] encodedPhrase = { { 0, 1, 2, 0 }, { 3, 4, 2, 1 } };
+		assertArrayEquals(encodedPhrase, tester.encodePhrase("test case".split(" ")));
 	}
 
 }
