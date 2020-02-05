@@ -1,0 +1,15 @@
+test\java\VigenereTest.class
+test\java\CipherBreakersTest.class
+test\java\CipherTest.class
+test\java\NGramAnalyserTest.class
+test\java\ManagerTest.class
+test\java\UtilitiesTest.class
+test\java\DetectEnglishTest.class
+test\java\IOCTest.class
+test\java\PredictWordsTest.class
+test\java\ProbableSubstitutionsTest.class
+test\java\SubstitutionTreeSearchTest.class
+test\java\CaesarTest.class
+test\java\MultiLemmaAnalysisTest.class
+test\java\KasiskiExaminationTest.class
+test\java\SubstitutionTest.class

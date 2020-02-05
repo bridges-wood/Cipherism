@@ -55,7 +55,7 @@ public class NGramAnalyserTest {
 		assertEquals(map.get("in").intValue(), 31);
 		assertEquals(map.get("at").intValue(), 5);
 		map = tester.kasiskiBase(3, PLAINTEXT); // Length 3
-		assertEquals(map.get("the").intValue(), 19);
+		assertEquals(map.get("the").intValue(), 20);
 		assertEquals(map.get("who"), null);
 		assertEquals(map.get("how").intValue(), 1);
 	}

@@ -16,6 +16,7 @@ import main.java.cipher.Utilities;
 import main.java.cipher.Vigenere;
 
 public class CipherBreakersTest {
+	// TODO complete test design.
 
 	private Utilities u = new Utilities();
 	private Substitution s = new Substitution();
@@ -35,12 +36,12 @@ public class CipherBreakersTest {
 	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("qwertyuiopasdfghjklzxcvbnm");
 	private final String SUBSTITUTION_ENCRYPTED = s.encrypt(PLAINTEXT, MAPPINGS);
 
-	@Test
+	// @Test
 	public void testVigenereBreaker() {
 		assertEquals(tester.vigenereBreaker(VIGENERE_ENCRYPTED), d.graphicalRespace(PLAINTEXT, 20));
 	}
 
-	@Test
+	// @Test
 	public void testSubstitutionBreaker() {
 		assertEquals(tester.substitutionBreaker(SUBSTITUTION_ENCRYPTED), d.graphicalRespace(PLAINTEXT, 20));
 	}
