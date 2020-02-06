@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/main/java/cipher/IOC.java=UTF-8
-encoding//src/test/java/IOCTest.java=UTF-8
-encoding//src/test/java/UtilitiesTest.java=UTF-8
+encoding//src/main/java/com/CiphersApp/cipher/IOC.java=UTF-8
+encoding//src/test/java/com/CiphersApp/cipher/IOCTest.java=UTF-8
+encoding//src/test/java/com/CiphersApp/cipher/UtilitiesTest.java=UTF-8
