@@ -15,7 +15,7 @@ public class CipherBreakersTest {
 	private IOC i = new IOC(n);
 	private DetectEnglish d = new DetectEnglish(u, n);
 	private KasiskiExamination k = new KasiskiExamination(u, n, v, i, d);
-	private CipherBreakers tester = new CipherBreakers(u, k, d, p, n);
+	private CipherBreakers tester = new CipherBreakers(u, k, d, p);
 	private final String PLAINTEXT = u.deSpace(
 			u.cleanText("The next thing I remember is, waking up with a feeling as if I had had a frightful nightmare,"
 					+ " and seeing before me a terrible red glare, crossed with thick black bars. I heard voices, too,"

@@ -7,18 +7,20 @@ public class CipherBreakers {
 	private KasiskiExamination k;
 	private Vigenere v;
 	private ProbableSubstitutions p;
-	private NGramAnalyser n;
+	private PredictWords pw;
 	private Substitution s; 
+	private SubstitutionTreeSearch sts;
 
-	public CipherBreakers(Utilities u, KasiskiExamination k, DetectEnglish d, ProbableSubstitutions p,
-			NGramAnalyser n) {
+	public CipherBreakers(Utilities u, KasiskiExamination k, DetectEnglish d, ProbableSubstitutions p) {
 		this.d = d;
 		this.u = u;
 		this.k = k;
-		this.n = n;
 		this.p = new ProbableSubstitutions();
 		this.v = new Vigenere();
 		this.s = new Substitution();
+		this.pw = new PredictWords();
+		//TODO generate initial
+		this.sts = new SubstitutionTreeSearch(s, null, u, pw, d);
 	}
 
 	public String vigenereBreaker(String text) {
@@ -36,12 +38,7 @@ public class CipherBreakers {
 	}
 
 	public String substitutionBreaker(String text) {
-		/*
-		 * TODO Plan: Do one pass based on FA, using letters of high confidence. Using the
-		 * same graphical technique as previously, examine possible words using probable
-		 * substitutions, locking in the letter from FA. From there, generate a tree
-		 * using the possible encodings and use the path with the best score.
-		 */
+		
 		return "";
 	}
 

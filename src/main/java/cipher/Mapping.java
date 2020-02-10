@@ -36,6 +36,9 @@ public class Mapping {
 		this.plainChar = plainChar;
 	}
 
+	/**
+	 * Converts each mapping to a string. If mapping is A -> B, out is AB.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder out = new StringBuilder();
@@ -55,7 +58,7 @@ public class Mapping {
 		a.setPlainChar(temp);
 		return new MappingPair(a, b);
 	}
-	
+
 	public class MappingPair {
 		private Mapping a;
 		private Mapping b;

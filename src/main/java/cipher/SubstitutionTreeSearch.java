@@ -22,6 +22,7 @@ public class SubstitutionTreeSearch {
 	private double Nw; // Number of words in the corpus.
 	private final int POOL_SIZE = 8;
 	private final double C = 1;
+	private String TEXT;
 	private LinkedList<SearchNode> path = new LinkedList<SearchNode>();
 
 	public SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, Utilities u, PredictWords p, DetectEnglish d) {
@@ -45,19 +46,32 @@ public class SubstitutionTreeSearch {
 		generateWLambdas();
 	}
 
+	/**
+	 * Generates the optimal decryption of the cipher text based on word and
+	 * character level n-grams.
+	 * 
+	 * @param text   The text to be decrypted.
+	 * @param spaced Whether or not the spaces in the original text are to be
+	 *               preserved.
+	 * @return An array of Mappings corresponding to the decryption of the text.
+	 */
 	public Mapping[] run(String text, boolean spaced) {
-		String decrypted = s.decrypt(text, ORIGIN.getKEY());
-		while (u.deSpace(d.graphicalRespace(decrypted, 20)).length() < 0.5 * text.length()) {
+		TEXT = text;
+		String decrypted = s.decrypt(TEXT, ORIGIN.getKEY());
+		while (u.deSpace(d.graphicalRespace(decrypted, 20)).length() < 0.5 * TEXT.length()) {
 			path.clear();
 			SearchNode leaf = findLeaf(ORIGIN);
-			SearchNode bestChild = expand(leaf, text);
+			SearchNode bestChild = expand(leaf);
 			path.add(bestChild);
 			scorePath();
-			decrypted = s.decrypt(text, bestChild.getKEY());
+			decrypted = s.decrypt(TEXT, bestChild.getKEY());
 		}
 		return ORIGIN.getKEY();
 	}
 
+	/**
+	 * Scores all nodes in the current path to the leaf node.
+	 */
 	private void scorePath() {
 		double hiScore = Double.MIN_VALUE;
 		for (SearchNode node : path) {
@@ -70,13 +84,19 @@ public class SubstitutionTreeSearch {
 		}
 	}
 
-	private SearchNode expand(SearchNode leaf, String text) {
-		List<Mapping[]> leaves = generateKeyMutations(text, leaf.getKEY());
+	/**
+	 * Generates the next best decryption of the cipher based on the current best.
+	 * 
+	 * @param leaf The current best node in the Monte-Carlo search tree.
+	 * @return The best child of the leaf.
+	 */
+	private SearchNode expand(SearchNode leaf) {
+		List<Mapping[]> leaves = generateKeyMutations(leaf.getKEY());
 		double hiScore = Double.MIN_VALUE;
 		SearchNode best = null;
 		for (Mapping[] key : leaves) {
 			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
-				double score = keyScore(text, key, true);
+				double score = keyScore(key, true);
 				SearchNode child = new SearchNode(score, key, leaf);
 				leaf.addChild(child);
 				addToHashMap(key);
@@ -90,6 +110,12 @@ public class SubstitutionTreeSearch {
 		return best;
 	}
 
+	/**
+	 * Converts a given array of Mappings to a string.
+	 * 
+	 * @param key A key for decryption of the cipher.
+	 * @return The string representation of the key.
+	 */
 	private String MappingArrayToString(Mapping[] key) {
 		StringBuilder representation = new StringBuilder();
 		for (Mapping m : key) {
@@ -98,12 +124,26 @@ public class SubstitutionTreeSearch {
 		return representation.toString();
 	}
 
+	/**
+	 * Method to aid in abstraction of putting Mapping arrays into a hash map so
+	 * they can be compared.
+	 * 
+	 * @param key The mapping array to be inserted into the map.
+	 */
 	private void addToHashMap(Mapping[] key) {
 		mappings.put(u.hash64(MappingArrayToString(key)), key);
 	}
 
+	/**
+	 * Sorts a given key into alphabetical order based on the cipher character for
+	 * each Mapping.
+	 * 
+	 * @param key The Mapping array to be sorted.
+	 * @return The sorted array.
+	 */
 	private Mapping[] orderKey(Mapping[] key) {
 		Arrays.sort(key, new Comparator<Mapping>() {
+			// Custom comparator to order the key alphabetically.
 			public int compare(Mapping o1, Mapping o2) {
 				Character c1 = Character.valueOf(o1.getCipherChar());
 				Character c2 = Character.valueOf(o2.getCipherChar());
@@ -204,6 +244,12 @@ public class SubstitutionTreeSearch {
 		wLambda3 = sum / wLambda3;
 	}
 
+	/**
+	 * Determines the index of the maximum value in an array of doubles.
+	 * 
+	 * @param values The array of doubles from which the maximum is to be found.
+	 * @return The index of the maximum value in the array.
+	 */
 	private int determineMaximum(double[] values) {
 		int maxIndex = 0;
 		for (int i = 0; i < values.length; i++) {
@@ -216,13 +262,12 @@ public class SubstitutionTreeSearch {
 	/**
 	 * Scores a given simple-substitution cipher key.
 	 * 
-	 * @param text     The cipher-text to be decrypted.
 	 * @param mappings The key to be analysed.
 	 * @param spaced   Whether or not there are already spaces present in the text.
 	 * @return A double representing the score of the key.
 	 */
-	public double keyScore(String text, Mapping[] mappings, boolean spaced) {
-		String toAnalyse = s.decrypt(text, mappings);
+	public double keyScore(Mapping[] mappings, boolean spaced) {
+		String toAnalyse = s.decrypt(TEXT, mappings);
 		if (spaced) {
 			double chi = 0.5;
 			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
@@ -269,6 +314,12 @@ public class SubstitutionTreeSearch {
 		return score;
 	}
 
+	/**
+	 * Scores a given nGram based on the probability of its existence.
+	 * 
+	 * @param toAnalyse The nGram to be scored.
+	 * @return The score of the sum of the probabilities of its constituent parts.
+	 */
 	private double characterScore(String toAnalyse) {
 		char[] letters = toAnalyse.toCharArray();
 		double score = 0;
@@ -292,17 +343,16 @@ public class SubstitutionTreeSearch {
 	 * Generates a list of mutated keys based on the occurrence of probable
 	 * character-index-form representations in the cipher text.
 	 * 
-	 * @param cipherText The text from which the mutations are to be derived from.
-	 * @param parentKey  The key on which the mutations are based on. This provides
-	 *                   some categorisation within the search tree,
+	 * @param parentKey The key on which the mutations are based on. This provides
+	 *                  some categorisation within the search tree,
 	 * @return A list of mutated keys.
 	 * @throws Exception
 	 */
-	private List<Mapping[]> generateKeyMutations(String cipherText, Mapping[] parentKey) {
+	private List<Mapping[]> generateKeyMutations(Mapping[] parentKey) {
 		scoredNgram[] bestNgrams = new scoredNgram[POOL_SIZE];
 		List<Mapping[]> childKeys = new LinkedList<Mapping[]>();
 		for (int i = 1; i < 4; i++) {
-			scoredNgram[] subGrams = bestPEquivalentNGrams(cipherText, i, POOL_SIZE);
+			scoredNgram[] subGrams = bestPEquivalentNGrams(TEXT, i, POOL_SIZE);
 			for (scoredNgram NGram : subGrams) {
 				bestNgrams = replaceIfBetter(bestNgrams, NGram);
 			}
@@ -313,6 +363,13 @@ public class SubstitutionTreeSearch {
 		return childKeys;
 	}
 
+	/**
+	 * Generates a mutation of a given key based on a likely n-gram in the text.
+	 * 
+	 * @param parentKey   The key to be mutated.
+	 * @param scoredNgram The n-gram on which the mutation is to be based.
+	 * @return The mutated key.
+	 */
 	private Mapping[] mutateKey(Mapping[] parentKey, scoredNgram scoredNgram) {
 		LinkedList<Character> seen = new LinkedList<Character>();
 		Mapping[] mutatedKey = parentKey.clone();

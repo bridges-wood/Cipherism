@@ -30,7 +30,7 @@ public class Manager {
 		this.n = new NGramAnalyser(u);
 		this.i = new IOC(n);
 		this.d = new DetectEnglish(u, n);
-		this.c = new CipherBreakers(u, k, d, p, n);
+		this.c = new CipherBreakers(u, k, d, p);
 		if (!test)
 			run(u.cleanText(text));
 	}
