@@ -10,11 +10,11 @@ public class DetectEnglish {
 
 	private HashMap<Long, String> dictionaryTable, twoGramsTable;
 	private final TreeMap<Character, Double> letterProbabilities;
-	private Utilities u;
+	private FileIO u;
 	private NGramAnalyser n;
 	private WordGraph start = new WordGraph("", null);
 
-	public DetectEnglish(Utilities u, NGramAnalyser n) {
+	public DetectEnglish(FileIO u, NGramAnalyser n) {
 		dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
 		letterProbabilities = u.readLetterFrequencies(u.LETTER_FREQUENCIES_MAP_PATH);

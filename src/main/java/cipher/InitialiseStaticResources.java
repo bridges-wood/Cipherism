@@ -2,7 +2,7 @@ package cipher;
 
 public class InitialiseStaticResources {
 
-	static Utilities u = new Utilities();
+	static FileIO u = new FileIO();
 
 	public static void uInit(boolean misc, boolean logs, boolean lettersDirect, boolean wordsDirect,
 			boolean characterIndexForm) {

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class IOCTest {
 
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private NGramAnalyser n = new NGramAnalyser(u);
 	private IOC tester = new IOC(n);
 	private final float κr = 0.038466f;

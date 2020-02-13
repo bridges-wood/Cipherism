@@ -8,29 +8,32 @@ import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 /**
- * For all devices connected to the server, we will assign a Manager to it.
+ * A class that handles the management of the decryption of the string passed to
+ * the server by each client. It is designed to be lightweight and pass on the
+ * heavy lifting of decryption to {@link CipherBreaker}.
+ * 
+ * @author Max Wood
+ *
  */
 public class Manager {
 
-	private Utilities u;
+	private FileIO u;
 	private ProbableSubstitutions p;
 	private IOC i;
 	private NGramAnalyser n;
 	private KasiskiExamination k;
 	private CipherBreakers c;
-	private DetectEnglish d;
 
 	private String result = "";
 	private String text = "";
 
 	public Manager(String text, boolean test) {
 		this.text = text;
-		this.u = new Utilities();
+		this.u = new FileIO();
 		this.p = new ProbableSubstitutions();
 		this.n = new NGramAnalyser(u);
 		this.i = new IOC(n);
-		this.d = new DetectEnglish(u, n);
-		this.c = new CipherBreakers(u, k, d, p);
+		this.c = new CipherBreakers(u, k, p);
 		if (!test)
 			run(u.cleanText(text));
 	}
@@ -103,12 +106,19 @@ public class Manager {
 		}
 	}
 
-	public String detectCipher(String text) {
-		if (detectPeriodic(text)) {
-			return "Periodic";
-		} else {
-			return "Substitution";
+	public String detectCipher(String text) throws CipherDetectionException {
+		boolean periodic = detectPeriodic(text);
+		boolean substitution = detectSubstitution(text);
+		if (periodic && substitution) {
+			throw new CipherDetectionException();
+		} else if (!periodic || !substitution) {
+			throw new CipherDetectionException();
 		}
+		if (periodic)
+			return "Periodic";
+		if (substitution)
+			return "Substitution";
+		return null;
 	}
 
 	public String getResult() {

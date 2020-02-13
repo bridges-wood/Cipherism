@@ -7,12 +7,26 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+/**
+ * A class that is capable of predicting words that are encoded with a simple
+ * substitution cipher using character index form to determine
+ * pattern-equivalent (or p equivalent n-grams). P equivalence only occurs if:
+ * 
+ * <ol>
+ * <li>|u| = |v|</li>
+ * <li>∀i: ui = _ ⇔ vi = _ (_ stands for the space character)</li>
+ * <li>∀i, j: ui = uj ⇔ vi = vj</li>
+ * </ol>
+ * 
+ * @author Max Wood
+ * @see Substitution
+ */
 public class PredictWords {
 
 	private final TreeMap<String, LinkedList<String>> words;
 
 	public PredictWords() {
-		Utilities u = new Utilities();
+		FileIO u = new FileIO();
 		words = u.loadCharacterIndexForm(u.MONOGRAM_CIF_PATH);
 	}
 

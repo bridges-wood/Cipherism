@@ -14,13 +14,13 @@ public class KasiskiExamination {
 	private final char[] ALPHABET;
 	private final Map<Character, Double> expectedLetterFrequencies;
 	private List<String> possKeys;
-	private Utilities u;
+	private FileIO u;
 	private NGramAnalyser n;
 	private Vigenere v;
 	private IOC i;
 	private DetectEnglish d;
 
-	public KasiskiExamination(Utilities u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
+	public KasiskiExamination(FileIO u, NGramAnalyser n, Vigenere v, IOC i, DetectEnglish d) {
 		ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 		possKeys = new ArrayList<String>();
 		expectedLetterFrequencies = u.readLetterFrequencies(u.LETTER_FREQUENCIES_MAP_PATH);

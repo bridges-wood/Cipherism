@@ -1,5 +1,11 @@
 package cipher;
 
+/**
+ * Class to facilitate encryption and decryption using the Vigenere cipher.
+ * 
+ * @author Max Wood
+ *
+ */
 public class Vigenere {
 
 	public Vigenere() {

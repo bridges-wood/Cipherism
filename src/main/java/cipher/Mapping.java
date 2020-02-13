@@ -1,5 +1,12 @@
 package cipher;
 
+/**
+ * A class to store fractions of a Simple Substitution Cipher key in a
+ * manageable way.
+ * 
+ * @author Max Wood
+ * @see Substitution
+ */
 public class Mapping {
 
 	private char cipherChar;

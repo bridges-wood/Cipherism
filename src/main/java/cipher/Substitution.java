@@ -1,5 +1,12 @@
 package cipher;
 
+/**
+ * Facilitates encryption and decryption implementing a Simple Substitution
+ * Cipher.
+ * 
+ * @author Max Wood
+ *
+ */
 public class Substitution {
 
 	public Substitution() {

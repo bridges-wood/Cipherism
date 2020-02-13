@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class DetectEnglishTest {
 
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private DetectEnglish tester = new DetectEnglish(u, new NGramAnalyser(u));
 
 	@Test

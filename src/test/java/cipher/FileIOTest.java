@@ -7,9 +7,9 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-public class UtilitiesTest {
+public class FileIOTest {
 
-	private Utilities tester = new Utilities();
+	private FileIO tester = new FileIO();
 
 	@Test
 	public void testReadFile() {

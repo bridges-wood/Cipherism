@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class NGramAnalyserTest {
 
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private NGramAnalyser tester = new NGramAnalyser(u);
 	private final String PLAINTEXT = u.cleanText(
 			"Mr. Utterson the lawyer was a man of a rugged countenance that was never lighted by a smile; cold,"

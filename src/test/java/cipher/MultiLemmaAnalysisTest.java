@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class MultiLemmaAnalysisTest {
 
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private PredictWords p = new PredictWords();
 	private MultiLemmaAnalysis tester = new MultiLemmaAnalysis(u, p);
 	private Substitution s = new Substitution();

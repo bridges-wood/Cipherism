@@ -2,6 +2,13 @@ package cipher;
 
 import java.util.LinkedList;
 
+/**
+ * Class to facilitate the tree search of possible decryptions. Prominently used
+ * in {@link DetectEnglish}.
+ * 
+ * @author Max Wood
+ *
+ */
 public class WordGraph {
 
 	private String word;

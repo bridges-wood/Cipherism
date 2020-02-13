@@ -2,6 +2,13 @@ package cipher;
 
 import java.util.LinkedList;
 
+/**
+ * A class used in the Monte-Carlo method of solving simple-substitution ciphers
+ * in {@link SubstitutionTreeSearch}.
+ * 
+ * @author Max Wood
+ *
+ */
 public class SearchNode {
 	private double score;
 	private int visited;
@@ -49,6 +56,12 @@ public class SearchNode {
 		return children;
 	}
 
+	/**
+	 * Adds a new child to the nodes current children without the need for
+	 * manipulation of the whole list.
+	 * 
+	 * @param newChild
+	 */
 	public void addChild(SearchNode newChild) {
 		this.children.add(newChild);
 	}

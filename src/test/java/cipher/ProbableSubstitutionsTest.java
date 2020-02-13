@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ProbableSubstitutionsTest {
 
 	private Substitution s = new Substitution();
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private NGramAnalyser n = new NGramAnalyser(u);
 	private ProbableSubstitutions tester = new ProbableSubstitutions();
 	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");

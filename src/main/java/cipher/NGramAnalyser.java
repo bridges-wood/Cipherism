@@ -2,18 +2,25 @@ package cipher;
 
 import java.util.TreeMap;
 
+/**
+ * A class that is capable of counting the number of given strings of length n
+ * that occur in a given string.
+ * 
+ * @author Max Wood
+ *
+ */
 public class NGramAnalyser {
 
 	private double floor;
-	private final String[] letters;
+	private final String[] LETTERS;
 	private final TreeMap<String, Double> MONOGRAMS;
 	private final TreeMap<String, Double> BIGRAMS;
 	private final TreeMap<String, Double> TRIGRAMS;
 	private final TreeMap<String, Double> QUADGRAMS;
 	private final TreeMap<String, Double> PENTAGRAMS;
 
-	public NGramAnalyser(Utilities u) {
-		letters = "qwertyuiopasdfghjklzxcvbnm".split("");
+	public NGramAnalyser(FileIO u) {
+		LETTERS = "qwertyuiopasdfghjklzxcvbnm".split("");
 		this.MONOGRAMS = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
 		this.BIGRAMS = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
 		this.TRIGRAMS = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
@@ -100,7 +107,7 @@ public class NGramAnalyser {
 				ngrams.put(letter, 1);
 			}
 		}
-		for (String letter : letters) {
+		for (String letter : LETTERS) {
 			if (!ngrams.containsKey(letter)) {
 				ngrams.put(letter, 0);
 			}

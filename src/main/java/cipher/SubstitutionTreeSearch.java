@@ -7,12 +7,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Class implementing the Monte-Carlo Tree Search for solving substitution
+ * ciphers used by the University of Alberta.
+ * 
+ * @author Max Wood
+ * @see <a href="https://www.aclweb.org/anthology/C14-1218.pdf">Paper</a>
+ */
 public class SubstitutionTreeSearch {
 
 	private Substitution s;
 	private PredictWords p;
 	private DetectEnglish d;
-	private Utilities u;
+	private FileIO u;
 	private final SearchNode ORIGIN;
 	private double cLambda1, cLambda2, cLambda3, wLambda1, wLambda2, wLambda3;
 	private final TreeMap<String, Double> C1, C2, C3, W1, W2, W3;
@@ -25,7 +32,7 @@ public class SubstitutionTreeSearch {
 	private String TEXT;
 	private LinkedList<SearchNode> path = new LinkedList<SearchNode>();
 
-	public SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, Utilities u, PredictWords p, DetectEnglish d) {
+	public SubstitutionTreeSearch(Substitution s, Mapping[] initialKey, FileIO u, PredictWords p, DetectEnglish d) {
 		this.s = s;
 		this.u = u;
 		this.p = p;
@@ -186,19 +193,19 @@ public class SubstitutionTreeSearch {
 	private void generateCLambdas() {
 		for (String key : C3.keySet()) {
 			String[] letters = key.split("");
-			double three = C3.get(key) - 1 / C2.get(letters[0] + letters[1]) - 1;
-			double two = C2.get(letters[1] + letters[2]) - 1 / C1.get(letters[1]) - 1;
-			double one = C1.get(letters[2]) - 1 / Nc - 1;
+			double three = fetch(key) - 1 / fetch(letters[0] + letters[1]) - 1;
+			double two = fetch(letters[1] + letters[2]) - 1 / fetch(letters[1]) - 1;
+			double one = fetch(letters[2]) - 1 / Nc - 1;
 			double[] array = { one, two, three };
 			switch (determineMaximum(array)) {
 			case 0:
-				cLambda3 += C3.get(key);
+				cLambda3 += fetch(key);
 				break;
 			case 1:
-				cLambda2 += C3.get(key);
+				cLambda2 += fetch(key);
 				break;
 			case 2:
-				cLambda1 += C3.get(key);
+				cLambda1 += fetch(key);
 				break;
 			}
 			/*
@@ -459,6 +466,37 @@ public class SubstitutionTreeSearch {
 			}
 		}
 		return bestNgrams;
+	}
+
+	private double fetch(String nGram) {
+		// Determining all the characteristics of the nGram.
+		boolean word = false;
+		String[] parts = nGram.split(",");
+		if (parts[0].length() > 1)
+			word = true;
+		int size = parts.length;
+		Double toReturn = 0d;
+		switch (size) {
+		case 1:
+			if (word)
+				toReturn = fetch(nGram);
+			if (!word)
+				toReturn = fetch(nGram);
+			break;
+		case 2:
+			if (word)
+				toReturn = fetch(nGram);
+			if (!word)
+				toReturn = fetch(nGram);
+			break;
+		case 3:
+			if (word)
+				toReturn = fetch(nGram);
+			if (!word)
+				toReturn = fetch(nGram);
+			break;
+		}
+		return toReturn;
 	}
 
 	/**

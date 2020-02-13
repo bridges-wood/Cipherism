@@ -3,14 +3,21 @@ package cipher;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+/**
+ * A class to facilitate the detection of the most likely decryption key for a
+ * cipher-text encrypted with the simple substitution cipher.
+ * 
+ * @author Max Wood
+ * @see Substitution
+ */
 public class ProbableSubstitutions {
 
-	private char[] frequencyOrder;
-	private char[] alphabet;
+	private final char[] FREQUENCY_ORDER;
+	private final char[] ALPHABET;
 
 	public ProbableSubstitutions() {
-		frequencyOrder = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
-		alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
+		FREQUENCY_ORDER = "ETAOINSRHDLUCMFYWGPBVKXQJZ".toLowerCase().toCharArray();
+		ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
 	}
 
 	/**
@@ -30,12 +37,12 @@ public class ProbableSubstitutions {
 															// data removal without harming the input to the function.
 		while (!freqs.isEmpty()) {// Tests to see if all the data has been assigned to a mapping.
 			String target = maxKey(freqs); // Finds the character corresponding to the highest probability.
-			mappings[pointer] = new Mapping(target.charAt(0), frequencyOrder[pointer]);
+			mappings[pointer] = new Mapping(target.charAt(0), FREQUENCY_ORDER[pointer]);
 			// Creates a new mapping, in probability order with the particular character.
 			freqs.remove(target); // Removes character to avoid repeats.
 			pointer++;
 		}
-		for (char letter : alphabet) {
+		for (char letter : ALPHABET) {
 			/*
 			 * This corrects for any character that did not exist in the cipher text as
 			 * those mapping must still be accounted for in the array.
@@ -44,7 +51,7 @@ public class ProbableSubstitutions {
 				break;
 			if (!letterFrequencies.containsKey(Character.toString(letter))) { // If the letter of the alphabet doesn't
 																				// exist in the cipher text.
-				mappings[pointer] = new Mapping(letter, frequencyOrder[pointer]); // Creates new mapping.
+				mappings[pointer] = new Mapping(letter, FREQUENCY_ORDER[pointer]); // Creates new mapping.
 				pointer++;
 			}
 		}

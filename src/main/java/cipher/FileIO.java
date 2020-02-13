@@ -18,7 +18,13 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-public class Utilities {
+/**
+ * Class that manages all File IO operations for the project.
+ * <p>The primary serialisation / deserialistaion framework in use is {@link com.esotericsoftware.kryo.Kryo}</p>
+ * @author Max Wood
+ *
+ */
+public class FileIO {
 	// Hashed dictionary and bi-gram files.
 	public final String DICTIONARY_HASH_PATH = "src/main/resources/dictionary.htb";
 	public final String DICTIONARY_TEXT_PATH = "src/main/resources/dictionary.txt";
@@ -81,7 +87,7 @@ public class Utilities {
 	private final long FNV1_PRIME_64 = 1099511628211L;
 	private final Kryo kyro = new Kryo();
 
-	public Utilities() {
+	public FileIO() {
 		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
 		kyro.register(new TreeMap<Character, Double>().getClass());
 		kyro.register(new TreeMap<String, Double>().getClass());
@@ -173,7 +179,7 @@ public class Utilities {
 	}
 
 	/**
-	 * Returns the has-hmap that was stored in a given file. 10x Faster than
+	 * Returns the hash-map that was stored in a given file. 10x Faster than
 	 * previous method.
 	 * 
 	 * @param filename

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class KasiskiExaminationTest {
 
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private NGramAnalyser n = new NGramAnalyser(u);
 	private Vigenere v = new Vigenere();
 	private IOC i = new IOC(n);

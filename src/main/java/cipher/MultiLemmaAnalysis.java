@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Uses {@link PredictWords} to determine what p-equivalent n-grams each part of
+ * a string could be.
+ * 
+ * @author Max Wood
+ *
+ */
 public class MultiLemmaAnalysis {
 
-	private Utilities u;
+	private FileIO u;
 	private PredictWords p;
 
-	public MultiLemmaAnalysis(Utilities u, PredictWords p) {
+	public MultiLemmaAnalysis(FileIO u, PredictWords p) {
 		this.u = u;
 		this.p = p;
 	}

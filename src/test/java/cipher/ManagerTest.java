@@ -7,7 +7,7 @@ import org.junit.Test;
 public class ManagerTest {
 
 	private Vigenere v = new Vigenere();
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private Substitution s = new Substitution();
 	private final String PLAINTEXT = "The next thing I remember is, waking up with a feeling as if I had had a frightful nightmare,"
 			+ " and seeing before me a terrible red glare, crossed with thick black bars. I heard voices, too,"

@@ -8,7 +8,7 @@ public class SubstitutionTreeSearchTest {
 
 	private Substitution s = new Substitution();
 	private ProbableSubstitutions p = new ProbableSubstitutions();
-	private Utilities u = new Utilities();
+	private FileIO u = new FileIO();
 	private PredictWords pW = new PredictWords();
 	private NGramAnalyser n = new NGramAnalyser(u);
 	private DetectEnglish d = new DetectEnglish(u, n);
@@ -18,9 +18,8 @@ public class SubstitutionTreeSearchTest {
 	SubstitutionTreeSearch tester = new SubstitutionTreeSearch(s,
 			p.probableSubstitutionGenerator(n.NgramAnalysis(1, CIPHER_TEXT, true)), u, pW, d);
 
-	// @Test
+	@Test
 	public void testRun() {
-		// TODO complete design of test.
 		Mapping[] bestKey = tester.run(CIPHER_TEXT, true);
 		assertEquals(PLAIN_TEXT, s.decrypt(CIPHER_TEXT, bestKey));
 		System.out.println(s.decrypt(CIPHER_TEXT, bestKey));
