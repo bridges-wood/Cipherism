@@ -39,11 +39,15 @@ public class Manager {
 	}
 
 	private String run(String text) {
-		switch (detectCipher(text)) {
-		case "Periodic":
-			return c.vigenereBreaker(text);
-		case "Substitution":
-			return c.substitutionBreaker(text);
+		try {
+			switch (detectCipher(text)) {
+			case "Periodic":
+				return c.vigenereBreaker(text);
+			case "Substitution":
+				return c.substitutionBreaker(text);
+			}
+		} catch (CipherDetectionException e) {
+			System.err.println("Detection of the cipher failed.");
 		}
 		return "";
 	}

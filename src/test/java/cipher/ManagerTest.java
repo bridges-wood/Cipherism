@@ -15,7 +15,7 @@ public class ManagerTest {
 	private final String KEY = "test";
 
 	@Test
-	public void testDetectCipher() {
+	public void testDetectCipher() throws CipherDetectionException {
 		Manager tester = new Manager(v.encrypt(u.cleanText(PLAINTEXT), KEY), true);
 		assertEquals(tester.detectCipher(tester.getText()), "Periodic");
 		tester.setText(s.encrypt(PLAINTEXT, SubstitutionTest.initialiseMappings("qwertyuiopasdfghjklzxcvbnm")));
