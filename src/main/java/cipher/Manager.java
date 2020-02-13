@@ -39,15 +39,11 @@ public class Manager {
 	}
 
 	private String run(String text) {
-		try {
-			switch (detectCipher(text)) {
-			case "Periodic":
-				return c.vigenereBreaker(text);
-			case "Substitution":
-				return c.substitutionBreaker(text);
-			}
-		} catch (CipherDetectionException e) {
-			System.err.println("Detection of the cipher failed.");
+		switch (detectCipher(text)) {
+		case "Periodic":
+			return c.vigenereBreaker(text);
+		case "Substitution":
+			return c.substitutionBreaker(text);
 		}
 		return "";
 	}
@@ -110,19 +106,14 @@ public class Manager {
 		}
 	}
 
-	public String detectCipher(String text) throws CipherDetectionException {
-		boolean periodic = detectPeriodic(text);
-		boolean substitution = detectSubstitution(text);
-		if (periodic && substitution) {
-			throw new CipherDetectionException();
-		} else if (!periodic || !substitution) {
-			throw new CipherDetectionException();
-		}
-		if (periodic)
+	public String detectCipher(String text) {
+		if (detectPeriodic(text)) {
 			return "Periodic";
-		if (substitution)
+		} else if (detectSubstitution(text)) {
 			return "Substitution";
-		return null;
+		} else {
+			return "";
+		}
 	}
 
 	public String getResult() {

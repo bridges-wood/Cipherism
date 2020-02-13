@@ -38,15 +38,18 @@ public class NGramAnalyser {
 	 */
 	public TreeMap<String, Double> NgramAnalysis(int n, String text, boolean isSpaced) {
 		TreeMap<String, Double> ngrams = new TreeMap<String, Double>();
-		String[] words = text.split("\\s+"); // Takes every word in text and
-												// removes all punctuation
-												// before adding it to the
-												// array.
+		String[] words = text.split("\\s+");
+		/*
+		 * Takes every word in text and removes all punctuation before adding it to the
+		 * array.
+		 */
 		for (String word : words) {
 			String temp = word;
-			word = " " + temp + " "; // Adds spaces to the end of every word (Allows for word end and start
-										// analysis).
-
+			word = " " + temp + " ";
+			/*
+			 * Adds spaces to the end of every word (Allows for word end and start
+			 * analysis).
+			 */
 			if (n <= word.length()) {
 				char[] chars = word.toCharArray();
 				// Generate ngrams for each word.
@@ -68,11 +71,19 @@ public class NGramAnalyser {
 		if (!isSpaced) {
 			ngrams.remove(" " + text.substring(0, n - 1));
 			ngrams.remove(text.substring(text.length() - (n - 1)) + " ");
-			// This removes the nGram that was found at the start and end containing the
-			// spaces added in before.
+			/*
+			 * This removes the nGram that was found at the start and end containing the
+			 * spaces added in before.
+			 */
 		}
 		if (n == 1) {
 			ngrams.remove(" ");
+			// Insures that all letters are included in the map even if they appear 0 times.
+			for (String letter : LETTERS) {
+				if (!ngrams.containsKey(letter)) {
+					ngrams.put(letter, 0d);
+				}
+			}
 		}
 		// Set double to fraction of the total the n gram represents.
 		double total = 0d;
@@ -93,12 +104,10 @@ public class NGramAnalyser {
 	 */
 	public TreeMap<String, Integer> frequencyAnalysis(String text) {
 		TreeMap<String, Integer> ngrams = new TreeMap<String, Integer>();
-		// Breakdown by words or not (this is not necessary as the code works on
-		// unspaced inputs equally well)
-		String[] characters = text.split(""); // Takes every word in text and
-												// removes all punctuation
-												// before adding it to the
-												// array.
+		String[] characters = text.split(""); /*
+												 * Takes every word in text and removes all punctuation before adding it
+												 * to the array.
+												 */
 		for (String letter : characters) {
 			// Generate ngrams for each word.
 			if (ngrams.containsKey(letter)) {
@@ -176,8 +185,8 @@ public class NGramAnalyser {
 			throw new IllegalArgumentException("Improper value of n.");
 		}
 		char[] letters = text.toCharArray();
-		for (int i = 0; i <= letters.length - n; i++) {// Assures we can get the most number of ngrams without
-														// overflow.
+		for (int i = 0; i <= letters.length
+				- n; i++) {/* Assures we can get the most number of ngrams without overflow. */
 			StringBuilder graph = new StringBuilder();
 			for (int j = 0; j < n; j++) {
 				graph.append(letters[i + j]);

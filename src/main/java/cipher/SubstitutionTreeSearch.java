@@ -99,16 +99,16 @@ public class SubstitutionTreeSearch {
 	 */
 	private SearchNode expand(SearchNode leaf) {
 		List<Mapping[]> leaves = generateKeyMutations(leaf.getKEY());
-		double hiScore = Double.MIN_VALUE;
-		SearchNode best = null;
+		SearchNode best = new SearchNode(Double.MIN_VALUE, null, null);
 		for (Mapping[] key : leaves) {
+			System.out.println(MappingArrayToString(key)); // TODO this does not appear to change in subsequent
+															// iterations. Could be due to keyScore().
 			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
 				double score = keyScore(key, true);
 				SearchNode child = new SearchNode(score, key, leaf);
 				leaf.addChild(child);
 				addToHashMap(key);
-				if (score > hiScore) {
-					hiScore = score;
+				if (score > best.getScore()) {
 					best = child;
 				}
 			}
@@ -228,19 +228,19 @@ public class SubstitutionTreeSearch {
 	private void generateWLambdas() {
 		for (String key : W3.keySet()) {
 			String[] words = key.split(",");
-			double three = W3.get(key) - 1 / W2.get(words[0] + "," + words[1]) - 1;
-			double two = W2.get(words[1] + "," + words[2]) - 1 / W1.get(words[1]) - 1;
-			double one = W1.get(words[2]) - 1 / Nw - 1;
+			double three = fetch(key) - 1 / fetch(words[0] + "," + words[1]) - 1;
+			double two = fetch(words[1] + "," + words[2]) - 1 / fetch(words[1]) - 1;
+			double one = fetch(words[2]) - 1 / Nw - 1;
 			double[] array = { one, two, three };
 			switch (determineMaximum(array)) {
 			case 0:
-				wLambda1 += W3.get(key);
+				wLambda1 += fetch(key);
 				break;
 			case 1:
-				wLambda2 += W3.get(key);
+				wLambda2 += fetch(key);
 				break;
 			case 2:
-				wLambda3 += W3.get(key);
+				wLambda3 += fetch(key);
 				break;
 			}
 		}
@@ -279,7 +279,7 @@ public class SubstitutionTreeSearch {
 			double chi = 0.5;
 			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
 		} else {
-			// TODO implement greedy word search algorithm.
+			// TODO implement greedy word search algorithm. NEED
 			return 0;
 		}
 	}
@@ -296,26 +296,14 @@ public class SubstitutionTreeSearch {
 		for (int i = 0; i < words.length; i++) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(words[i]);
-			if (W1.get(sb.toString()).equals(null)) {
-				score += wLambda1 * (1 / Nw);
-			} else {
-				score += wLambda1 * W1.get(sb.toString());
-			}
+			score += wLambda1 * fetch(sb.toString());
 			if (i >= 1) {
 				sb.insert(0, words[i - 1] + ",");
-				if (W2.get(sb.toString()).equals(null)) {
-					score += wLambda2 * (1 / Nw);
-				} else {
-					score += wLambda2 * W2.get(sb.toString());
-				}
+				score += wLambda2 * fetch(sb.toString());
 			}
 			if (i >= 2) {
 				sb.insert(0, words[i - 2] + ",");
-				if (W3.get(sb.toString()).equals(null)) {
-					score += wLambda3 * W3.get(sb.toString());
-				} else {
-					score += wLambda3 * W3.get(sb.toString());
-				}
+				score += wLambda3 * fetch(sb.toString());
 			}
 		}
 		return score;
@@ -333,14 +321,14 @@ public class SubstitutionTreeSearch {
 		for (int i = 0; i < letters.length; i++) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(letters[i]);
-			score += cLambda1 * C1.get(sb.toString());
+			score += cLambda1 * fetch(sb.toString());
 			if (i >= 1) {
 				sb.insert(0, letters[i - 1]);
-				score += cLambda2 * C2.get(sb.toString());
+				score += cLambda2 * fetch(sb.toString());
 			}
 			if (i >= 2) {
 				sb.insert(0, letters[i - 2]);
-				score += cLambda3 * C3.get(sb.toString());
+				score += cLambda3 * fetch(sb.toString());
 			}
 		}
 		return score;
@@ -356,7 +344,7 @@ public class SubstitutionTreeSearch {
 	 * @throws Exception
 	 */
 	private List<Mapping[]> generateKeyMutations(Mapping[] parentKey) {
-		scoredNgram[] bestNgrams = new scoredNgram[POOL_SIZE];
+		scoredNgram[] bestNgrams = generateArray(POOL_SIZE);
 		List<Mapping[]> childKeys = new LinkedList<Mapping[]>();
 		for (int i = 1; i < 4; i++) {
 			scoredNgram[] subGrams = bestPEquivalentNGrams(TEXT, i, POOL_SIZE);
@@ -407,10 +395,10 @@ public class SubstitutionTreeSearch {
 	 */
 	private scoredNgram[] bestPEquivalentNGrams(String cipherText, int n, int k) {
 		String[] words = cipherText.split(" ");
-		scoredNgram[] bestnGrams = new scoredNgram[k];
+		scoredNgram[] bestnGrams = generateArray(k);
 		for (int i = n - 1; i < words.length; i++) {
 			StringBuilder nGram = new StringBuilder();
-			for (int j = i - (n - 1); j < i; j++) {
+			for (int j = i - (n - 1); j <= i; j++) {
 				nGram.append(words[j] + " ");
 			}
 			String toSearch = nGram.toString().substring(0, nGram.length() - 1);
@@ -478,25 +466,43 @@ public class SubstitutionTreeSearch {
 		Double toReturn = 0d;
 		switch (size) {
 		case 1:
-			if (word)
-				toReturn = fetch(nGram);
-			if (!word)
-				toReturn = fetch(nGram);
+			if (word) {
+				toReturn = W1.get(nGram);
+			} else {
+				toReturn = C1.get(nGram);
+			}
 			break;
 		case 2:
-			if (word)
-				toReturn = fetch(nGram);
-			if (!word)
-				toReturn = fetch(nGram);
+			if (word) {
+				toReturn = W2.get(nGram);
+			} else {
+				toReturn = C2.get(nGram);
+			}
 			break;
 		case 3:
-			if (word)
-				toReturn = fetch(nGram);
-			if (!word)
-				toReturn = fetch(nGram);
+			if (word) {
+				toReturn = W3.get(nGram);
+			} else {
+				toReturn = C3.get(nGram);
+			}
 			break;
 		}
+		if (toReturn == null) {
+			if (word) {
+				toReturn = Math.pow(1 / Nw, size);
+			} else {
+				toReturn = Math.pow(1 / Nw, size);
+			}
+		}
 		return toReturn;
+	}
+
+	public scoredNgram[] generateArray(int length) {
+		scoredNgram[] out = new scoredNgram[length];
+		for (int i = 0; i < length; i++) {
+			out[i] = new scoredNgram("", "", Double.MIN_VALUE);
+		}
+		return out;
 	}
 
 	/**

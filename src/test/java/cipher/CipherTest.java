@@ -8,9 +8,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ CaesarTest.class, /*CipherBreakersTest.class,*/ DetectEnglishTest.class, IOCTest.class, KasiskiExaminationTest.class, ManagerTest.class,
-		MultiLemmaAnalysisTest.class, NGramAnalyserTest.class, PredictWordsTest.class, ProbableSubstitutionsTest.class,
-		SubstitutionTest.class, FileIOTest.class, VigenereTest.class })
+@SuiteClasses({ CaesarTest.class, CipherBreakersTest.class, DetectEnglishTest.class, IOCTest.class,
+		KasiskiExaminationTest.class, ManagerTest.class, MultiLemmaAnalysisTest.class, NGramAnalyserTest.class,
+		PredictWordsTest.class, ProbableSubstitutionsTest.class, SubstitutionTest.class, FileIOTest.class,
+		VigenereTest.class })
 public class CipherTest {
 
 	public static void main(String[] args) {
