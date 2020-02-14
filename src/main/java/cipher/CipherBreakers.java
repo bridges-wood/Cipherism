@@ -1,5 +1,11 @@
 package cipher;
 
+/**
+ * Class that contains all complete cipher decryption stacks.
+ * 
+ * @author Max Wood
+ *
+ */
 public class CipherBreakers {
 
 	private FileIO u;
@@ -23,10 +29,20 @@ public class CipherBreakers {
 		this.pw = new PredictWords();
 	}
 
+	/**
+	 * Takes in a Vigenere-encrypted string and completely decrypts and respaces it.
+	 * 
+	 * @param text The text to be decrypted.
+	 * @return The original plain-text.
+	 */
 	public String vigenereBreaker(String text) {
 		String[] keys = k.vigenereKeys(text);
 		double maxScore = Double.NEGATIVE_INFINITY;
 		String fittestKey = "";
+		/*
+		 * As the Vignere decryptor generates multiple keys, we need to detect the
+		 * fittest one.
+		 */
 		for (String key : keys) {
 			double score = u.deSpace(d.graphicalRespace(v.decrypt(text, key), 20)).length() / text.length();
 			if (score > maxScore) {
@@ -37,13 +53,24 @@ public class CipherBreakers {
 		return d.graphicalRespace(v.decrypt(text, fittestKey), 20);
 	}
 
+	/**
+	 * Takes in a string encrypted with the simple substitution cipher and decrypts
+	 * it and returns a respaced version.
+	 * 
+	 * @param text The text to be decrypted.
+	 * @return The original plain-text.
+	 */
 	public String substitutionBreaker(String text) {
 		Mapping[] inititalKey = p.probableSubstitutionGenerator(n.NgramAnalysis(1, text, false));
 		this.sts = new SubstitutionTreeSearch(s, inititalKey, u, pw, d);
-		boolean spacing = false;
+		boolean spaced = false;
 		if (text.contains(" "))
-			spacing = true;
-		return s.decrypt(text, sts.monteCarloTreeSearch(text, spacing));
+			spaced = true;
+		if (spaced) {
+			return s.decrypt(text, sts.monteCarloTreeSearch(text, spaced));
+		} else {
+			return d.graphicalRespace(s.decrypt(text, sts.monteCarloTreeSearch(text, spaced)), 20);
+		}
 	}
 
 }

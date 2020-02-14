@@ -1,5 +1,12 @@
 package cipher;
 
+/**
+ * Class that facilitates the encryption and decryption of a Caesar shift
+ * cipher.
+ * 
+ * @author Max Wood
+ *
+ */
 public class Caesar {
 
 	public Caesar() {
@@ -10,7 +17,7 @@ public class Caesar {
 	 * @param shift The shift that has been applied to the text.
 	 * @return A string that has undergone the Caesar shift.
 	 */
-	public String CaesarShiftDecrypt(String text, int shift) {
+	public String CaesarShift(String text, int shift) {
 		shift %= 26; // This avoids any issues with keys that aren't from 0 to 26.
 		String[] words = text.split("\\s+"); // Automatically handles spaces.
 		StringBuilder stringOut = new StringBuilder();

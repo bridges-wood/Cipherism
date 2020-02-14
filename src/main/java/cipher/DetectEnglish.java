@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
+/**
+ * A class that contains most of the methods to do with the detection of English
+ * in decrypted text and the subsequent respacing.
+ * 
+ * @author Max Wood
+ *
+ */
 public class DetectEnglish {
 
 	private HashMap<Long, String> dictionaryTable, twoGramsTable;
@@ -30,7 +37,7 @@ public class DetectEnglish {
 	 *         English. Scores above 0.75 for un-spaced text and 0.85 for spaced
 	 *         text are good indications of English.
 	 */
-	public float detectEnglish(String text) {
+	public double detectEnglish(String text) {
 		text = text.toLowerCase();
 		boolean spaced = false;
 		for (int i = 0; i < text.length(); i++) {
@@ -43,14 +50,17 @@ public class DetectEnglish {
 			ArrayList<String> words = new ArrayList<String>(Arrays.asList(text.replaceAll(
 					"[!\\\"\\�\\$\\%\\^\\&\\*\\(\\)\\_\\'\\+\\=\\{\\}\\[\\]\\;\\:\\@\\#\\~\\|\\<\\,\\.\\>\\/]", "")
 					.split(" "))); // Removal of all unwanted characters, leaving only hyphens and alphabetical
-									// characters and conversion to list..
+									// characters and conversion to list.
 			ArrayList<String> toRemove = new ArrayList<String>();
 			for (String word : words) {
 				char[] letters = word.toCharArray();
 				for (int i = 0; i < word.length(); i++) {
 					if (letters[i] == '-') {
-						toRemove.add(word); // If a word contains a '-' it needs to cleaned up because the dictionary
-											// does not deal well with compounded words.
+						toRemove.add(word);
+						/*
+						 * If a word contains a '-' it needs to cleaned up because the dictionary does
+						 * not deal well with compounded words.
+						 */
 					}
 				}
 			}
@@ -64,9 +74,11 @@ public class DetectEnglish {
 			return isEnglish(words.toArray(new String[0]));
 		} else {
 			return u.deSpace(graphicalRespace(text, 20)).length() / text.length();
-			// This is due to the fact that if there are any non-English words in the text,
-			// by nature they will not appear in the re-spaced text, so a different approach
-			// must be taken to account for this.
+			/*
+			 * This is due to the fact that if there are any non-English words in the text,
+			 * by nature they will not appear in the re-spaced text, so a different approach
+			 * must be taken to account for this.
+			 */
 		}
 	}
 
@@ -77,7 +89,7 @@ public class DetectEnglish {
 	 * @return Float representing the fraction of words in the array that are
 	 *         English.
 	 */
-	public float isEnglish(String[] words) {
+	public double isEnglish(String[] words) {
 		if (words.length == 0) {
 			return 0;
 		}
@@ -169,6 +181,10 @@ public class DetectEnglish {
 				parent.score = parent.score + child.score;
 				if (twoGramsTable.containsKey(u.hash64(parent.getWord() + "," + child.getWord()))) {
 					child.setScore(child.getScore() * 2 + child.getWord().length() * 2);
+					/*
+					 * Score adjustment based on whether the n-gram of the word and succeeding word
+					 * is common.
+					 */
 				} else {
 					child.setScore(child.getScore() / 2);
 				}
@@ -228,12 +244,13 @@ public class DetectEnglish {
 		for (Character letter : letterProbabilities.keySet()) {
 			double expectedCount = letterProbabilities.get(letter) * length;
 			score += Math.pow(letterFrequencies.get(letter.toString()) - expectedCount, 2) / expectedCount;
+			// (Oi - Ei)^2 / Ei
 		}
 		return score;
 	}
 
 	/**
-	 * Determines if a single word exists in the English language,.
+	 * Determines if a single word exists in the English language.
 	 * 
 	 * @param word The word to be examined
 	 * @return Boolean whether word is English or not.
@@ -244,7 +261,7 @@ public class DetectEnglish {
 
 	/**
 	 * A recursive greedy word-search algorithm designed to operate quickly rather
-	 * than accurately on a given piece of english text.
+	 * than accurately on a given piece of English text.
 	 * 
 	 * @param toAnalyse The text to be re-spaced.
 	 * @param longest   The length of the longest possible word to be found.

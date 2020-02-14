@@ -13,7 +13,7 @@ public class CaesarTest {
 	@Test
 	public void testCaesarShiftDecrypt() {
 		assertEquals("the quick brown fox jumps over the lazy dog".replaceAll(" ", ""),
-				tester.CaesarShiftDecrypt(ENCRYPTED, SHIFT));
+				tester.CaesarShift(ENCRYPTED, SHIFT));
 	}
 
 }

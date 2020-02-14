@@ -30,7 +30,7 @@ public class KasiskiExamination {
 		this.i = i;
 		this.d = d;
 	}
-	
+
 	/**
 	 * Gives the most likely keys for the given text.
 	 * 
@@ -66,11 +66,8 @@ public class KasiskiExamination {
 												// respective section to.
 			for (int i = 0; i < 26; i++) {
 				String toAnalyse = v.decrypt(finalString, Character.toString(ALPHABET[i]));
-				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length()); // Compute
-																												// FMS
-																												// of
-																												// the
-																												// composite.
+				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
+				// Compute FMS of the composite.
 				FMSarray[i] = valueToInsert;
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
@@ -102,8 +99,8 @@ public class KasiskiExamination {
 			for (String key : toRemove) {
 				likelyKeys.remove(key);
 			}
-			return likelyKeys.toArray(new String[likelyKeys.size()]);// possibleKeys[minIndex]; // Returns the most
-																		// likely key.
+			return likelyKeys.toArray(new String[likelyKeys.size()]);
+			// Returns the most likely key.
 		}
 		return null;
 	}
@@ -279,12 +276,13 @@ public class KasiskiExamination {
 	 */
 	private Integer maxKeyInt(Map<Integer, Integer> map) {
 		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
-				.getValue().compareTo(entry2.getValue())).get().getKey(); // Looks through all the K, V pairs in the
-																			// map, comparing all values. One is set to
-																			// the max of the two and the next value in
-																			// the map is compared to the current
-																			// maximum. When the final maximum value is
-																			// found, the corresponding key is returned.
+				.getValue().compareTo(entry2.getValue())).get().getKey();
+		/*
+		 * Looks through all the K, V pairs in the map, comparing all values. One is set
+		 * to the max of the two and the next value in the map is compared to the
+		 * current maximum. When the final maximum value is found, the corresponding key
+		 * is returned.
+		 */
 	}
 
 	/**

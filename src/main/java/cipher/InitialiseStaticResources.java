@@ -1,5 +1,12 @@
 package cipher;
 
+/**
+ * A class to facilitate the generation and updating of all static resources
+ * necessary for the project.
+ * 
+ * @author Max Wood
+ *
+ */
 public class InitialiseStaticResources {
 
 	static FileIO u = new FileIO();

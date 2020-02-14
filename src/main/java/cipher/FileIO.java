@@ -20,7 +20,11 @@ import com.esotericsoftware.kryo.io.Output;
 
 /**
  * Class that manages all File IO operations for the project.
- * <p>The primary serialisation / deserialistaion framework in use is {@link com.esotericsoftware.kryo.Kryo}</p>
+ * <p>
+ * The primary serialisation / deserialistaion framework in use is
+ * {@link com.esotericsoftware.kryo.Kryo}
+ * </p>
+ * 
  * @author Max Wood
  *
  */
@@ -88,7 +92,8 @@ public class FileIO {
 	private final Kryo kyro = new Kryo();
 
 	public FileIO() {
-		kyro.register(new HashMap<Long, String>().getClass()); // Registration is required for proper serialisation.
+		// Registration is required for proper serialisation.
+		kyro.register(new HashMap<Long, String>().getClass());
 		kyro.register(new TreeMap<Character, Double>().getClass());
 		kyro.register(new TreeMap<String, Double>().getClass());
 		kyro.register(new LinkedList<String>().getClass());
@@ -263,7 +268,7 @@ public class FileIO {
 	}
 
 	/**
-	 * Generates and saves a TreeMap from a file containing ngrams in English and
+	 * Generates and saves a TreeMap from a file containing n-grams in English and
 	 * their relative appearances in Google's trillion word corpus.
 	 * 
 	 * @param size The number of letters to be examined for.
@@ -283,7 +288,7 @@ public class FileIO {
 				for (int i = 0; i < splitLine.length - 1; i++) {
 					nGram.append(splitLine[i] + ",");
 				}
-				nGram.deleteCharAt(nGram.length() - 1);
+				nGram.deleteCharAt(nGram.length() - 1); // Removes the final comma in the n-gram.
 				double toInsert = Double.valueOf(splitLine[splitLine.length - 1]);
 				chances.put(nGram.toString(), Double.valueOf(toInsert));
 				total += toInsert;
@@ -294,9 +299,11 @@ public class FileIO {
 			if (!log) {
 				toInsert = chances.get(key) / total;
 			} else {
-				toInsert = Math.log10(chances.get(key) / total); // For every key, the log is taken to avoid
-																	// numerical underflow when operating
-																	// with such small probabilities.
+				toInsert = Math.log10(chances.get(key) / total);
+				/*
+				 * For every key, the log is taken to avoid numerical underflow when operating
+				 * with such small probabilities.
+				 */
 			}
 			chances.put(key, toInsert);
 		}
@@ -327,6 +334,12 @@ public class FileIO {
 		return null;
 	}
 
+	/**
+	 * Loads a TreeMap containing p-equivalent n-grams.
+	 * 
+	 * @param filename The file the map is to be recovered from.
+	 * @return The TreeMap of p-equivalent n-grams.
+	 */
 	public TreeMap<String, LinkedList<String>> loadCharacterIndexForm(String filename) {
 		File inFile = new File(filename);
 		try {
@@ -338,6 +351,14 @@ public class FileIO {
 		return null;
 	}
 
+	/**
+	 * Generates a map that stores a character index form encoding and all possible
+	 * words that fit the pattern.
+	 * 
+	 * @param filename       The filename that the words to be encoded are stored
+	 *                       in.
+	 * @param outputFilename The filename for the map to be stored in.
+	 */
 	public void generateCharacterIndexFormMap(String filename, String outputFilename) {
 		TreeMap<String, LinkedList<String>> map = new TreeMap<String, LinkedList<String>>();
 		File toFile = new File(outputFilename);
@@ -364,7 +385,8 @@ public class FileIO {
 			kyro.writeClassAndObject(out, map);
 			out.close();
 		} catch (FileNotFoundException f) {
-			System.err.println("Location for Character-Index-Form Map to be stored '" + outputFilename + "' could not be reached.");
+			System.err.println("Location for Character-Index-Form Map to be stored '" + outputFilename
+					+ "' could not be reached.");
 		}
 	}
 
