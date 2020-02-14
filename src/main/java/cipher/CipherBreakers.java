@@ -43,7 +43,7 @@ public class CipherBreakers {
 		boolean spacing = false;
 		if (text.contains(" "))
 			spacing = true;
-		return s.decrypt(text, sts.run(text, spacing));
+		return s.decrypt(text, sts.monteCarloTreeSearch(text, spacing));
 	}
 
 }

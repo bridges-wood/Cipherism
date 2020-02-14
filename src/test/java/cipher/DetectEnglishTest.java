@@ -59,4 +59,9 @@ public class DetectEnglishTest {
 		// Test cases chosen at random.
 	}
 
+	@Test
+	public void testGreeedyRespace() {
+		System.out.println(tester.greedyRespace("thisisanenglishsentence", 20));
+	}
+
 }

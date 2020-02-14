@@ -20,7 +20,7 @@ public class SubstitutionTreeSearchTest {
 
 	@Test
 	public void testRun() {
-		Mapping[] bestKey = tester.run(CIPHER_TEXT, true);
+		Mapping[] bestKey = tester.monteCarloTreeSearch(CIPHER_TEXT, true);
 		assertEquals(PLAIN_TEXT, s.decrypt(CIPHER_TEXT, bestKey));
 		System.out.println(s.decrypt(CIPHER_TEXT, bestKey));
 	}

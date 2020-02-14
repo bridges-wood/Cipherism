@@ -241,4 +241,25 @@ public class DetectEnglish {
 	public boolean isEnglish(String word) {
 		return dictionaryTable.containsKey(u.hash64(word));
 	}
+
+	/**
+	 * A recursive greedy word-search algorithm designed to operate quickly rather
+	 * than accurately on a given piece of english text.
+	 * 
+	 * @param toAnalyse The text to be re-spaced.
+	 * @param longest   The length of the longest possible word to be found.
+	 * @return The respaced text.
+	 */
+	public String greedyRespace(String toAnalyse, int longest) {
+		for (int wordLength = longest; wordLength >= 2; wordLength--) {
+			for (int i = 0; i <= toAnalyse.length() - longest; i++) {
+				String possWord = toAnalyse.substring(i, wordLength + i);
+				if (isEnglish(possWord)) {
+					return greedyRespace(toAnalyse.substring(0, i), longest) + " " + possWord + " "
+							+ greedyRespace(toAnalyse.substring(wordLength + i + 1), longest);
+				}
+			}
+		}
+		return toAnalyse;
+	}
 }

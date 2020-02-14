@@ -62,7 +62,7 @@ public class SubstitutionTreeSearch {
 	 *               preserved.
 	 * @return An array of Mappings corresponding to the decryption of the text.
 	 */
-	public Mapping[] run(String text, boolean spaced) {
+	public Mapping[] monteCarloTreeSearch(String text, boolean spaced) {
 		TEXT = text;
 		String decrypted = s.decrypt(TEXT, ORIGIN.getKEY());
 		while (u.deSpace(d.graphicalRespace(decrypted, 20)).length() < 0.5 * TEXT.length()) {
@@ -104,6 +104,7 @@ public class SubstitutionTreeSearch {
 			System.out.println(MappingArrayToString(key)); // TODO this does not appear to change in subsequent
 															// iterations. Could be due to keyScore().
 			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
+				// If the key has not been seen before... This reduces overall processing time.
 				double score = keyScore(key, true);
 				SearchNode child = new SearchNode(score, key, leaf);
 				leaf.addChild(child);
@@ -173,12 +174,10 @@ public class SubstitutionTreeSearch {
 		if (current.getChildren().isEmpty()) {
 			return current;
 		} else {
-			double hiScore = Double.MIN_VALUE;
-			SearchNode best = null;
+			SearchNode best = new SearchNode(Double.MIN_VALUE, null, null);
 			for (SearchNode node : current.getChildren()) {
 				double score = node.UCB(C);
-				if (score > hiScore) {
-					hiScore = score;
+				if (score > best.getScore()) {
 					best = node;
 				}
 			}
@@ -275,12 +274,12 @@ public class SubstitutionTreeSearch {
 	 */
 	public double keyScore(Mapping[] mappings, boolean spaced) {
 		String toAnalyse = s.decrypt(TEXT, mappings);
+		double chi = 0.5;
 		if (spaced) {
-			double chi = 0.5;
 			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
 		} else {
-			// TODO implement greedy word search algorithm. NEED
-			return 0;
+			toAnalyse = d.greedyRespace(toAnalyse, 20);
+			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
 		}
 	}
 
@@ -456,6 +455,14 @@ public class SubstitutionTreeSearch {
 		return bestNgrams;
 	}
 
+	/**
+	 * An interface between the gets to the maps of n-grams and their occurrences to
+	 * avoid null returns when the value is not found. If the combination is not
+	 * found it is assumed to be the minimum possible likelihood of occurring.
+	 * 
+	 * @param nGram The nGram to have its score fetched from its respective map.
+	 * @return The score of the nGram.
+	 */
 	private double fetch(String nGram) {
 		// Determining all the characteristics of the nGram.
 		boolean word = false;
@@ -497,6 +504,13 @@ public class SubstitutionTreeSearch {
 		return toReturn;
 	}
 
+	/**
+	 * Generates an array of scoredNgrams to avoid null-pointer exceptions when
+	 * comparing scores.
+	 * 
+	 * @param length The length of the array to be generated.
+	 * @return The array of minimum scored scoredNgrams.
+	 */
 	public scoredNgram[] generateArray(int length) {
 		scoredNgram[] out = new scoredNgram[length];
 		for (int i = 0; i < length; i++) {
@@ -509,7 +523,7 @@ public class SubstitutionTreeSearch {
 	 * A class to contain an nGram and its score in the same place to facilitate
 	 * easy comparison.
 	 * 
-	 * @author woodmb
+	 * @author Max Wood
 	 */
 	private class scoredNgram {
 		private final String textSource;
