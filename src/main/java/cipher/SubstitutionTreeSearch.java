@@ -15,7 +15,7 @@ import java.util.TreeMap;
  * @see <a href="https://www.aclweb.org/anthology/C14-1218.pdf">Paper</a>
  */
 public class SubstitutionTreeSearch {
-
+//TODO This CANNOT work without a complete corpus of words.
 	private Substitution s;
 	private PredictWords p;
 	private DetectEnglish d;
@@ -103,8 +103,7 @@ public class SubstitutionTreeSearch {
 		List<Mapping[]> leaves = generateKeyMutations(leaf.getKEY());
 		SearchNode best = new SearchNode(Double.NEGATIVE_INFINITY, null, null);
 		for (Mapping[] key : leaves) {
-			System.out.println(MappingArrayToString(key)); // TODO this does not appear to change in subsequent
-															// iterations. Could be due to keyScore().
+			System.out.println(MappingArrayToString(key));
 			if (!mappings.containsKey(u.hash64(MappingArrayToString(orderKey(key))))) {
 				// If the key has not been seen before... This reduces overall processing time.
 				double score = keyScore(key, spaced);
@@ -200,13 +199,13 @@ public class SubstitutionTreeSearch {
 			double[] array = { one, two, three };
 			switch (determineMaximum(array)) {
 			case 0:
-				cLambda3 += fetch(key);
+				cLambda3 += Nc / fetch(key);
 				break;
 			case 1:
-				cLambda2 += fetch(key);
+				cLambda2 += Nc / fetch(key);
 				break;
 			case 2:
-				cLambda1 += fetch(key);
+				cLambda1 += Nc / fetch(key);
 				break;
 			}
 			/*
@@ -228,6 +227,7 @@ public class SubstitutionTreeSearch {
 	 */
 	private void generateWLambdas() {
 		for (String key : W3.keySet()) {
+			System.out.println(wLambda1 + " " + wLambda2 + " " + wLambda3);
 			String[] words = key.split(",");
 			double three = fetch(key) - 1 / fetch(words[0] + "," + words[1]) - 1;
 			double two = fetch(words[1] + "," + words[2]) - 1 / fetch(words[1]) - 1;
@@ -235,13 +235,13 @@ public class SubstitutionTreeSearch {
 			double[] array = { one, two, three };
 			switch (determineMaximum(array)) {
 			case 0:
-				wLambda1 += fetch(key);
+				wLambda1 += Nw / fetch(key);
 				break;
 			case 1:
-				wLambda2 += fetch(key);
+				wLambda2 += Nw / fetch(key);
 				break;
 			case 2:
-				wLambda3 += fetch(key);
+				wLambda3 += Nw / fetch(key);
 				break;
 			}
 		}
@@ -277,12 +277,14 @@ public class SubstitutionTreeSearch {
 	public double keyScore(Mapping[] mappings, boolean spaced) {
 		String toAnalyse = s.decrypt(TEXT, mappings);
 		double chi = 0.5;
+		double toReturn = 0;
 		if (spaced) {
-			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
+			toReturn = chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
 		} else {
-			toAnalyse = d.greedyRespace(toAnalyse, 20);
-			return chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
+			toAnalyse = d.greedyWrapper(toAnalyse, 20);
+			toReturn = chi * Math.log(characterScore(toAnalyse)) + (1 - chi) * Math.log(wordScore(toAnalyse));
 		}
+		return toReturn;
 	}
 
 	/**

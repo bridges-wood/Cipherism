@@ -30,31 +30,31 @@ public class NGramAnalyserTest {
 	public void testNgramAnalysis() {
 		TreeMap<String, Double> trigrams = tester.NgramAnalysis(3, PLAINTEXT, true);
 		assertTrue(trigrams.get("he ") > 0);
-		assertEquals(trigrams.get("xe "), null);
+		assertEquals(null, trigrams.get("xe "));
 	}
 
 	@Test
 	public void testFrequencyAnalysis() {
 		TreeMap<String, Integer> letters = tester.frequencyAnalysis(PLAINTEXT);
-		assertEquals(letters.get("e").intValue(), 131);
-		assertEquals(letters.get("z").intValue(), 0);
+		assertEquals(131, letters.get("e").intValue());
+		assertEquals(0, letters.get("z").intValue());
 	}
 
 	@Test
 	public void testKasiskiBase() {
 		TreeMap<String, Integer> map = tester.kasiskiBase(1, PLAINTEXT); // Length 1
-		assertEquals(map.get("e").intValue(), 131);
-		assertEquals(map.get("x").intValue(), 1);
-		assertEquals(map.get("i").intValue(), 66);
-		assertEquals(map.get("z"), null);
+		assertEquals(131, map.get("e").intValue());
+		assertEquals(1, map.get("x").intValue());
+		assertEquals(66, map.get("i").intValue());
+		assertEquals(null, map.get("z"));
 		map = tester.kasiskiBase(2, PLAINTEXT); // Length 2
-		assertEquals(map.get("of").intValue(), 8);
-		assertEquals(map.get("in").intValue(), 31);
-		assertEquals(map.get("at").intValue(), 5);
+		assertEquals(8, map.get("of").intValue());
+		assertEquals(31, map.get("in").intValue());
+		assertEquals(5, map.get("at").intValue());
 		map = tester.kasiskiBase(3, PLAINTEXT); // Length 3
-		assertEquals(map.get("the").intValue(), 20);
-		assertEquals(map.get("who"), null);
-		assertEquals(map.get("how").intValue(), 1);
+		assertEquals(20, map.get("the").intValue());
+		assertEquals(null, map.get("who"));
+		assertEquals(1, map.get("how").intValue());
 	}
 
 	@Test

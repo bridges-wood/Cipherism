@@ -265,18 +265,31 @@ public class DetectEnglish {
 	 * 
 	 * @param toAnalyse The text to be re-spaced.
 	 * @param longest   The length of the longest possible word to be found.
-	 * @return The respaced text.
+	 * @return The re-spaced text.
 	 */
-	public String greedyRespace(String toAnalyse, int longest) {
+	private String greedyRespace(String toAnalyse, int longest) {
+		if (toAnalyse.length() == 0)
+			return "";
 		for (int wordLength = longest; wordLength >= 2; wordLength--) {
-			for (int i = 0; i <= toAnalyse.length() - longest; i++) {
-				String possWord = toAnalyse.substring(i, wordLength + i);
+			for (int i = 0; i <= toAnalyse.length() - wordLength; i++) {
+				String possWord = toAnalyse.substring(i, i + wordLength);
 				if (isEnglish(possWord)) {
 					return greedyRespace(toAnalyse.substring(0, i), longest) + " " + possWord + " "
-							+ greedyRespace(toAnalyse.substring(wordLength + i + 1), longest);
+							+ greedyRespace(toAnalyse.substring(wordLength + i), longest);
 				}
 			}
 		}
 		return toAnalyse;
+	}
+
+	/**
+	 * A wrapper method to handle String formatting for {@link greedyRespace}.
+	 * 
+	 * @param toAnalyse The String to be re-spaced.
+	 * @param longest   The length of the longest word that could be found.
+	 * @return A properly formatted version of the re-spaced text.
+	 */
+	public String greedyWrapper(String toAnalyse, int longest) {
+		return greedyRespace(toAnalyse, longest).replace("  ", " ").strip();
 	}
 }

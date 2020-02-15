@@ -33,7 +33,7 @@ public class KasiskiExaminationTest {
 		for (String key : keys) {
 			String encrypted = v.encrypt(PLAINTEXT, key);
 			int[] likelyLengths = tester.likelyKeyLengths(n.kasiskiBase(2, encrypted), encrypted);
-			assertEquals(tester.mostLikelyKeyLength(likelyLengths, encrypted), key.length());
+			assertEquals(key.length(), tester.mostLikelyKeyLength(likelyLengths, encrypted));
 		}
 
 	}

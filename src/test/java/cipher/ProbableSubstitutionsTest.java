@@ -56,7 +56,7 @@ public class ProbableSubstitutionsTest {
 		TreeMap<String, Double> newMap = new TreeMap<String, Double>();
 		newMap.put("1", 1.0d);
 		newMap.put("2", 2.0d);
-		assertEquals(tester.maxKey(newMap), "2");
+		assertEquals("2", tester.maxKey(newMap));
 	}
 
 }
