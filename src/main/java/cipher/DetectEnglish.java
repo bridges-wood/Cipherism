@@ -283,7 +283,8 @@ public class DetectEnglish {
 	}
 
 	/**
-	 * A wrapper method to handle String formatting for {@link greedyRespace}.
+	 * A wrapper method to handle String formatting for
+	 * {@link #greedyRespace(String, int)}.
 	 * 
 	 * @param toAnalyse The String to be re-spaced.
 	 * @param longest   The length of the longest word that could be found.

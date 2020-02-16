@@ -52,8 +52,7 @@ public class FileIOTest {
 
 	@Test
 	public void testGenerateLetterFrequencies() {
-		tester.generateLetterFrequencies("src/test/resources/letterFrequencies.txt",
-				"src/test/resources/letterFrequencies.tmp");
+		tester.generateLetterFrequencies("src/test/resources/frequencies.txt", "src/test/resources/frequencies.tmp");
 	}
 
 	@Test
@@ -61,7 +60,7 @@ public class FileIOTest {
 		TreeMap<Character, Double> frequencies = new TreeMap<Character, Double>();
 		frequencies.put('e', 0.227d);
 		assertEquals(frequencies.entrySet(),
-				tester.readLetterFrequencies("src/test/resources/letterFrequencies.tmp").entrySet());
+				tester.readLetterFrequencies("src/test/resources/frequencies.tmp").entrySet());
 	}
 
 	@Test

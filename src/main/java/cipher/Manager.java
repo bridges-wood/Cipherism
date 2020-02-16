@@ -10,7 +10,7 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 /**
  * A class that handles the management of the decryption of the string passed to
  * the server by each client. It is designed to be lightweight and pass on the
- * heavy lifting of decryption to {@link CipherBreaker}.
+ * heavy lifting of decryption to {@link cipher.CipherBreakers}.
  * 
  * @author Max Wood
  *

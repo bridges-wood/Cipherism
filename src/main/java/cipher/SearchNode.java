@@ -69,7 +69,6 @@ public class SearchNode {
 	/**
 	 * Returns a value that results a visits-adjusted score for the given node.
 	 * 
-	 * @param node The node to be examined.
 	 * @return The score of the node.
 	 */
 	public double UCB(double Constant) {

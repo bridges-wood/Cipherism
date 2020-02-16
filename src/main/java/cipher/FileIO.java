@@ -271,7 +271,12 @@ public class FileIO {
 	 * Generates and saves a TreeMap from a file containing n-grams in English and
 	 * their relative appearances in Google's trillion word corpus.
 	 * 
-	 * @param size The number of letters to be examined for.
+	 * @param filename       The file the n-grams are to be fetched from.
+	 * @param outputFilename The file the n-gram map is to be stored in.
+	 * @param characters     True if the n-grams are for characters rather than
+	 *                       words.
+	 * @param log            True if the log probabilities for the n-grams are to be
+	 *                       stored.
 	 */
 	public void generateNGramMap(String filename, String outputFilename, boolean characters, boolean log) {
 		File toFile = new File(outputFilename);
@@ -321,7 +326,7 @@ public class FileIO {
 	 * Loads a TreeMap from a file containing NGrams in English and their respective
 	 * log probabilities.
 	 * 
-	 * @param size The number of letters to be examined for.
+	 * @param filename The file from which the map is to be loaded from.
 	 */
 	public TreeMap<String, Double> loadNgramMap(String filename) {
 		File location = new File(filename);

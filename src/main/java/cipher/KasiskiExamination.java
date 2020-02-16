@@ -319,7 +319,6 @@ public class KasiskiExamination {
 	 *                   function.
 	 * @param counter    A variable to keep track how deep in the 2D array the
 	 *                   function is.
-	 * @return A String[] of possible keys.
 	 */
 	private void combinations(String[][] input, String[] currentKey, int counter) {
 

@@ -34,9 +34,7 @@ public class PredictWords {
 	 * Generate a series of possible words for an mono-alphabetically encoded
 	 * string.
 	 * 
-	 * @param word     The encoded word from which possible words can be generated.
-	 * @param probable Whether or not the list of most probable words should be
-	 *                 checked or not.
+	 * @param word The encoded word from which possible words can be generated.
 	 * @return A String array containing all the possible words the encrypted string
 	 *         could be.
 	 */

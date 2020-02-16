@@ -17,10 +17,8 @@ public class Mapping {
 	}
 
 	/**
-	 * @param isDefinite Whether or not the relationship is definite in the text.
-	 * @param fromChar   The enciphered character.
-	 * @param toChar     The deciphered character the enciphered character
-	 *                   represents.
+	 * @param fromChar The enciphered character.
+	 * @param toChar   The deciphered character the enciphered character represents.
 	 */
 	public Mapping(char fromChar, char toChar) {
 		this.cipherChar = fromChar;
