@@ -1,11 +1,13 @@
-#CipherSolve
+[![Build Status](https://travis-ci.com/bridges-wood/CiphersApp.svg?token=P6LpzqaQxmRysNZqqfKc&branch=master)](https://travis-ci.com/bridges-wood/CiphersApp)
+
+# CipherSolve
 CipherSolve is a mobile-based classical cipher decryption platform based on statistical analysis 
 of their characteristics. 
 
-##Supported Ciphers
+## Supported Ciphers
 1.  Vigenere
 2.  Caesar
 3.  Substitution.
 
-##Usage
+## Usage
 Requries the use of the accompanying Android app.
