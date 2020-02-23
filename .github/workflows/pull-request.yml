@@ -8,14 +8,12 @@ jobs:
   pull-request:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
     - name: pull-request
       uses: repo-sync/pull-request@v2.0.1
       with:
-        source_branch: ""
-        destination_branch: "master"
         pr_title: "Pulling ${{ github.ref }} into master"
-        # Pull request body
+        # Pull request bodyryptic) error mes
         pr_body: ":crown: *Automated pull request for review*"
         # Pull request labels, comma-separated list (no spaces)
         pr_label: "auto-pr"
