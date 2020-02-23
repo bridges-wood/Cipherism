@@ -1,5 +1,5 @@
 language: java
-jdk: oraclejdk13
+jdk: oraclejdk11
 os: linux
 before_install:
 - echo -e "machine github.com\n" login 6e8eb299c83f468e182ec7a817684879d8eecbf3 > ~/.netrc
