@@ -30,9 +30,6 @@
 									<mainClass>com.polytonic.main.java.main.ServerInit</mainClass>
 								</manifest>
 							</archive>
-							<descriptorRefs>
-								<descriptorRef></descriptorRef>
-							</descriptorRefs>
 						</configuration>
 					</execution>
 				</executions>
