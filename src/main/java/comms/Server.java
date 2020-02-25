@@ -27,6 +27,7 @@ public class Server {
 			@Override
 			public void run() {
 				try {
+					System.out.println("Ready");
 					@SuppressWarnings("resource") // Because the server should always be up, the socket is never closed
 													// programmatically.
 					ServerSocket serverSocket = new ServerSocket(4848);
