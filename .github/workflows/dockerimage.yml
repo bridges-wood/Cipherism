@@ -1,6 +1,9 @@
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    branches: 
+      - master
 
 jobs:
 
@@ -15,6 +18,8 @@ jobs:
       with:
         java-version: 11
     - name: Build with Maven
-      run: maven -B package --file pom.xml
+      run: mvn -B package --file pom.xml
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+        docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+        docker docker push bridgeswood/website-services:latest
