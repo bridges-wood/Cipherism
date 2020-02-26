@@ -27,4 +27,4 @@ jobs:
     - name: Login to DockerHub
       run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Push Image
-      run: docker push bridgeswood/website-services:CiphersApp
+      run: docker push bridgeswood/website-services:CiphersApp$(date +%s)
