@@ -37,6 +37,7 @@ public class CipherBreakers {
 	 */
 	public String vigenereBreaker(String text) {
 		String[] keys = k.vigenereKeys(text);
+		System.out.println("Keys: " + keys.length);
 		double maxScore = Double.NEGATIVE_INFINITY;
 		String fittestKey = "";
 		/*

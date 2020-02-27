@@ -44,7 +44,7 @@ public class Manager {
 	private void run(String text) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			result = c.vigenereBreaker(text);
+			result = c.vigenereBreaker(u.deSpace(text));
 		case "Substitution":
 			result = c.substitutionBreaker(text);
 		case "":
@@ -60,26 +60,22 @@ public class Manager {
 	 * @return A boolean representing whether the text is encoded periodically.
 	 */
 	public boolean detectPeriodic(String text) {
+		text = u.deSpace(text);
 		double[] IOCs = new double[19];
 		for (int n = 2; n <= 20; n++) {
 			IOCs[n - 2] = i.periodIndexOfCoincidence(n, text);
 		}
 		double sd = new StandardDeviation().evaluate(IOCs);
 		double mean = new Mean().evaluate(IOCs);
-		int counter = 0;
 		for (double index : IOCs) {
 			if (index >= mean + sd)
-				counter++;
+				return true;
 			/*
 			 * If the text is encrypted with a periodic cipher, peaks should be identified
 			 * in the indices of coincidence.
 			 */
 		}
-		if (counter >= 3) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**

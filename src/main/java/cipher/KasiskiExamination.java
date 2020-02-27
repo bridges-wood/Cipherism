@@ -72,7 +72,8 @@ public class KasiskiExamination {
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
 			for (int i = 0; i < 26; i++) {
-				if (FMSarray[i] < 0.6) // This selects the top ~40% of letters.
+				// TODO Write this to select the top 33% of letters.
+				if (FMSarray[i] < 1.5) // This selects the top ~40% of letters.
 					possibleCharacters.add(Character.toString(ALPHABET[i]));
 			}
 			possibleLetters[b] = possibleCharacters.toArray(new String[0]);

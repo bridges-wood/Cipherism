@@ -121,6 +121,7 @@ public class NGramAnalyser {
 				ngrams.put(letter, 0);
 			}
 		}
+		ngrams.remove(" ");
 		return ngrams;
 	}
 
