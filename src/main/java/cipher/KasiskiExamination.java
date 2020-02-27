@@ -38,7 +38,7 @@ public class KasiskiExamination {
 	 * @return The most likely key used to encrypt the text.
 	 */
 	public String[] vigenereKeys(String text) {
-		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(2, text), text);
+		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(3, text), text);
 		return keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
 	}
 

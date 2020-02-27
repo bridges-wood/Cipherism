@@ -33,19 +33,23 @@ public class Manager {
 		this.p = new ProbableSubstitutions();
 		this.n = new NGramAnalyser(u);
 		this.i = new IOC(n);
+		Vigenere v = new Vigenere();
+		DetectEnglish d = new DetectEnglish(u, n);
+		this.k = new KasiskiExamination(u, n, v, i, d);
 		this.c = new CipherBreakers(u, k, p);
 		if (!test)
 			run(u.cleanText(text));
 	}
 
-	private String run(String text) {
+	private void run(String text) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			return c.vigenereBreaker(text);
+			result = c.vigenereBreaker(text);
 		case "Substitution":
-			return c.substitutionBreaker(text);
+			result = c.substitutionBreaker(text);
+		case "":
+			result = "Error";
 		}
-		return "";
 	}
 
 	/**

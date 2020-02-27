@@ -1,14 +1,12 @@
 package comms;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import cipher.Manager;
+@SpringBootApplication
 public class Server {
 
 	public static void main(String[] args) {
-		ApplicationContext context = new ClassPathXmlApplicationContext("src/main/Beans.xml");
-		Manager manager = (Manager) context.getBean("Manager");
-		manager.
+		SpringApplication.run(Server.class, args);
 	}
 }
