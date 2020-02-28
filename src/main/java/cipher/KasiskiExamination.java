@@ -71,8 +71,10 @@ public class KasiskiExamination {
 				FMSarray[i] = valueToInsert;
 			}
 			List<String> possibleCharacters = new ArrayList<String>();
+
 			for (int i = 0; i < 26; i++) {
-				// TODO Write this to select the top 33% of letters.
+				// TODO Graph this for different keys and try to spot patterns.
+				System.out.println(Character.toString(ALPHABET[i]) + "," + FMSarray[i]);
 				if (FMSarray[i] < 1.5) // This selects the top ~40% of letters.
 					possibleCharacters.add(Character.toString(ALPHABET[i]));
 			}

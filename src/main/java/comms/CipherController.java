@@ -9,10 +9,10 @@ import cipher.Manager;
 @RestController
 public class CipherController {
 
-	@GetMapping("/ciphers-app/plaintext/{plainText}")
-	public String decodeCipherText(@PathVariable String plainText) {
-		plainText.replaceAll("%20", " ");
-		Manager m = new Manager(plainText, false);
+	@GetMapping("/ciphers-app/ciphertext/{cipherText}")
+	public String decodeCipherText(@PathVariable String cipherText) {
+		cipherText.replaceAll("%20", " ");
+		Manager m = new Manager(cipherText, false);
 		return m.getResult();
 	}
 
