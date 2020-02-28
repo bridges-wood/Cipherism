@@ -45,10 +45,13 @@ public class Manager {
 		switch (detectCipher(text)) {
 		case "Periodic":
 			result = c.vigenereBreaker(u.deSpace(text));
+			break;
 		case "Substitution":
 			result = c.substitutionBreaker(text);
+			break;
 		case "":
 			result = "Error";
+			break;
 		}
 	}
 

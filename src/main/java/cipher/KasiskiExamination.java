@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class KasiskiExamination {
@@ -62,23 +64,26 @@ public class KasiskiExamination {
 				composite.append(text.charAt(i + b));
 			}
 			String finalString = composite.toString();
-			double[] FMSarray = new double[26]; // Create array for each letter to test how like English it decrypts its
-												// respective section to.
+			SortedMap<Double, String> FMSmap = new TreeMap<Double, String>(); // Stores score and letter to allow
+																				// fetching of lowest scores.
 			for (int i = 0; i < 26; i++) {
-				String toAnalyse = v.decrypt(finalString, Character.toString(ALPHABET[i]));
+				String keyLetter = Character.toString(ALPHABET[i]);
+				String toAnalyse = v.decrypt(finalString, keyLetter);
 				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
 				// Compute FMS of the composite.
-				FMSarray[i] = valueToInsert;
+				FMSmap.put(valueToInsert, keyLetter);
 			}
-			List<String> possibleCharacters = new ArrayList<String>();
-
-			for (int i = 0; i < 26; i++) {
-				// TODO Graph this for different keys and try to spot patterns.
-				System.out.println(Character.toString(ALPHABET[i]) + "," + FMSarray[i]);
-				if (FMSarray[i] < 1.5) // This selects the top ~40% of letters.
-					possibleCharacters.add(Character.toString(ALPHABET[i]));
+			int k = 3; // The number of letters considered for each position in the key.
+			String[] possibleCharacters = new String[k];
+			System.out.print("The " + b + "th: ");
+			for (int i = 0; i < k; i++) {
+				Double key = FMSmap.firstKey();
+				possibleCharacters[i] = FMSmap.get(key);
+				System.out.print(FMSmap.get(key) + " ");
+				FMSmap.remove(key);
 			}
-			possibleLetters[b] = possibleCharacters.toArray(new String[0]);
+			System.out.println();
+			possibleLetters[b] = possibleCharacters;
 		}
 		combinations(possibleLetters, new String[possibleLetters.length], 0); // Generates all possible combinations of
 																				// likely letters in the key.
@@ -179,8 +184,6 @@ public class KasiskiExamination {
 			return 0;
 		} else if (likelyKeys.length == 1) {
 			return likelyKeys[0];
-		} else if (likelyKeys.length == 2) {
-			return likelyKeys[1];
 		} else {
 			int counter = -1;
 			for (int keyLength : likelyKeys) { // For each of the possible key lengths:
@@ -189,6 +192,8 @@ public class KasiskiExamination {
 				averageIOCs[counter] = total;
 			}
 			SimpleRegression reg = new SimpleRegression();
+			GammaDistribution g = new GammaDistribution(2.3, 2); // This distribution roughly fits the probability of
+																	// words of length x.
 
 			for (int i = 0; i < likelyKeys.length; i++) {
 				reg.addData(likelyKeys[i], averageIOCs[i]);
@@ -199,7 +204,8 @@ public class KasiskiExamination {
 			double maxDiff = Double.MIN_VALUE;
 			int bestKeyLength = 1;
 			for (int i = 0; i < likelyKeys.length; i++) {
-				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + 0.05 * likelyKeys[i];
+				// TODO insure this selects the best keys.
+				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + g.density(likelyKeys[i]);
 				if (diff > maxDiff) {
 					maxDiff = diff;
 					bestKeyLength = likelyKeys[i];
@@ -262,9 +268,12 @@ public class KasiskiExamination {
 																		// likely factor.
 		}
 		for (int key : factors.keySet()) {
-			if (factors.get(key) < cutoff) {
+			if (factors.get(key) < cutoff)
 				continue;
-			}
+
+			if (key > 20)
+				continue;
+
 			output.add(key);
 		} // Gives all factors that are at least half as likely as the most common one.
 		return output.stream().mapToInt(Integer::intValue).toArray();
