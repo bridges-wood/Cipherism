@@ -17,9 +17,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Test with Maven
-      run: mvn test
-      if: success()
     - name: LFS
       run: git lfs pull
     - name: Build with Maven
