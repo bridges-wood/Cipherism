@@ -2,6 +2,8 @@ package cipher;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
@@ -26,6 +28,7 @@ public class Manager {
 
 	private String result = "";
 	private String text = "";
+	private boolean fail = false;
 
 	public Manager(String text, boolean test) {
 		this.text = text;
@@ -33,19 +36,32 @@ public class Manager {
 		this.p = new ProbableSubstitutions();
 		this.n = new NGramAnalyser(u);
 		this.i = new IOC(n);
+		Vigenere v = new Vigenere();
+		DetectEnglish d = new DetectEnglish(u, n);
+		this.k = new KasiskiExamination(u, n, v, i, d);
 		this.c = new CipherBreakers(u, k, p);
-		if (!test)
-			run(u.cleanText(text));
+		try {
+			if (!test)
+				run(u.cleanText(text));
+		} catch (Exception e) {
+			fail = true;
+			result = e.getMessage();
+		}
 	}
 
-	private String run(String text) {
+	private void run(String text) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			return c.vigenereBreaker(text);
+			result = c.vigenereBreaker(u.deSpace(text));
+			break;
 		case "Substitution":
-			return c.substitutionBreaker(text);
+			// result = c.substitutionBreaker(text);
+			result = "Error 2: Detection failed. Cipher not recognised.";
+			break;
+		case "":
+			result = "Error 2: Detection failed. Cipher not recognised.";
+			break;
 		}
-		return "";
 	}
 
 	/**
@@ -56,22 +72,30 @@ public class Manager {
 	 * @return A boolean representing whether the text is encoded periodically.
 	 */
 	public boolean detectPeriodic(String text) {
+		text = u.deSpace(text);
 		double[] IOCs = new double[19];
 		for (int n = 2; n <= 20; n++) {
 			IOCs[n - 2] = i.periodIndexOfCoincidence(n, text);
 		}
 		double sd = new StandardDeviation().evaluate(IOCs);
 		double mean = new Mean().evaluate(IOCs);
-		int counter = 0;
-		for (double index : IOCs) {
-			if (index >= mean + sd)
-				counter++;
+		List<Integer> suggestedKeyLengths = new ArrayList<Integer>();
+		for (int n = 2; n <= 20; n++) {
+			double score = IOCs[n - 2];
+			if (score >= mean + sd)
+				suggestedKeyLengths.add(n);
 			/*
 			 * If the text is encrypted with a periodic cipher, peaks should be identified
 			 * in the indices of coincidence.
 			 */
 		}
-		if (counter >= 3) {
+		Map<Integer, Integer> factorsMap = new TreeMap<Integer, Integer>(); // These peaks should also be identified at
+																			// intervals that are multiples of one
+																			// factor.
+		for (int i : suggestedKeyLengths) {
+			factorsMap = k.factorise(factorsMap, i);
+		}
+		if (factorsMap.get(k.maxKeyInt(factorsMap)) >= suggestedKeyLengths.size() - 1) {
 			return true;
 		} else {
 			return false;
@@ -131,4 +155,13 @@ public class Manager {
 	public void setText(String text) {
 		this.text = text;
 	}
+
+	public boolean isFail() {
+		return fail;
+	}
+
+	public void setFail(boolean fail) {
+		this.fail = fail;
+	}
+
 }
