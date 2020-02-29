@@ -25,9 +25,6 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-						<descriptors>
-						<descriptor>files.xml</descriptor>
-						</descriptors>
 							<archive>
 								<manifest>
 									<mainClass>com.polytonic.main.ServerInit</mainClass>
