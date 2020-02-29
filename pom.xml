@@ -27,7 +27,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>com.polytonic.main.java.main.ServerInit</mainClass>
+									<mainClass>com.polytonic.main.ServerInit</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
