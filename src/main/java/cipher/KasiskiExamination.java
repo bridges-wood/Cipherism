@@ -73,16 +73,13 @@ public class KasiskiExamination {
 				// Compute FMS of the composite.
 				FMSmap.put(valueToInsert, keyLetter);
 			}
-			int k = 3; // The number of letters considered for each position in the key.
+			int k = 2; // The number of letters considered for each position in the key.
 			String[] possibleCharacters = new String[k];
-			System.out.print("The " + b + "th: ");
 			for (int i = 0; i < k; i++) {
 				Double key = FMSmap.firstKey();
 				possibleCharacters[i] = FMSmap.get(key);
-				System.out.print(FMSmap.get(key) + " ");
 				FMSmap.remove(key);
 			}
-			System.out.println();
 			possibleLetters[b] = possibleCharacters;
 		}
 		combinations(possibleLetters, new String[possibleLetters.length], 0); // Generates all possible combinations of
@@ -204,8 +201,8 @@ public class KasiskiExamination {
 			double maxDiff = Double.MIN_VALUE;
 			int bestKeyLength = 1;
 			for (int i = 0; i < likelyKeys.length; i++) {
-				// TODO insure this selects the best keys.
-				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept) + g.density(likelyKeys[i]);
+				double diff = averageIOCs[i] - (slope * likelyKeys[i] + intercept)
+						+ likelyKeys[i] * g.density(likelyKeys[i]);
 				if (diff > maxDiff) {
 					maxDiff = diff;
 					bestKeyLength = likelyKeys[i];
@@ -286,7 +283,7 @@ public class KasiskiExamination {
 	 * @param map The input <Integer, Integer> Map.
 	 * @return The key corresponding to the maximum value in the map.
 	 */
-	private Integer maxKeyInt(Map<Integer, Integer> map) {
+	public Integer maxKeyInt(Map<Integer, Integer> map) {
 		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey();
 		/*
@@ -307,7 +304,7 @@ public class KasiskiExamination {
 	 * @param n            The number to be factorized.
 	 * @return The map updated with n's factors.
 	 */
-	private Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
+	public Map<Integer, Integer> factorise(Map<Integer, Integer> foundFactors, int n) {
 		for (int i = 2; i <= n; i++) {
 			if (n % i == 0) {
 				if (!foundFactors.containsKey(i)) { // If this factor hasn't been found before:

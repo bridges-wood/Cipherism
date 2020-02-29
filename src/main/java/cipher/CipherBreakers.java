@@ -37,7 +37,10 @@ public class CipherBreakers {
 	 */
 	public String vigenereBreaker(String text) {
 		String[] keys = k.vigenereKeys(text);
-		System.out.println("Keys: " + keys.length);
+
+		if (keys.length == 0)
+			return "Error 1: Decryption failed. No keys found.";
+
 		double maxScore = Double.NEGATIVE_INFINITY;
 		String fittestKey = "";
 		/*
