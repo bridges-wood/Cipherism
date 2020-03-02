@@ -11,14 +11,14 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class VigenereTest {
+public class VigenereExceptionTest {
 
 	private String text;
 	private String key;
 	private String encrypted;
 	private Vigenere tester = new Vigenere();
 
-	public VigenereTest(String textP, String keyP, String encryptedP) {
+	public VigenereExceptionTest(String textP, String keyP, String encryptedP) {
 		text = textP;
 		key = keyP;
 		encrypted = encryptedP;
@@ -27,19 +27,20 @@ public class VigenereTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] {
-				{ "thequickbrownfoxjumpsoverthelazydog", "swordfish", "ldshxnkcijkkeitfbbelgfyjzlowhoqbiwy" },
-				{ "mikesaysturnoffthelightswhenyouleavearoom", "bacon", "nimsfbyuhhsnqtsuhgzvhhvgjiepmbvlgoifatcbn" },
-				{ "a", "nuggetinabiscuit", "n" }, 
+				{ "", "", "" }, 
+				{ "text", "", "" },
+				{ "", "key", "" },
+				{ "", "", "encrypted" }
 				};
 		return Arrays.asList(data);
 	}
 
-	@Test
+	@Test (expected = IllegalArgumentException.class)
 	public void testEncrypt() {
 		assertEquals(encrypted, tester.encrypt(text, key));
 	}
 
-	@Test
+	@Test (expected = IllegalArgumentException.class)
 	public void testDecrypt() {
 		assertEquals(text, tester.decrypt(encrypted, key));
 	}

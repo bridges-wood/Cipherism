@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ CaesarTest.class, CipherBreakersTest.class, DetectEnglishTest.class, IOCTest.class,
 		KasiskiExaminationTest.class, ManagerTest.class, MultiLemmaAnalysisTest.class, NGramAnalyserTest.class,
 		PredictWordsTest.class, ProbableSubstitutionsTest.class, SubstitutionTest.class, FileIOTest.class,
-		VigenereTest.class })
+		VigenereExceptionTest.class })
 public class CipherTest {
 
 	public static void main(String[] args) {
