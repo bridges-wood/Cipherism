@@ -66,6 +66,9 @@ public class ProbableSubstitutions {
 	 * @return The key corresponding to the maximum double value in the map.
 	 */
 	public String maxKey(TreeMap<String, Double> freqs) {
+		if(freqs.keySet().size() == 0) {
+			throw new IllegalArgumentException("Map size cannot be 0.");
+		}
 		return freqs.entrySet().stream().max((Entry<String, Double> entry1, Entry<String, Double> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey();
 		/*

@@ -2,9 +2,13 @@ package com.polytonic.cipher;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class SubstitutionTest {
@@ -14,28 +18,29 @@ public class SubstitutionTest {
 	private String encrypted;
 	private Substitution tester = new Substitution();
 
-	public SubstitutionTest(String textP, String mappingP, String encryptedP) {
-		text = textP;
-		mappings = initialiseMappings(mappingP);
-		encrypted = encryptedP;
+	public SubstitutionTest(String text, String mapping, String encrypted) {
+		this.text = text;
+		this.mappings = initialiseMappings(mapping);
+		this.encrypted = encrypted;
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		Object[][] data = new Object[][] {
+				{ "thepenetrationofcivilengineering", "orwqaihykltcdpsuvfejnmgxbz", "jyauapajfojkspsiwkmkcaphkpaafkph" },
+				{ "thequickbrownfoxjumpsoverthelazydog", "zyxwvutsrqponmlkjihgfedcba", "gsvjfrxpyildmulcqfnkhlevigsvozabwlt" },
+				{ "loremipsumdolorsitamet", "zqvouragcjlhsywtnemfbkdxpi", "hweusctmbsowhwemcfzsuf" } };
+		return Arrays.asList(data);
 	}
 
 	@Test
 	public void testEncrypt() {
-		assertEquals("gsvjfrxpyildmulcqfnkhlevigsvozabwlt",
-				tester.encrypt("thequickbrownfoxjumpsoverthelazydog", MAPPINGS));
+		assertEquals(encrypted, tester.encrypt(text, mappings));
 	}
 
 	@Test
 	public void testDecrypt() {
-		assertEquals("thequickbrownfoxjumpsoverthelazydog",
-				tester.decrypt("gsvjfrxpyildmulcqfnkhlevigsvozabwlt", MAPPINGS));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testThrow() {
-		tester.decrypt("test", new Mapping[0]);
-		tester.encrypt("test", new Mapping[0]);
+		assertEquals(text, tester.decrypt(encrypted, mappings));
 	}
 
 	/**
@@ -49,7 +54,7 @@ public class SubstitutionTest {
 		String plainAlphabet = "abcdefghijklmnopqrstuvwxyz";
 		Mapping[] toReturn = new Mapping[26];
 		for (int i = 0; i < 26; i++) {
-			toReturn[i] = new Mapping(plainAlphabet.charAt(i), cipherAlphabet.charAt(i));
+			toReturn[i] = new Mapping(cipherAlphabet.charAt(i), plainAlphabet.charAt(i));
 		}
 		return toReturn;
 	}

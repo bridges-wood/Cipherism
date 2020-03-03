@@ -18,10 +18,10 @@ public class VigenereTest {
 	private String encrypted;
 	private Vigenere tester = new Vigenere();
 
-	public VigenereTest(String textP, String keyP, String encryptedP) {
-		text = textP;
-		key = keyP;
-		encrypted = encryptedP;
+	public VigenereTest(String text, String key, String encrypted) {
+		this.text = text;
+		this.key = key;
+		this.encrypted = encrypted;
 	}
 
 	@Parameters

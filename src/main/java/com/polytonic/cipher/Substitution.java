@@ -23,8 +23,11 @@ public class Substitution {
 	 * @return An encrypted string.
 	 */
 	public String encrypt(String text, Mapping[] mappings) {
-		if (mappings.length < 26) {
+		if (mappings.length != 26) {
 			throw new IllegalArgumentException("Incomplete set of letter mappings.");
+		}
+		if (text.length() == 0) {
+			return "";
 		}
 		StringBuilder sb = new StringBuilder();
 		for (Character c : text.toCharArray()) {
@@ -55,8 +58,11 @@ public class Substitution {
 	 * @return The decrypted string.
 	 */
 	public String decrypt(String text, Mapping[] mappings) {
-		if (mappings.length < 26) {
+		if (mappings.length != 26) {
 			throw new IllegalArgumentException("Incomplete set of letter mappings.");
+		}
+		if (text.length() == 0) {
+			return "";
 		}
 		StringBuilder sb = new StringBuilder();
 		for (Character c : text.toCharArray()) {
