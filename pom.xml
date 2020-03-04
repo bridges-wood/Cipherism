@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>com.polytonic.main.ServerInit</start-class>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.polytonic</groupId>
@@ -20,6 +21,13 @@
 				<configuration>
 					<mainClass>com.polytonic.main.ServerInit</mainClass>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
