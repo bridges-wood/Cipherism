@@ -11,7 +11,7 @@ import com.polytonic.cipher.InitialiseStaticResources;
 public class ServerInit {
 
 	public static void main(String[] args) {
-		InitialiseStaticResources.uInit(true, true, true, true, true);
+		//InitialiseStaticResources.uInit(true, true, true, true, true);
 		com.polytonic.comms.Server.main(new String[0]);
 	}
 
