@@ -11,7 +11,7 @@ import com.polytonic.cipher.Manager;
 @RestController
 public class CipherController {
 
-	@GetMapping("/ciphers-app/ciphertext/{cipherText}")
+	@GetMapping("/ciphertext/{cipherText}")
 	public String decodeCipherText(@PathVariable String cipherText) {
 		cipherText.replaceAll("%20", " ");
 		Manager m = new Manager(cipherText, false);
