@@ -26,8 +26,10 @@ public class SubstitutionExceptionTest {
 
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] data = new Object[][] { { "thequickbrownfoxjumpsoverthelazydog", new Mapping[0],
-				"gsvjfrxpyildmulcqfnkhlevigsvozabwlt" }, { "", new Mapping[27], "" } };
+		Object[][] data = new Object[][] { 
+			{ "thequickbrownfoxjumpsoverthelazydog", new Mapping[0], "gsvjfrxpyildmulcqfnkhlevigsvozabwlt" },
+			{ "", new Mapping[27], "" } 
+			};
 		return Arrays.asList(data);
 	}
 

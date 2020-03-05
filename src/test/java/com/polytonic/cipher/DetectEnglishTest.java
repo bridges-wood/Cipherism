@@ -44,22 +44,6 @@ public class DetectEnglishTest {
 	}
 
 	@Test
-	public void testIsEnglishString() {
-		assertTrue(tester.isEnglish("lammer"));
-		assertTrue(tester.isEnglish("plenteously"));
-		assertTrue(tester.isEnglish("jannock"));
-		assertTrue(tester.isEnglish("bombproof"));
-		assertTrue(tester.isEnglish("reburials"));
-		assertTrue(tester.isEnglish("kursaals"));
-		assertTrue(tester.isEnglish("flukeworm"));
-		assertTrue(tester.isEnglish("requires"));
-		assertTrue(tester.isEnglish("subsacral"));
-		assertTrue(tester.isEnglish("the"));
-		assertFalse(tester.isEnglish("rakata"));
-		// Test cases chosen at random.
-	}
-
-	@Test
 	public void testGreeedyRespace() {
 		assertEquals("a test sentence", tester.greedyWrapper("atestsentence", 20));
 	}
