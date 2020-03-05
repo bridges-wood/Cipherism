@@ -2,11 +2,17 @@ package com.polytonic.cipher;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.TreeMap;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-public class NGramAnalyserTest {
+@RunWith(Parameterized.class)
+public class KasiskiBaseTest {
 
 	private FileIO u = new FileIO();
 	private NGramAnalyser tester = new NGramAnalyser(u);
@@ -24,26 +30,48 @@ public class NGramAnalyserTest {
 					+ " frequently his fortune to be the last reputable acquaintance and the last good influence in the lives of"
 					+ " downgoing men. And to such as these, so long as they came about his chambers, he never marked a shade of"
 					+ " change in his demeanour.");
+	private int length;
+	private String target;
+	private int count;
+	private TreeMap<String, Integer> map1 = tester.kasiskiBase(1, PLAINTEXT);
+	private TreeMap<String, Integer> map2 = tester.kasiskiBase(2, PLAINTEXT);
+	private TreeMap<String, Integer> map3 = tester.kasiskiBase(1, PLAINTEXT);
 
-// Story of the Door from The Strange Case of Dr. Jekyll and Mr. Hyde.
-	@Test
-	public void testNgramAnalysis() {
-		TreeMap<String, Double> trigrams = tester.NgramAnalysis(3, PLAINTEXT, true);
-		assertTrue(trigrams.get("he ") > 0);
-		assertEquals(null, trigrams.get("xe "));
+	public KasiskiBaseTest(String target, int count) {
+		this.length = target.length();
+		this.target = target;
+		this.count = count;
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		Object[][] data = new Object[][] { 
+			{ "e", 131 }, 
+			{ "x", 1 }, 
+			{ "i", 66 }, 
+			{ "of", 8 },
+			{ "in", 31 },
+			{ "at", 5 },
+			{ "the", 20 },
+			{ "how", 1 }
+			};
+		return Arrays.asList(data);
 	}
 
 	@Test
-	public void testFrequencyAnalysis() {
-		TreeMap<String, Integer> letters = tester.frequencyAnalysis(PLAINTEXT);
-		assertEquals(131, letters.get("e").intValue());
-		assertEquals(0, letters.get("z").intValue());
-	}
-
-	@Test
-	public void testComputeScore() {
-		double score = tester.computeScore(3, "the", false);
-		assertEquals(Math.log10(77534223d / 4274127909d), score, 0.0000000001);
+	public void testKasiskiBase() {
+		switch(length) {
+		case 1:
+			assertEquals(count, map1.get(target).intValue());
+			break;
+		case 2:
+			assertEquals(count, map2.get(target).intValue());
+			break;
+		case 3:
+			assertEquals(count, map3.get(target).intValue());
+			break;
+		}
+		
 	}
 
 }

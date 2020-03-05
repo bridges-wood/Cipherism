@@ -3,36 +3,48 @@ package com.polytonic.cipher;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class PredictWordsTest {
 
 	private PredictWords tester = new PredictWords();
 	private Substitution s = new Substitution();
-	private final Mapping[] MAPPINGS = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+	private String testCase;
+	private String expected;
+
+	public PredictWordsTest(String word) {
+		Mapping[] mappings = SubstitutionTest.initialiseMappings("zyxwvutsrqponmlkjihgfedcba");
+		this.expected = word;
+		this.testCase = s.encrypt(word, mappings);
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		Object[][] data = { 
+				{ "show" }, 
+				{ "determine" }, 
+				{ "suffer" }, 
+				{ "west" }, 
+				{ "angel" }, 
+				{ "allocation" },
+				{ "artist" }, 
+				{ "current" }, 
+				{ "factor" } 
+				};
+		return Arrays.asList(data);
+	}
 
 	@Test
 	public void testPredictedWords() {
-		String[] testCases = { "this", "is", "a", "set", "of", "test", "words" };
-		for (String test : testCases) {
-			String encoding = s.encrypt(test, MAPPINGS);
-			List<String> possibleEncodings = Arrays.asList(tester.predictedWords(encoding));
-			assertTrue(possibleEncodings.contains(test));
-		}
-	}
-
-	@Test
-	public void testEncodeWord() {
-		Integer[] encoding = { 0, 1, 2 };
-		assertArrayEquals(encoding, tester.encodeWord("the"));
-	}
-
-	@Test
-	public void testEncodePhrase() {
-		Integer[][] encodedPhrase = { { 0, 1, 2, 0 }, { 3, 4, 2, 1 } };
-		assertArrayEquals(encodedPhrase, tester.encodePhrase("test case".split(" ")));
+		List<String> possibleEncodings = Arrays.asList(tester.predictedWords(testCase));
+		assertTrue(possibleEncodings.contains(expected));
 	}
 
 }

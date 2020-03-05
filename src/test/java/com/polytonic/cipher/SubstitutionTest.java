@@ -2,13 +2,46 @@ package com.polytonic.cipher;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.Collection;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
 public class SubstitutionTest {
 
+	private String text;
+	private Mapping[] mappings;
+	private String encrypted;
 	private Substitution tester = new Substitution();
-	private final Mapping[] MAPPINGS = initialiseMappings("zyxwvutsrqponmlkjihgfedcba"); // Substitution alphabet to be
-																							// tested.
+
+	public SubstitutionTest(String text, String mapping, String encrypted) {
+		this.text = text;
+		this.mappings = initialiseMappings(mapping);
+		this.encrypted = encrypted;
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		Object[][] data = new Object[][] {
+				{ "thepenetrationofcivilengineering", "orwqaihykltcdpsuvfejnmgxbz", "jyauapajfojkspsiwkmkcaphkpaafkph" },
+				{ "thequickbrownfoxjumpsoverthelazydog", "zyxwvutsrqponmlkjihgfedcba", "gsvjfrxpyildmulcqfnkhlevigsvozabwlt" },
+				{ "loremipsumdolorsitamet", "zqvouragcjlhsywtnemfbkdxpi", "hweusctmbsowhwemcfzsuf" } };
+		return Arrays.asList(data);
+	}
+
+	@Test
+	public void testEncrypt() {
+		assertEquals(encrypted, tester.encrypt(text, mappings));
+	}
+
+	@Test
+	public void testDecrypt() {
+		assertEquals(text, tester.decrypt(encrypted, mappings));
+	}
 
 	/**
 	 * Generates a complete letter-letter mapping for a substitution cipher.
@@ -21,27 +54,9 @@ public class SubstitutionTest {
 		String plainAlphabet = "abcdefghijklmnopqrstuvwxyz";
 		Mapping[] toReturn = new Mapping[26];
 		for (int i = 0; i < 26; i++) {
-			toReturn[i] = new Mapping(plainAlphabet.charAt(i), cipherAlphabet.charAt(i));
+			toReturn[i] = new Mapping(cipherAlphabet.charAt(i), plainAlphabet.charAt(i));
 		}
 		return toReturn;
-	}
-
-	@Test
-	public void testEncrypt() {
-		assertEquals("gsvjfrxpyildmulcqfnkhlevigsvozabwlt",
-				tester.encrypt("thequickbrownfoxjumpsoverthelazydog", MAPPINGS));
-	}
-
-	@Test
-	public void testDecrypt() {
-		assertEquals("thequickbrownfoxjumpsoverthelazydog",
-				tester.decrypt("gsvjfrxpyildmulcqfnkhlevigsvozabwlt", MAPPINGS));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testThrow() {
-		tester.decrypt("test", new Mapping[0]);
-		tester.encrypt("test", new Mapping[0]);
 	}
 
 }

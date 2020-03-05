@@ -19,6 +19,9 @@ public class Vigenere {
 	 * @return The encrypted text.
 	 */
 	public String encrypt(String text, String key) {
+		if (text.length() == 0 || key.length() == 0) {
+			throw new IllegalArgumentException("Vigenere encrypt invalid on arguments of length 0.");
+		}
 		StringBuilder result = new StringBuilder();
 		key = key.toLowerCase();
 		text = text.toLowerCase();
@@ -40,6 +43,9 @@ public class Vigenere {
 	 * @return The decrypted text.
 	 */
 	public String decrypt(String text, String key) {
+		if (text.length() == 0 || key.length() == 0) {
+			throw new IllegalArgumentException("Vigenere decrypt invalid on arguments of length 0.");
+		}
 		StringBuilder result = new StringBuilder();
 		key = key.toLowerCase();
 		text = text.toLowerCase();
