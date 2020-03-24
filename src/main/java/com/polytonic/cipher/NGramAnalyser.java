@@ -13,19 +13,11 @@ public class NGramAnalyser {
 
 	private double floor;
 	private final String[] LETTERS;
-	private final TreeMap<String, Double> MONOGRAMS;
-	private final TreeMap<String, Double> BIGRAMS;
-	private final TreeMap<String, Double> TRIGRAMS;
-	private final TreeMap<String, Double> QUADGRAMS;
-	private final TreeMap<String, Double> PENTAGRAMS;
+	private final FileIO u;
 
 	public NGramAnalyser(FileIO u) {
 		LETTERS = "qwertyuiopasdfghjklzxcvbnm".split("");
-		this.MONOGRAMS = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
-		this.BIGRAMS = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
-		this.TRIGRAMS = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
-		this.QUADGRAMS = u.loadNgramMap(u.QUADGRAM_LOG_MAP_PATH);
-		this.PENTAGRAMS = u.loadNgramMap(u.PENTAGRAM_LOG_MAP_PATH);
+		this.u = u;
 	}
 
 	/**
@@ -168,19 +160,19 @@ public class NGramAnalyser {
 		TreeMap<String, Double> ngrams = new TreeMap<String, Double>();
 		switch (n) {
 		case 1:
-			ngrams = this.getMONOGRAMS();
+			ngrams = u.loadNgramMap(u.MONOGRAM_LOG_MAP_PATH);
 			break;
 		case 2:
-			ngrams = this.getBIGRAMS();
+			ngrams = u.loadNgramMap(u.BIGRAM_LOG_MAP_PATH);
 			break;
 		case 3:
-			ngrams = this.getTRIGRAMS();
+			ngrams = u.loadNgramMap(u.TRIGRAM_LOG_MAP_PATH);
 			break;
 		case 4:
-			ngrams = this.getQUADGRAMS();
+			ngrams = u.loadNgramMap(u.QUADGRAM_LOG_MAP_PATH);
 			break;
 		case 5:
-			ngrams = this.getPENTAGRAMS();
+			ngrams = u.loadNgramMap(u.PENTAGRAM_LOG_MAP_PATH);
 			break;
 		default:
 			throw new IllegalArgumentException("Improper value of n.");
@@ -204,25 +196,5 @@ public class NGramAnalyser {
 		} else {
 			return score;
 		}
-	}
-
-	public TreeMap<String, Double> getMONOGRAMS() {
-		return MONOGRAMS;
-	}
-
-	public TreeMap<String, Double> getBIGRAMS() {
-		return BIGRAMS;
-	}
-
-	public TreeMap<String, Double> getTRIGRAMS() {
-		return TRIGRAMS;
-	}
-
-	public TreeMap<String, Double> getQUADGRAMS() {
-		return QUADGRAMS;
-	}
-
-	public TreeMap<String, Double> getPENTAGRAMS() {
-		return PENTAGRAMS;
 	}
 }
