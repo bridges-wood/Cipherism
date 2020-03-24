@@ -35,7 +35,7 @@ public class KasiskiBaseTest {
 	private int count;
 	private TreeMap<String, Integer> map1 = tester.kasiskiBase(1, PLAINTEXT);
 	private TreeMap<String, Integer> map2 = tester.kasiskiBase(2, PLAINTEXT);
-	private TreeMap<String, Integer> map3 = tester.kasiskiBase(1, PLAINTEXT);
+	private TreeMap<String, Integer> map3 = tester.kasiskiBase(3, PLAINTEXT);
 
 	public KasiskiBaseTest(String target, int count) {
 		this.length = target.length();

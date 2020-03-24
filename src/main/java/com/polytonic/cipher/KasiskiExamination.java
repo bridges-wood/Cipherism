@@ -41,7 +41,9 @@ public class KasiskiExamination {
 	 */
 	public String[] vigenereKeys(String text) {
 		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(3, text), text);
-		return keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
+		String[] bestKeys = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
+		d.flush();
+		return bestKeys;
 	}
 
 	/**

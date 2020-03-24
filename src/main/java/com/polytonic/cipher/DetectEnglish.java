@@ -22,8 +22,6 @@ public class DetectEnglish {
 	private WordGraph start = new WordGraph("", null);
 
 	public DetectEnglish(FileIO u, NGramAnalyser n) {
-		dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
-		twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
 		letterProbabilities = u.readLetterFrequencies(u.LETTER_FREQUENCIES_MAP_PATH);
 		this.u = u;
 		this.n = n;
@@ -90,6 +88,9 @@ public class DetectEnglish {
 	 *         English.
 	 */
 	public double isEnglish(String[] words) {
+		if (dictionaryTable.isEmpty()) {
+			u.readHashTable(u.DICTIONARY_HASH_PATH);
+		}
 		if (words.length == 0) {
 			return 0;
 		}
@@ -145,6 +146,9 @@ public class DetectEnglish {
 	 *         the text.
 	 */
 	private WordGraph traverse(WordGraph parent, String text, int maxWordLength) {
+		if (dictionaryTable.isEmpty()) {
+			u.readHashTable(u.DICTIONARY_HASH_PATH);
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
 			sb.append(text.charAt(i));
@@ -173,6 +177,9 @@ public class DetectEnglish {
 	 *         number of children per node that are English words.
 	 */
 	private WordGraph score(WordGraph parent) {
+		if (twoGramsTable.isEmpty()) {
+			u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
+		}
 		if (parent.getChildren().isEmpty()) {
 			parent.score = parent.getWord().length();
 		} else {
@@ -256,6 +263,9 @@ public class DetectEnglish {
 	 * @return Boolean whether word is English or not.
 	 */
 	public boolean isEnglish(String word) {
+		if (dictionaryTable.isEmpty()) {
+			u.readHashTable(u.DICTIONARY_HASH_PATH);
+		}
 		return dictionaryTable.containsKey(u.hash64(word));
 	}
 
@@ -292,5 +302,10 @@ public class DetectEnglish {
 	 */
 	public String greedyWrapper(String toAnalyse, int longest) {
 		return greedyRespace(toAnalyse, longest).replace("  ", " ").strip();
+	}
+
+	public void flush() {
+		dictionaryTable.clear();
+		twoGramsTable.clear();
 	}
 }
