@@ -30,7 +30,7 @@ public class CipherBreakersTest {
 
 	@Test
 	public void testVigenereBreaker() {
-		assertEquals(d.graphicalRespace(PLAINTEXT, 20), tester.vigenereBreaker(VIGENERE_ENCRYPTED));
+		assertEquals(d.graphicalRespace(PLAINTEXT, 20), tester.vigenereBreaker(VIGENERE_ENCRYPTED, false));
 	}
 
 	// @Test

@@ -35,22 +35,22 @@ public class KasiskiExaminationTest {
 			{ "test" },
 			{ "other" },
 			{ "key" },
-			{ "lengths" }
+			{ "length" }
 		};
 		return Arrays.asList(data);
 	}
 	
 	@Test
 	public void testKeyGuesserVigenere() {
-		List<String> keys = Arrays.asList(tester.keyGuesserVigenere(key.length(), ciphertext));
+		List<String> keys = Arrays.asList(tester.keyGuesserVigenere(key.length(), ciphertext, false));
 		assertTrue(keys.contains(key));
 	}
 
 	@Test
 	public void testMostLikelyKeyLength() {
 			String encrypted = v.encrypt(PLAINTEXT, key);
-			int[] likelyLengths = tester.likelyKeyLengths(n.kasiskiBase(2, encrypted), encrypted);
-			assertEquals(key.length(), tester.mostLikelyKeyLength(likelyLengths, encrypted));
+			int[] likelyLengths = tester.likelyKeyLengths(n.kasiskiBase(2, encrypted), encrypted, false);
+			assertEquals(key.length(), tester.mostLikelyKeyLength(likelyLengths, encrypted, false));
 	}
 
 }

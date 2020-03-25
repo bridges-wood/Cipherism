@@ -31,7 +31,7 @@ public class MultiLemmaAnalysisTest {
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] { 
 			{ "that the" },
-			{ "this is "},
+			{ "this is"},
 			{ "could be" },
 			{ "this is an" },
 			{ "how could this" },
