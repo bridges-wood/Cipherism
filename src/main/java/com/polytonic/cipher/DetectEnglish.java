@@ -90,7 +90,7 @@ public class DetectEnglish {
 	 */
 	public double isEnglish(String[] words) {
 		if (dictionaryTable.isEmpty()) {
-			u.readHashTable(u.DICTIONARY_HASH_PATH);
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		if (words.length == 0) {
 			return 0;
@@ -148,7 +148,7 @@ public class DetectEnglish {
 	 */
 	private WordGraph traverse(WordGraph parent, String text, int maxWordLength) {
 		if (dictionaryTable.isEmpty()) {
-			u.readHashTable(u.DICTIONARY_HASH_PATH);
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < maxWordLength && i < text.length(); i++) {
@@ -179,7 +179,7 @@ public class DetectEnglish {
 	 */
 	private WordGraph score(WordGraph parent) {
 		if (twoGramsTable.isEmpty()) {
-			u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
+			twoGramsTable = u.readHashTable(u.BIGRAM_WORD_HASH_PATH);
 		}
 		if (parent.getChildren().isEmpty()) {
 			parent.score = parent.getWord().length();
@@ -265,7 +265,7 @@ public class DetectEnglish {
 	 */
 	public boolean isEnglish(String word) {
 		if (dictionaryTable.isEmpty()) {
-			u.readHashTable(u.DICTIONARY_HASH_PATH);
+			dictionaryTable = u.readHashTable(u.DICTIONARY_HASH_PATH);
 		}
 		return dictionaryTable.containsKey(u.hash64(word));
 	}

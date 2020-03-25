@@ -30,7 +30,7 @@ public class Manager {
 	private String text = "";
 	private boolean fail = false;
 
-	public Manager(String text, boolean test) {
+	public Manager(String text, boolean test, boolean debug) {
 		this.text = text;
 		this.u = new FileIO();
 		this.p = new ProbableSubstitutions();
@@ -41,26 +41,30 @@ public class Manager {
 		this.k = new KasiskiExamination(u, n, v, i, d);
 		this.c = new CipherBreakers(u, k, p);
 		try {
-			if (!test)
-				run(u.cleanText(text));
+			if (!test) {
+				run(u.cleanText(text), debug);
+			}
 		} catch (Exception e) {
 			fail = true;
 			result = e.getMessage();
-			e.printStackTrace();
 		}
 	}
 
-	private void run(String text) {
+	private void run(String text, boolean debug) {
 		switch (detectCipher(text)) {
 		case "Periodic":
-			result = c.vigenereBreaker(u.deSpace(text));
+			result = c.vigenereBreaker(u.deSpace(text), debug);
+			if (result.startsWith("Error"))
+				fail = true;
 			break;
 		case "Substitution":
 			// result = c.substitutionBreaker(text);
-			result = "Error 2: Detection failed. Cipher not recognised.";
+			result = "Error 3: Substitution cipher not yet implemented.";
+			fail = true;
 			break;
 		case "":
 			result = "Error 2: Detection failed. Cipher not recognised.";
+			fail = true;
 			break;
 		}
 	}

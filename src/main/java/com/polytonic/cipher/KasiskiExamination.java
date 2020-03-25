@@ -36,12 +36,13 @@ public class KasiskiExamination {
 	/**
 	 * Gives the most likely keys for the given text.
 	 * 
-	 * @param text The input text to be text.
+	 * @param text  The input text to be text.
+	 * @param debug
 	 * @return The most likely key used to encrypt the text.
 	 */
-	public String[] vigenereKeys(String text) {
-		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(3, text), text);
-		String[] bestKeys = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text), text);
+	public String[] vigenereKeys(String text, boolean debug) {
+		int[] likelyLengths = likelyKeyLengths(n.kasiskiBase(3, text), text, debug);
+		String[] bestKeys = keyGuesserVigenere(mostLikelyKeyLength(likelyLengths, text, debug), text, debug);
 		d.flush();
 		return bestKeys;
 	}
@@ -52,9 +53,10 @@ public class KasiskiExamination {
 	 * 
 	 * @param keyLength The predicted length of the key.
 	 * @param text      The encrypted text.
+	 * @param debug
 	 * @return The most likely key for the given text and key length.
 	 */
-	public String[] keyGuesserVigenere(int keyLength, String text) {
+	public String[] keyGuesserVigenere(int keyLength, String text, boolean debug) {
 		int textLength = text.length();
 		if (keyLength == 0) {
 			return new String[0];
@@ -73,9 +75,10 @@ public class KasiskiExamination {
 				String toAnalyse = v.decrypt(finalString, keyLetter);
 				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
 				// Compute FMS of the composite.
+				if (debug) System.out.println(keyLetter + "," + valueToInsert);
 				FMSmap.put(valueToInsert, keyLetter);
 			}
-			int k = 2; // The number of letters considered for each position in the key.
+			int k = 3; // The number of letters considered for each position in the key.
 			String[] possibleCharacters = new String[k];
 			for (int i = 0; i < k; i++) {
 				Double key = FMSmap.firstKey();
@@ -97,6 +100,8 @@ public class KasiskiExamination {
 			}
 			LinkedList<String> toRemove = new LinkedList<String>();
 			for (String s : likelyKeys) {
+				if (debug)
+					System.out.println("Possible key: " + s);
 				String decryption = d.graphicalRespace(v.decrypt(text, s), 20);
 				if (d.isEnglish(decryption.split(" ")) < 1
 						|| u.deSpace(decryption).length() < 0.25 * u.deSpace(text).length()) {
@@ -106,6 +111,12 @@ public class KasiskiExamination {
 			for (String key : toRemove) {
 				likelyKeys.remove(key);
 			}
+			if (debug) {
+				for (String likelyKey : likelyKeys) {
+					System.out.println("Likely key: " + likelyKey);
+				}
+			}
+
 			return likelyKeys.toArray(new String[likelyKeys.size()]);
 			// Returns the most likely key.
 		}
@@ -174,9 +185,10 @@ public class KasiskiExamination {
 	 * @param text       The polyalphabetically enciphered text.
 	 * @param likelyKeys An array of the lengths of possible keys used to encipher
 	 *                   the text.
+	 * @param debug
 	 * @return The most likely key length.
 	 */
-	public int mostLikelyKeyLength(int[] likelyKeys, String text) {
+	public int mostLikelyKeyLength(int[] likelyKeys, String text, boolean debug) {
 		double[] averageIOCs = new double[likelyKeys.length]; // An array to store the indices of coincidence of the
 																// different key lengths.
 		if (likelyKeys.length == 0) {
@@ -211,6 +223,9 @@ public class KasiskiExamination {
 				}
 			}
 
+			if (debug)
+				System.out.println("Best key length: " + bestKeyLength);
+
 			return bestKeyLength;
 		}
 
@@ -226,10 +241,11 @@ public class KasiskiExamination {
 	 * @param repeated A map of the repeated sequences of a given length in the
 	 *                 text.
 	 * @param text     The polyalphabetically encrypted text.
+	 * @param debug
 	 * @return An array of the possible key lengths of the text and their respective
 	 *         occurences.
 	 */
-	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text) {
+	public int[] likelyKeyLengths(Map<String, Integer> repeated, String text, boolean debug) {
 		Map<Integer, Integer> factors = new TreeMap<Integer, Integer>();
 		List<String> patterns = new ArrayList<String>();
 		while (!repeated.isEmpty()) {
@@ -275,6 +291,11 @@ public class KasiskiExamination {
 
 			output.add(key);
 		} // Gives all factors that are at least half as likely as the most common one.
+		if (debug) {
+			for (int keyLength : output) {
+				System.out.println("Likely key length: " + keyLength);
+			}
+		}
 		return output.stream().mapToInt(Integer::intValue).toArray();
 	}
 
@@ -286,6 +307,8 @@ public class KasiskiExamination {
 	 * @return The key corresponding to the maximum value in the map.
 	 */
 	public Integer maxKeyInt(Map<Integer, Integer> map) {
+		if (map.isEmpty())
+			throw new IllegalArgumentException("Map size must be greater than 0.");
 		return map.entrySet().stream().max((Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2) -> entry1
 				.getValue().compareTo(entry2.getValue())).get().getKey();
 		/*

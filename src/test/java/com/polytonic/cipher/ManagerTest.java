@@ -16,7 +16,7 @@ public class ManagerTest {
 
 	@Test
 	public void testDetectCipher() {
-		Manager tester = new Manager(v.encrypt(u.cleanText(PLAINTEXT), KEY), true);
+		Manager tester = new Manager(v.encrypt(u.cleanText(PLAINTEXT), KEY), true, false);
 		assertEquals("Periodic", tester.detectCipher(tester.getText()));
 		tester.setText(s.encrypt(PLAINTEXT, SubstitutionTest.initialiseMappings("qwertyuiopasdfghjklzxcvbnm")));
 		assertEquals("Substitution", tester.detectCipher(tester.getText()));

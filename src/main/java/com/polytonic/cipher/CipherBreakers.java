@@ -32,11 +32,12 @@ public class CipherBreakers {
 	/**
 	 * Takes in a Vigenere-encrypted string and completely decrypts and respaces it.
 	 * 
-	 * @param text The text to be decrypted.
+	 * @param text  The text to be decrypted.
+	 * @param debug
 	 * @return The original plain-text.
 	 */
-	public String vigenereBreaker(String text) {
-		String[] keys = k.vigenereKeys(text);
+	public String vigenereBreaker(String text, boolean debug) {
+		String[] keys = k.vigenereKeys(text, debug);
 
 		if (keys.length == 0)
 			return "Error 1: Decryption failed. No keys found.";
@@ -54,6 +55,8 @@ public class CipherBreakers {
 				fittestKey = key;
 			}
 		}
+		if (debug)
+			System.out.println(fittestKey);
 		return d.graphicalRespace(v.decrypt(text, fittestKey), 20);
 	}
 
