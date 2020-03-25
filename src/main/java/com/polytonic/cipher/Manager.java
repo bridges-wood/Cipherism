@@ -46,7 +46,7 @@ public class Manager {
 		} catch (Exception e) {
 			fail = true;
 			result = e.getMessage();
-			System.err.println(e.getStackTrace());
+			e.printStackTrace();
 		}
 	}
 
