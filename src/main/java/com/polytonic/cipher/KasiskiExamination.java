@@ -75,7 +75,7 @@ public class KasiskiExamination {
 				String toAnalyse = v.decrypt(finalString, keyLetter);
 				double valueToInsert = computeFractionalMS(n.frequencyAnalysis(toAnalyse), toAnalyse.length());
 				// Compute FMS of the composite.
-				System.out.println(keyLetter + "," + valueToInsert);
+				if (debug) System.out.println(keyLetter + "," + valueToInsert);
 				FMSmap.put(valueToInsert, keyLetter);
 			}
 			int k = 3; // The number of letters considered for each position in the key.
@@ -95,7 +95,6 @@ public class KasiskiExamination {
 			LinkedList<String> likelyKeys = new LinkedList<String>();
 			for (int i = 0; i < possibleKeys.length; i++) {
 				if (d.detectEnglish(possibleKeys[i]) == 1.0) {
-					System.out.println(possibleKeys[i]);
 					likelyKeys.push(possibleKeys[i]);
 				}
 			}
