@@ -15,7 +15,8 @@ import java.util.TreeMap;
  */
 public class DetectEnglish {
 
-	private HashMap<Long, String> dictionaryTable, twoGramsTable;
+	private HashMap<Long, String> dictionaryTable = new HashMap<Long, String>();
+	private HashMap<Long, String> twoGramsTable = new HashMap<Long, String>();
 	private final TreeMap<Character, Double> letterProbabilities;
 	private FileIO u;
 	private NGramAnalyser n;
