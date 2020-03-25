@@ -24,7 +24,6 @@ public class Server {
 		Manager m = new Manager(cipherText, false);
 		Gson g = new Gson();
 		APIResponse responseObj = new APIResponse(m.getResult(), m.isFail());
-		m = null;
 		return g.toJson(responseObj);
 	}
 }
