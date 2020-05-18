@@ -1,4 +1,4 @@
-# Cipherism
+# Ciphon
 
 A dockerised web-API for the decryption of classical ciphers.
 
