@@ -1,8 +1,9 @@
 # Ciphon
-
-A dockerised web-API for the decryption of classical ciphers.
-
+A dockerised web-API for the decryption of classical ciphers. <br/>
 [![Build Status](https://travis-ci.com/bridges-wood/Ciphon.svg?branch=master)](https://travis-ci.com/bridges-wood/Ciphon)
+
+![Logo](https://repository-images.githubusercontent.com/186629524/3fa2c080-98fd-11ea-97e0-b8142c28a1ed)
+
 
 ## Getting Started
 
