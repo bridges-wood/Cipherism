@@ -80,7 +80,7 @@
 			<!-- Setup Spring MVC & REST, use Embedded Tomcat -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.2.5.RELEASE</version>
+			<version>2.5.12</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
